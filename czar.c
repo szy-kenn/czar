@@ -1,4 +1,5 @@
 #include "lexer/lexer.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +18,7 @@ void get_file_ext(char *dest, const char *src) {
 
     // while it hasn't reached the end of string yet, copy the contents from src to dest
     while ((currentChar = src[currentPosition]) != '\0') {
-        dest[currentPosition - (dotPosition + 1)] = currentChar;
+        dest[currentPosition - (dotPosition + 1)] = tolower(currentChar);
         currentPosition++;
     }
 
@@ -36,7 +37,8 @@ int main(int argc, char **argv) {
 
     // check if one argument has been passed
     if (argc != 2) {
-        printf("Error: No file name has been passed.\nUsage: czar <file-name>.cz");
+        printf("\033[0;31mError:\033[0;37m No file name has been passed.\n");
+        printf("\033[0;32mUsage:\033[0;37m czar \033[0;93m<file-name>\033[0;37m.cz");
         return -1;
     }
 
@@ -49,7 +51,7 @@ int main(int argc, char **argv) {
     get_file_ext(fileExt, fileName);
 
     if (strcmp(fileExt, "cz") != 0) {
-        printf("Error: Invalid file type. Please input a `.cz` file.");
+        printf("\033[0;31mError:\033[0;37m Invalid file type. Please input a `.cz` file.");
         return -1;
     }
 
@@ -57,7 +59,7 @@ int main(int argc, char **argv) {
     FILE *fp = fopen(fileName, "r");
 
     if (fp == NULL) {
-        printf("Error: Could not open %s", fileName);
+        printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m%s\033[0;37m", fileName);
         return -1;
     }
 
