@@ -1,1 +1,3 @@
-myInt: int = 100
+myStr: str;
+myInt: int = 10000232132535;
+my_long_named_variable: str;

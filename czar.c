@@ -66,10 +66,13 @@ int main(int argc, char **argv) {
     // ==================== start lexical analysis here ==================== //
 
     // create array of tokens (for symbol table)
-    Token *tokenArray = malloc(sizeof(Token) * MAX_BUFFER);
-    start_tokenization(fp, tokenArray);
+    Token *token_array = malloc(sizeof(Token) * MAX_BUFFER);
+    int token_count;
+    token_count = start_tokenization(fp, token_array);
+
+    tokens_print(token_array, token_count);
 
     fclose(fp);
-    free(tokenArray);
+    free(token_array);
     return 0;
 }
