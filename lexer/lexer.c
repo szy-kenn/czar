@@ -119,7 +119,162 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 switch (current_char) {
                     // TODO: symbols
                     case '+':
-                        /* code */
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == '=') {
+                            token_add(token_array, &token_count, T_ADD_EQL, "+=", "T_ADD_EQL");
+                            current_position++;
+                        } else {
+                            token_add(token_array, &token_count, T_ADD, "+", "T_ADD");
+                        }
+                        break;
+                    
+                    case '-':
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == '=') {
+                            token_add(token_array, &token_count, T_SUB_EQL, "-=", "T_SUB_EQL");
+                            current_position++;
+                        } else if (next_char == '-') {
+                            if (char_peek(fp, current_position + 2) == '*') {
+                                token_add(token_array, &token_count, T_DDASH_STAR, "--*", "T_DDASH_STAR");
+                                current_position += 2;
+                            } else {
+                                token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
+                                current_position++;
+                            }
+                        } else {
+                            token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
+                        }
+                        break;
+                    
+                    case '*':
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == '=') {
+                            token_add(token_array, &token_count, T_MUL_EQL, "*=", "T_MUL_EQL");
+                            current_position++;
+                        } else if (next_char == '-') {
+                            if (next_char == char_peek(fp, current_position + 2)) {
+                                token_add(token_array, &token_count, T_STAR_DDASH, "*--", "T_STAR_DDASH");
+                                current_position += 2;
+                            } else {
+                            token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
+                            }
+                        } else {
+                            token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
+                        }
+                        break;
+                    
+                    case '/':
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == '=') {
+                            token_add(token_array, &token_count, T_DIV_EQL, "/=", "T_DIV_EQL");
+                            current_position++;
+                        } else {
+                            token_add(token_array, &token_count, T_DIV, "/", "T_DIV");
+                        }
+                        break;
+
+                    case '=':
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == "=") {
+                            token_add(token_array, &token_count, T_EQL_EQL, "==", "T_EQL_EQL");
+                            current_position++;
+                        } else if (next_char == ">") {
+                            token_add(token_array, &token_count, T_ARROW, "=>", "T_ARROW");
+                            current_position++;
+                        } 
+                        else {
+                            token_add(token_array, &token_count, T_EQL, "=", "T_EQL");
+                        }
+                        break;
+
+                    case '%':
+                        token_add(token_array, &token_count, T_MOD, "%", "T_MOD");
+                        break;
+
+                    case '^':
+                        token_add(token_array, &token_count, T_EXP, "^", "T_EXP");
+                        break;
+
+                    case '|':
+                        token_add(token_array, &token_count, T_ABS, "|", "T_ABS");
+                        break;
+
+                    case '<':
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == "=") {
+                            token_add(token_array, &token_count, T_LESS_EQL, "<=", "T_LESS_EQL");
+                            current_position++;
+                        } else {
+                            token_add(token_array, &token_count, T_LESS, "<", "T_LESS");
+                        }
+                        break;
+                    
+                    case '>':
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == "=") {
+                            token_add(token_array, &token_count, T_GREATER_EQL, ">=", "T_GREATER_EQL");
+                            current_position++;
+                        } else {
+                            token_add(token_array, &token_count, T_GREATER, ">", "T_GREATER");
+                        }
+                        break;
+
+                    case '"':
+                        break;
+
+                    case '\'':
+                        break;
+
+                    case '?':
+                        token_add(token_array, &token_count, T_QMARK, "?", "T_QMARK");
+                        break;
+
+                    case '.':
+                        token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
+                        break;
+
+                    case ',':
+                        token_add(token_array, &token_count, T_COMMA, ",", "T_COMMA");
+                        break;
+
+                    case '(':
+                        token_add(token_array, &token_count, T_LPAREN, "(", "T_LPAREN");
+                        break;
+
+                    case ')':
+                        token_add(token_array, &token_count, T_RPAREN, ")", "T_RPAREN");
+                        break;
+
+                    case '{':
+                        token_add(token_array, &token_count, T_LSQGLY, "{", "T_LSQGLY");
+                        break;
+
+                    case '}':
+                        token_add(token_array, &token_count, T_RSQGLY, "}", "T_RSQGLY");
+                        break;
+
+                    case '[':
+                        token_add(token_array, &token_count, T_LBRACKET, "[", "T_LBRACKET");
+                        break;
+
+                    case ']':
+                        token_add(token_array, &token_count, T_RBRACKET, "]", "T_RBRACKET");
+                        break;
+
+                    case ':':
+                        token_add(token_array, &token_count, T_COLON, ":", "T_COLON");
+                        break;
+
+                    case '&':
+                        token_add(token_array, &token_count, T_AMP, "&", "T_AMP");
+                        break;
+
+                    case '\t':
+                        token_add(token_array, &token_count, T_TAB, "\\t", "T_TAB");
+                        break;
+
+                    case '\n':
+                        current_line++;
                         break;
 
                     default:
