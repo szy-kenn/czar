@@ -127,7 +127,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             token_add(token_array, &token_count, T_ADD, "+", "T_ADD");
                         }
                         break;
-                    
+
                     case '-':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
@@ -135,7 +135,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             current_position++;
                         } else if (next_char == '-') {
                             if (char_peek(fp, current_position + 2) == '*') {
-                                token_add(token_array, &token_count, T_DDASH_STAR, "--*", "T_DDASH_STAR");
+                                token_add(token_array, &token_count, T_DDASH_STAR, "--*",
+                                          "T_DDASH_STAR");
                                 current_position += 2;
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
@@ -145,7 +146,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
                         }
                         break;
-                    
+
                     case '*':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
@@ -153,16 +154,17 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             current_position++;
                         } else if (next_char == '-') {
                             if (next_char == char_peek(fp, current_position + 2)) {
-                                token_add(token_array, &token_count, T_STAR_DDASH, "*--", "T_STAR_DDASH");
+                                token_add(token_array, &token_count, T_STAR_DDASH, "*--",
+                                          "T_STAR_DDASH");
                                 current_position += 2;
                             } else {
-                            token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
+                                token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
                             }
                         } else {
                             token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
                         }
                         break;
-                    
+
                     case '/':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
@@ -181,8 +183,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         } else if (next_char == ">") {
                             token_add(token_array, &token_count, T_ARROW, "=>", "T_ARROW");
                             current_position++;
-                        } 
-                        else {
+                        } else {
                             token_add(token_array, &token_count, T_EQL, "=", "T_EQL");
                         }
                         break;
@@ -208,11 +209,12 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             token_add(token_array, &token_count, T_LESS, "<", "T_LESS");
                         }
                         break;
-                    
+
                     case '>':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == "=") {
-                            token_add(token_array, &token_count, T_GREATER_EQL, ">=", "T_GREATER_EQL");
+                            token_add(token_array, &token_count, T_GREATER_EQL,
+                                      ">=", "T_GREATER_EQL");
                             current_position++;
                         } else {
                             token_add(token_array, &token_count, T_GREATER, ">", "T_GREATER");
