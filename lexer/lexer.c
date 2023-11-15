@@ -141,6 +141,12 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
                                 current_position++;
+
+                                current_char = char_get(fp, current_position);
+                                while (current_char != '\n' && current_char != EOF) {
+                                    current_position++;
+                                    current_char = char_get(fp, current_position);
+                                }
                             }
                         } else {
                             token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
@@ -177,10 +183,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                     case '=':
                         next_char = char_peek(fp, current_position + 1);
-                        if (next_char == "=") {
+                        if (next_char == '=') {
                             token_add(token_array, &token_count, T_EQL_EQL, "==", "T_EQL_EQL");
                             current_position++;
-                        } else if (next_char == ">") {
+                        } else if (next_char == '>') {
                             token_add(token_array, &token_count, T_ARROW, "=>", "T_ARROW");
                             current_position++;
                         } else {
@@ -202,7 +208,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                     case '<':
                         next_char = char_peek(fp, current_position + 1);
-                        if (next_char == "=") {
+                        if (next_char == '=') {
                             token_add(token_array, &token_count, T_LESS_EQL, "<=", "T_LESS_EQL");
                             current_position++;
                         } else {
@@ -212,19 +218,24 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                     case '>':
                         next_char = char_peek(fp, current_position + 1);
-                        if (next_char == "=") {
-                            token_add(token_array, &token_count, T_GREATER_EQL,
-                                      ">=", "T_GREATER_EQL");
+                        if (next_char == '=') {
+                            token_add(token_array, &token_count, T_GREATER_EQL, ">=", "T_GREATER_EQL");
                             current_position++;
                         } else {
                             token_add(token_array, &token_count, T_GREATER, ">", "T_GREATER");
                         }
                         break;
 
+                    // TODO: not sure how delimiter works
                     case '"':
+                        token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
+                        current_position++;
                         break;
 
+                    // TODO: same as above
                     case '\'':
+                        token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
+                        current_position++;
                         break;
 
                     case '?':
