@@ -29,16 +29,6 @@ void char_concat(char *dest, char new_chr) {
 
 int is_ident(int chr) { return (isalnum(chr) || chr == '_'); }
 
-int is_delimiter(char chr, char *delimiters, int delimiter_count) {
-    for (int i = 0; i < delimiter_count; i++) {
-        if (chr == delimiters[i] || chr == EOF) {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 void digits_get(FILE *fp, char *dest, int *cur_pos) {
     char current_digit;
     char next_char;
@@ -59,11 +49,19 @@ void substr_get(FILE *fp, char *dest, int *cur_pos) {
     }
 }
 
-void delimited_str_get(FILE *fp, char *dest, int *cur_pos, char *delimiters, int delimiter_count) {
-    char current_char = char_get(fp, *cur_pos);
+int is_delimiter(char chr, char *delimiters, int delimiter_count) {
+    for (int i = 0; i < delimiter_count; i++) {
+        if (chr == delimiters[i] || chr == EOF) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
-    while (!is_delimiter(current_char, delimiters, delimiter_count)) {
-        char_concat(dest, current_char);
+void delimited_str_get(FILE *fp, char *dest, int *cur_pos, char *delimiters, int delimiter_count) {
+
+    while (!is_delimiter(char_get(fp, *cur_pos), delimiters, delimiter_count)) {
+        char_concat(dest, char_get(fp, *cur_pos));
         (*cur_pos)++;
     }
 }
@@ -135,8 +133,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             current_position++;
                         } else if (next_char == '-') {
                             if (char_peek(fp, current_position + 2) == '*') {
-                                token_add(token_array, &token_count, T_DDASH_STAR, "--*",
-                                          "T_DDASH_STAR");
+                                token_add(token_array, &token_count, T_DDASH_STAR, "--*", "T_DDASH_STAR");
                                 current_position += 2;
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
@@ -160,8 +157,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             current_position++;
                         } else if (next_char == '-') {
                             if (next_char == char_peek(fp, current_position + 2)) {
-                                token_add(token_array, &token_count, T_STAR_DDASH, "*--",
-                                          "T_STAR_DDASH");
+                                token_add(token_array, &token_count, T_STAR_DDASH, "*--", "T_STAR_DDASH");
                                 current_position += 2;
                             } else {
                                 token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
@@ -230,12 +226,49 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     case '"':
                         token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
                         current_position++;
+
+                        next_char = char_peek(fp, current_position);
+                        if (next_char == '"') {
+                            printf("String must contain atleast one character");
+                            return -1;
+                        }
+
+                        delimited_str_get(fp, substring, &current_position, "\"", 1);
+                        token_add(token_array, &token_count, T_STR, substring, "T_STR");
+                        *substring = '\0';
+
+                        current_char = char_get(fp, current_position);
+                        if (current_char == '"') {
+                            token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
+                        } else {
+                            printf("Unterminated string literal");
+                            return -1;
+                        }
                         break;
 
                     // TODO: same as above
                     case '\'':
                         token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                         current_position++;
+
+                        current_char = char_get(fp, current_position);
+                        if (current_char == '\'') {
+                            printf("Error");
+                            return -1;
+                        }
+                        
+                        char_concat(substring, current_char);
+                        token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
+                        current_position++;
+                        substring = '\0';
+
+                        current_char = char_get(fp, current_position);
+                        if (current_char != '\'') {
+                            printf("Error");
+                            return -1;
+                        } else {
+                            token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
+                        }
                         break;
 
                     case '?':
