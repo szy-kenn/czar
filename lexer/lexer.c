@@ -86,10 +86,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
     int current_line = 0;
     int token_count = 0;
     char *substring = malloc(sizeof(char) * 100); // TODO: don't make this arbitrary
+    *substring = '\0';
 
-    while ((current_char = getc(fp)) != EOF) {
+    while ((current_char = char_get(fp, current_position)) != EOF) {
 
-        current_char = char_get(fp, current_position);
+        // current_char = char_get(fp, current_position);
         char next_char;
 
         if (current_char != ' ') {
@@ -133,7 +134,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             current_position++;
                         } else if (next_char == '-') {
                             if (char_peek(fp, current_position + 2) == '*') {
-                                token_add(token_array, &token_count, T_DDASH_STAR, "--*", "T_DDASH_STAR");
+                                token_add(token_array, &token_count, T_DDASH_STAR, "--*",
+                                          "T_DDASH_STAR");
                                 current_position += 2;
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
@@ -157,7 +159,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             current_position++;
                         } else if (next_char == '-') {
                             if (next_char == char_peek(fp, current_position + 2)) {
-                                token_add(token_array, &token_count, T_STAR_DDASH, "*--", "T_STAR_DDASH");
+                                token_add(token_array, &token_count, T_STAR_DDASH, "*--",
+                                          "T_STAR_DDASH");
                                 current_position += 2;
                             } else {
                                 token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
@@ -215,7 +218,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     case '>':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_GREATER_EQL, ">=", "T_GREATER_EQL");
+                            token_add(token_array, &token_count, T_GREATER_EQL,
+                                      ">=", "T_GREATER_EQL");
                             current_position++;
                         } else {
                             token_add(token_array, &token_count, T_GREATER, ">", "T_GREATER");
@@ -256,7 +260,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             printf("Error");
                             return -1;
                         }
-                        
+
                         char_concat(substring, current_char);
                         token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
                         current_position++;
