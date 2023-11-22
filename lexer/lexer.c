@@ -10,7 +10,7 @@ char char_get(FILE *fp, int position) {
     char chr = fgetc(fp);
     return chr;
 }
-//a
+//
 // get the character without updating the pointer
 char char_peek(FILE *fp, int position) {
     fseek(fp, position, SEEK_SET);
