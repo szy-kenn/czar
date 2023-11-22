@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "../utils/utils.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,8 +11,8 @@ char char_get(FILE *fp, int position) {
     char chr = fgetc(fp);
     return chr;
 }
-//a
-// get the character without updating the pointer
+// a
+//  get the character without updating the pointer
 char char_peek(FILE *fp, int position) {
     fseek(fp, position, SEEK_SET);
     char chr = fgetc(fp);
@@ -257,7 +258,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                         current_char = char_get(fp, current_position);
                         if (current_char == '\'') {
-                            printf("Error");
+                            print_error("Lexical Error",
+                                        "Quoted strings must contain atleast one character.",
+                                        current_line);
+
                             return -1;
                         }
 
@@ -268,7 +272,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                         current_char = char_get(fp, current_position);
                         if (current_char != '\'') {
-                            printf("Error");
+                            print_error("Lexical Error",
+                                        "Single-quoted string must only contain one character.",
+                                        current_line);
                             return -1;
                         } else {
                             token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");

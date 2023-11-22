@@ -1,1 +1,1 @@
-void printError(char *error, char *message, int line);
+void print_error(char *error, char *message, int line);
