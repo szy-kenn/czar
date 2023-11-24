@@ -1,13 +1,5 @@
 <h1 align='center'>czar</h1>
 
-## 💻 Progress
-
-Lexer [■■■■■■■□□□]
-
-Parser [□□□□□□□□□□]
-
-Interpreter [□□□□□□□□□□]
-
 ## 📝 Prerequisites
 
 > [!IMPORTANT]
