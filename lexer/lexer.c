@@ -283,10 +283,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         free(string_buffer);
 
                         current_char = char_get(fp, current_position);
-                        if (current_char == '"') {
-                            token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
-                        } else {
-                            // printf("Unterminated string literal");
+                        if (current_char != '"') {
                             print_error("Lexical Error", "Unterminated string literal",
                                         current_line);
                             return -1;

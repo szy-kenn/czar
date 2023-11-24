@@ -3,6 +3,4 @@ TOKEN TYPE     VALUE
 T_ID           my_str
 T_DTYPE        str
 T_EQL          =
-T_DQUOTE       "
 T_STR          Hello, World!
-T_DQUOTE       "
