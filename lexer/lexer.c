@@ -272,10 +272,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             return -1;
                         }
 
-                        int string_length = delimited_str_get(fp, NULL, &current_position, "\"", 1);
+                        int string_length =
+                            delimited_str_get(fp, NULL, &current_position, "\"\n", 1);
                         current_position -= string_length;
                         char *string_buffer = malloc(string_length + 1);
-                        delimited_str_get(fp, string_buffer, &current_position, "\"", 1);
+                        delimited_str_get(fp, string_buffer, &current_position, "\"\n", 2);
                         token_add(token_array, &token_count, T_STR, string_buffer, "T_STR");
 
                         free(string_buffer);
