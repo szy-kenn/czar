@@ -97,11 +97,12 @@ typedef enum {
 
 typedef struct token {
     token_t token_type;
-    char value[30];
+    char *value;
     char name[30];
 } Token;
 
 void tokens_print(Token *token_array, int tokenCount);
+void tokens_free(Token *token_array, int arr_length);
 int start_tokenization(FILE *fp, Token *tokenArray);
 
 #endif

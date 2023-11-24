@@ -73,6 +73,6 @@ int main(int argc, char **argv) {
     tokens_print(token_array, token_count);
 
     fclose(fp);
-    free(token_array);
+    tokens_free(token_array, token_count);
     return 0;
 }

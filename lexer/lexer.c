@@ -28,8 +28,6 @@ void char_concat(char *dest, char new_chr) {
     dest[length + 1] = '\0';
 }
 
-int is_ident(int chr) { return (isalnum(chr) || chr == '_'); }
-
 void digits_get(FILE *fp, char *dest, int *cur_pos) {
     char current_digit;
     char next_char;
@@ -40,14 +38,20 @@ void digits_get(FILE *fp, char *dest, int *cur_pos) {
     }
 }
 
-void substr_get(FILE *fp, char *dest, int *cur_pos) {
+int word_get(FILE *fp, char *dest, int *cur_pos) {
     char current_char;
     char next_char;
 
-    while (is_ident(current_char = char_get(fp, *cur_pos))) {
+    while (isalnum(current_char = char_get(fp, *cur_pos)) || current_char == '_') {
+        if (strlen(dest) >= MAX_BUFFER) {
+            return -1;
+        }
+        current_char = char_get(fp, *cur_pos);
         char_concat(dest, current_char);
         (*cur_pos)++;
     }
+
+    return 0;
 }
 
 int is_delimiter(char chr, char *delimiters, int delimiter_count) {
@@ -59,12 +63,23 @@ int is_delimiter(char chr, char *delimiters, int delimiter_count) {
     return 0;
 }
 
-void delimited_str_get(FILE *fp, char *dest, int *cur_pos, char *delimiters, int delimiter_count) {
+int delimited_str_get(FILE *fp, char *dest, int *cur_pos, char *delimiters, int delimiter_count) {
+
+    int length = 0;
 
     while (!is_delimiter(char_get(fp, *cur_pos), delimiters, delimiter_count)) {
-        char_concat(dest, char_get(fp, *cur_pos));
+        if (dest != NULL) {
+            char_concat(dest, char_get(fp, *cur_pos));
+        }
         (*cur_pos)++;
+        length++;
     }
+
+    if (dest != NULL) {
+        char_concat(dest, '\0');
+    }
+
+    return length;
 }
 
 void tokens_print(Token *token_array, int tokenCount) {
@@ -73,8 +88,17 @@ void tokens_print(Token *token_array, int tokenCount) {
     }
 }
 
+void tokens_free(Token *token_array, int arr_length) {
+    for (int i = 0; i < arr_length; i++) {
+        free(token_array[i].value);
+    }
+
+    free(token_array);
+}
+
 void token_add(Token *token_array, int *token_count, token_t token_type, char *value, char *name) {
     Token new_token = {.token_type = token_type};
+    new_token.value = (char *)malloc(strlen(value));
     strcpy(new_token.name, name);
     strcpy(new_token.value, value);
     token_array[*token_count] = new_token;
@@ -86,12 +110,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
     int current_position = 0;
     int current_line = 0;
     int token_count = 0;
-    char *substring = malloc(sizeof(char) * 100);
+    char *substring = malloc(sizeof(char) * MAX_BUFFER);
     *substring = '\0';
 
     while ((current_char = char_get(fp, current_position)) != EOF) {
 
-        // current_char = char_get(fp, current_position);
         char next_char;
 
         if (current_char != ' ') {
@@ -99,17 +122,27 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 // TODO: get all consecutive digits
             }
 
-            else if (is_ident(current_char)) {
-                substr_get(fp, substring, &current_position);
+            else if (isalnum(current_char) || current_char == '_') {
+                int word_get_status = word_get(fp, substring, &current_position);
+
+                if (word_get_status < 0) {
+                    print_error("Lexical Error", "Variable name exceeds character limit",
+                                current_line);
+                    return -1;
+                }
+
+                // if the substring contains an underscore, then it is an identifier
+                if (strchr(substring, '_') != NULL) {
+                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
+                }
 
                 // TODO: continue keywords, reserved words
-                if (strcmp(substring, "int") == 0) {
+                else if (strcmp(substring, "int") == 0) {
                     token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
                 } else if (strcmp(substring, "str") == 0) {
                     // TODO: continue
                 }
 
-                // after keywords, reserved words
                 else {
                     token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
                 }
@@ -229,6 +262,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                     // TODO: not sure how delimiter works
                     case '"':
+
                         token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
                         current_position++;
 
@@ -238,9 +272,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             return -1;
                         }
 
-                        delimited_str_get(fp, substring, &current_position, "\"", 1);
-                        token_add(token_array, &token_count, T_STR, substring, "T_STR");
-                        *substring = '\0';
+                        int string_length = delimited_str_get(fp, NULL, &current_position, "\"", 1);
+                        current_position -= string_length;
+                        char *string_buffer = malloc(string_length + 1);
+                        delimited_str_get(fp, string_buffer, &current_position, "\"", 1);
+                        token_add(token_array, &token_count, T_STR, string_buffer, "T_STR");
+
+                        free(string_buffer);
 
                         current_char = char_get(fp, current_position);
                         if (current_char == '"') {
