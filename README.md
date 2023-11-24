@@ -42,7 +42,10 @@ Run the program:
 ./run test.cz
 ```
 
-And the output file should look like this (the lexer isn't finished yet so there might be some issues in the output):
+And the output file should look like this:
+
+> [!CAUTION]
+> The lexical analyzer isn't finished yet so there might be some issues in the output
 
 ```plaintext
 TOKEN TYPE     VALUE
