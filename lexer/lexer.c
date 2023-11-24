@@ -98,7 +98,7 @@ void tokens_free(Token *token_array, int arr_length) {
 
 void token_add(Token *token_array, int *token_count, token_t token_type, char *value, char *name) {
     Token new_token = {.token_type = token_type};
-    new_token.value = (char *)malloc(strlen(value));
+    new_token.value = (char *)malloc(strlen(value) + 1);
     strcpy(new_token.name, name);
     strcpy(new_token.value, value);
     token_array[*token_count] = new_token;
@@ -274,7 +274,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         }
 
                         int string_length =
-                            delimited_str_get(fp, NULL, &current_position, "\"\n", 1);
+                            delimited_str_get(fp, NULL, &current_position, "\"\n", 2);
                         current_position -= string_length;
                         char *string_buffer = malloc(string_length + 1);
                         delimited_str_get(fp, string_buffer, &current_position, "\"\n", 2);

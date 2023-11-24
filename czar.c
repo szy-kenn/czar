@@ -26,6 +26,31 @@ void get_file_ext(char *dest, const char *src) {
     dest[currentPosition - (dotPosition + 1)] = '\0';
 }
 
+void save_tokens(Token *token_array, int arr_length) {
+    // tokens_print(token_array, arr_length);
+    FILE *fp = fopen("czar-lexer.txt", "w");
+
+    int spaces_length = (15 - strlen("TOKEN TYPE"));
+    char *spaces = malloc(spaces_length);
+    memset(spaces, ' ', spaces_length);
+    spaces[spaces_length] = '\0';
+    fprintf(fp, "TOKEN TYPE%sVALUE\n", spaces);
+    free(spaces);
+
+    fprintf(fp, "====================\n");
+
+    for (int i = 0; i < arr_length; i++) {
+        int spaces_length = (15 - strlen(token_array[i].name));
+        char *spaces = malloc(spaces_length);
+        memset(spaces, ' ', spaces_length);
+        spaces[spaces_length] = '\0';
+
+        fprintf(fp, "%s%s%s\n", token_array[i].name, spaces, token_array[i].value);
+        free(spaces);
+    }
+    fclose(fp);
+}
+
 /**
  * argc is the length of argv (command-line arguments + command)
  * argv is an array of character pointers of all arguments passed after the command
@@ -70,7 +95,7 @@ int main(int argc, char **argv) {
     int token_count;
     token_count = start_tokenization(fp, token_array);
 
-    tokens_print(token_array, token_count);
+    save_tokens(token_array, token_count);
 
     fclose(fp);
     tokens_free(token_array, token_count);

@@ -26,3 +26,31 @@ In Linux:
 
 ```bash
 ./run.sh [cz-file]
+```
+
+## Examples
+
+Write a czar code in a `.cz` file, for example:
+
+```czar
+my_str: string = "Hello, World!"
+```
+
+Run the program:
+
+```bash
+./run test.cz
+```
+
+And the output file should look like this:
+
+```plaintext
+TOKEN TYPE     VALUE
+====================
+T_ID           my_str
+T_ID           string
+T_EQL          =
+T_DQUOTE       "
+T_STR          123
+T_DQUOTE       "
+```
