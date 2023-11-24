@@ -1,3 +1,6 @@
+#ifndef LEXER_H_
+#define LEXER_H_
+
 #include <stdio.h>
 
 typedef enum {
@@ -86,7 +89,10 @@ typedef enum {
     // COMMENT
     T_DDASH,
     T_STAR_DDASH,
-    T_DDASH_STAR // / *-- --*
+    T_DDASH_STAR, // / *-- --*
+
+    // INVALID
+    T_INVALID
 } token_t;
 
 typedef struct token {
@@ -97,3 +103,5 @@ typedef struct token {
 
 void tokens_print(Token *token_array, int tokenCount);
 int start_tokenization(FILE *fp, Token *tokenArray);
+
+#endif

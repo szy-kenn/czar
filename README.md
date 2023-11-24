@@ -26,6 +26,3 @@ In Linux:
 
 ```bash
 ./run.sh [test.cz]
-```
-
-

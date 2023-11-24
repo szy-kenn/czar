@@ -11,7 +11,7 @@ char char_get(FILE *fp, int position) {
     char chr = fgetc(fp);
     return chr;
 }
-// a
+
 //  get the character without updating the pointer
 char char_peek(FILE *fp, int position) {
     fseek(fp, position, SEEK_SET);
@@ -86,7 +86,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
     int current_position = 0;
     int current_line = 0;
     int token_count = 0;
-    char *substring = malloc(sizeof(char) * 100); // TODO: don't make this arbitrary
+    char *substring = malloc(sizeof(char) * 100);
     *substring = '\0';
 
     while ((current_char = char_get(fp, current_position)) != EOF) {
