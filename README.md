@@ -42,12 +42,13 @@ Run the program:
 ./run test.cz
 ```
 
-And the output file should look like this:
+And the output file should look like this (the lexer isn't finished yet so there might be some issues in the output):
 
 ```plaintext
 TOKEN TYPE     VALUE
 ====================
 T_ID           my_str
+T_COLON        :
 T_DTYPE        str
 T_EQL          =
 T_STR          Hello, World!
