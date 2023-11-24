@@ -2,15 +2,11 @@
 
 ## 💻 Progress
 
-**Currently working on**: Lexer
+- Lexer [■■■■■■■   ]
 
-- **Lexer**
+- Parser [          ]
 
-![50%](https://geps.dev/progress/50)
-
-- **Parser**
-
-![0%](https://geps.dev/progress/0)
+- Interpreter [         ]
 
 ## 📝 Prerequisites
 
