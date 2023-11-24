@@ -48,9 +48,9 @@ And the output file should look like this:
 TOKEN TYPE     VALUE
 ====================
 T_ID           my_str
-T_ID           string
+T_DTYPE        str
 T_EQL          =
 T_DQUOTE       "
-T_STR          123
+T_STR          Hello, World!
 T_DQUOTE       "
 ```
