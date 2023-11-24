@@ -60,6 +60,7 @@ int is_delimiter(char chr, char *delimiters, int delimiter_count) {
             return 1;
         }
     }
+
     return 0;
 }
 
@@ -260,10 +261,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         }
                         break;
 
-                    // TODO: not sure how delimiter works
                     case '"':
 
-                        token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
+                        // token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
                         current_position++;
 
                         next_char = char_peek(fp, current_position);
@@ -291,36 +291,58 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                         current_line);
                             return -1;
                         }
+
                         break;
 
-                    // TODO: same as above
                     case '\'':
-                        token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
+                        // token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                         current_position++;
 
-                        current_char = char_get(fp, current_position);
-                        if (current_char == '\'') {
-                            print_error("Lexical Error",
-                                        "Quoted strings must contain atleast one character.",
-                                        current_line);
+                        // current_char = char_get(fp, current_position);
+                        // if (current_char == '\'') {
+                        //     print_error("Lexical Error",
+                        //                 "Quoted strings must contain atleast one character.",
+                        //                 current_line);
 
-                            return -1;
+                        //     return -1;
+                        // }
+
+                        // char_concat(substring, current_char);
+                        // token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
+                        // current_position++;
+                        // substring = '\0';``
+
+                        // if (current_char != '\'') {
+                        //     print_error("Lexical Error",
+                        //                 "Single-quoted string must only contain one character.",
+                        //                 current_line);
+                        //     return -1;
+                        // }
+
+                        while ((current_char = char_get(fp, current_position)) != EOF) {
+                            if (current_char == '\n') {
+                                printf("Error: Not terminated");
+                                break;
+                            } else if (current_char == '\'') {
+                                int char_size = sizeof(substring) / sizeof(char);
+                                if (char_size == 1) {
+                                    token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
+                                    current_position++;
+                                    substring = '\0';
+                                    break;
+                                } else if (char_size == 0) {
+                                    printf("Error: Must contain one character");
+                                    break;
+                                } else {
+                                    printf("Error: Should contain one character");
+                                    break;
+                                }
+                            }
+
+                            char_concat(substring, char_get(fp, current_position));
+                            current_position++;
                         }
 
-                        char_concat(substring, current_char);
-                        token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
-                        current_position++;
-                        substring = '\0';
-
-                        current_char = char_get(fp, current_position);
-                        if (current_char != '\'') {
-                            print_error("Lexical Error",
-                                        "Single-quoted string must only contain one character.",
-                                        current_line);
-                            return -1;
-                        } else {
-                            token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
-                        }
                         break;
 
                     case '?':
