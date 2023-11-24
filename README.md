@@ -1,8 +1,17 @@
-# czar
+<h1 align='center'>czar</h1>
 
-### Prerequisites
+## 💻 Progress
 
-Before starting, make sure to have the following tools installed in your computer:
+**Currently working on**: Lexer
+
+- **Lexer** ![50%](https://geps.dev/progress/50)
+
+- **Parser** ![0%](https://geps.dev/progress/0)
+
+## 📝 Prerequisites
+
+> [!IMPORTANT]
+> Before starting, make sure to have the following tools installed in your computer:
 
 - GCC (GNU Compiler Collection)
 
@@ -12,7 +21,7 @@ You can run the following command to check if gcc is already installed:
 gcc --version
 ```
 
-### How To Run
+## ⚙️ How To Run
 
 To start, run the following command:
 
@@ -25,4 +34,4 @@ In Windows:
 In Linux:
 
 ```bash
-./run.sh [test.cz]
+./run.sh [cz-file]
