@@ -2,11 +2,11 @@
 
 ## 💻 Progress
 
-- Lexer [■■■■■■■   ]
+Lexer [■■■■■■■□□□]
 
-- Parser [          ]
+Parser [□□□□□□□□□□]
 
-- Interpreter [         ]
+Interpreter [□□□□□□□□□□]
 
 ## 📝 Prerequisites
 
