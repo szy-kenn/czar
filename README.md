@@ -28,7 +28,7 @@ In Linux:
 ./run.sh [cz-file]
 ```
 
-## Examples
+## 🟢 Examples
 
 Write a czar code in a `.cz` file, for example:
 
