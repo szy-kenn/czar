@@ -268,7 +268,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                         next_char = char_peek(fp, current_position);
                         if (next_char == '"') {
-                            printf("String must contain atleast one character");
+                            print_error("Lexical Error",
+                                        "String must contain atleast one character", current_line);
                             return -1;
                         }
 
@@ -285,7 +286,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (current_char == '"') {
                             token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
                         } else {
-                            printf("Unterminated string literal");
+                            // printf("Unterminated string literal");
+                            print_error("Lexical Error", "Unterminated string literal",
+                                        current_line);
                             return -1;
                         }
                         break;
