@@ -142,6 +142,12 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
                 } else if (strcmp(substring, "str") == 0) {
                     token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                } else if (strcmp(substring, "chr") == 0) {
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                }
+
+                else if (strcmp(substring, "while") == 0) {
+                    token_add(token_array, &token_count, T_WHILE, substring, "T_WHILE");
                 }
                 else if (strcmp(substring, "chr") == 0) {
                     token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
@@ -324,11 +330,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 printf("Error: Not terminated");
                                 break;
                             } else if (current_char == '\'') {
-                                int char_size = sizeof(substring) / sizeof(char);
+                                int char_size = sizeof(substring) / sizeof(char *);
                                 if (char_size == 1) {
                                     token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
                                     current_position++;
-                                    substring = '\0';
+                                    *substring = '\0';
                                     break;
                                 } else if (char_size == 0) {
                                     printf("Error: Must contain one character");

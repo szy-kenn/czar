@@ -1,1 +1,1 @@
-my_str: str = "Hello, World!"
+myChr: chr = 'C'
