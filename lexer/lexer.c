@@ -143,6 +143,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 } else if (strcmp(substring, "str") == 0) {
                     token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
                 }
+                else if (strcmp(substring, "chr") == 0) {
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                }
 
                 else {
                     token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
