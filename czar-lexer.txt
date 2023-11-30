@@ -1,6 +1,20 @@
 TOKEN TYPE     VALUE
 ====================
-T_ID           my_str
-T_DTYPE        str
+T_ID           asdw
+T_ID           myChr
+T_DTYPE        chr
 T_EQL          =
-T_STR          ÀHello, World!
+T_CHR          C
+T_ID           myMoney
+T_DTYPE        int
+T_EQL          =
+T_DIGIT        123
+T_ID           myWallet
+T_DTYPE        int
+T_EQL          =
+T_DIGIT        456
+T_ID           myExample
+T_DTYPE        int
+T_EQL          =
+T_DIGIT        789
+T_DIGIT        000

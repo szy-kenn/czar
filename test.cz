@@ -1,1 +1,6 @@
+asdw
 myChr: chr = 'C'
+myMoney: int = 123
+myWallet: int = 456
+myExample: int = 789
+000

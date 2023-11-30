@@ -4,6 +4,9 @@
 #include <stdio.h>
 
 typedef enum {
+    // digit
+    T_DIGIT,
+    
     // operators
     T_ADD,
     T_SUB,

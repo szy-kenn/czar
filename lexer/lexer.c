@@ -120,6 +120,17 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         if (current_char != ' ') {
             if (isdigit(current_char)) {
+                digits_get(fp, substring, &current_position);
+                token_add(token_array, &token_count, T_DIGIT, substring, "T_DIGIT");
+                next_char = char_peek(fp, current_position);
+                if(!isdigit(next_char) && next_char != '\n' && next_char != EOF){
+                    print_error("Lexical Error",
+                                "It must only contain digits.",
+                                current_line + 1);
+                    return -1;
+                }
+                 
+            *substring = '\0';
                 // TODO: get all consecutive digits
             }
 
