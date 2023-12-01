@@ -1,6 +1,2 @@
 TOKEN TYPE     VALUE
 ====================
-T_ID           my_str
-T_DTYPE        str
-T_EQL          =
-T_STR          ÀHello, World!
