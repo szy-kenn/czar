@@ -1,3 +1,5 @@
 .vscode
 *.exe
 czar
+*.cz
+czar-lexer.txt
