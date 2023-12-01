@@ -189,22 +189,37 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 if (strchr(substring, '_') != NULL) {
                     token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
                 }
-
-                // TODO: continue keywords, reserved words
-                else if (strcmp(substring, "int") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                // tokenization for keywords (datatype)
+                else if (strcmp(substring, "int") == 0) { 
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
                 } else if (strcmp(substring, "str") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
                 } else if (strcmp(substring, "chr") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                } else if (strcmp(substring, "dbl") == 0) {
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                } else if (strcmp(substring, "bool") == 0) {
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                } else if (strcmp(substring, "nil") == 0) {
+                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                } 
+                // tokenization for keywords (control)
+                else if (strcmp(substring, "when") == 0) { //TODO: keywords (control)
+                    token_add(token_array, &token_count, T_WHEN, substring, "T_WHEN");// adds token
+                } else if (strcmp(substring, "else") == 0) {
+                    token_add(token_array, &token_count, T_ELSE, substring, "T_ELSE");// adds token
+                } else if (strcmp(substring, "loop") == 0) {
+                    token_add(token_array, &token_count, T_LOOP, substring, "T_LOOP");// adds token
+                } else if (strcmp(substring, "to") == 0) {
+                    token_add(token_array, &token_count, T_TO, substring, "T_TO");// adds token
+                } else if (strcmp(substring, "by") == 0) {
+                    token_add(token_array, &token_count, T_BY, substring, "T_BY");// adds token
+                } else if (strcmp(substring, "while") == 0) {
+                    token_add(token_array, &token_count, T_WHILE, substring, "T_WHILE");// adds token
                 }
 
-                else if (strcmp(substring, "while") == 0) {
-                    token_add(token_array, &token_count, T_WHILE, substring, "T_WHILE");
-                } else if (strcmp(substring, "true") == 0) {
-                    token_add(token_array, &token_count, T_TRUE, substring, "T_TRUE");
-                } else {
-                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
+                else {
+                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID");// adds token
                 }
 
                 *substring = '\0';
