@@ -1,6 +1,6 @@
-asdw
-myChr: chr = 'C'
-myMoney: int = 123
-myWallet: int = 456
-myExample: int = 789
-000
+123
+-123
+456.789
+-456.789
+.88
+-.88

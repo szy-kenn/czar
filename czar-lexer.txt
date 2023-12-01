@@ -1,20 +1,13 @@
 TOKEN TYPE     VALUE
 ====================
-T_ID           asdw
-T_ID           myChr
-T_DTYPE        chr
-T_EQL          =
-T_CHR          C
-T_ID           myMoney
-T_DTYPE        int
-T_EQL          =
-T_DIGIT        123
-T_ID           myWallet
-T_DTYPE        int
-T_EQL          =
-T_DIGIT        456
-T_ID           myExample
-T_DTYPE        int
-T_EQL          =
-T_DIGIT        789
-T_DIGIT        000
+T_INT          123
+T_SUB          -
+T_INT          -123
+T_DBL          456.789
+T_SUB          -
+T_DBL          -456.789
+T_DOT          .
+T_DBL          .88
+T_SUB          -
+T_DOT          .
+T_DBL          -.88
