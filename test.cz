@@ -1,4 +1,0 @@
-my_str: nil = TRUE
-
-when (i = 1)
-while (i = 2)
