@@ -1,10 +1,2 @@
 TOKEN TYPE     VALUE
 ====================
-T_ID           my_str
-T_DTYPE        str
-T_EQL          =
-T_STR          Sam
-T_ID           mychar
-T_ID           char
-T_EQL          =
-T_CHR          A
