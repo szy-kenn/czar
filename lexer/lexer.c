@@ -217,6 +217,19 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 } else if (strcmp(substring, "while") == 0) {
                     token_add(token_array, &token_count, T_WHILE, substring, "T_WHILE");// adds token
                 }
+                
+                //tokenization for reserved words
+                else if (strcmp(substring, "true") == 0) {
+                    token_add(token_array, &token_count, T_TRUE, substring, "T_TRUE");
+                }else if (strcmp(substring, "false") == 0) {
+                    token_add(token_array, &token_count, T_FALSE, substring, "T_FALSE");
+                }else if (strcmp(substring, "and") == 0) {
+                    token_add(token_array, &token_count, T_AND, substring, "T_AND");
+                }else if (strcmp(substring, "or") == 0) {
+                    token_add(token_array, &token_count, T_OR, substring, "T_OR");
+                }else if (strcmp(substring, "not") == 0) {
+                    token_add(token_array, &token_count, T_NOT, substring, "T_NOT");
+                }
 
                 else {
                     token_add(token_array, &token_count, T_IDENT, substring, "T_ID");// adds token
