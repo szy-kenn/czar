@@ -1,6 +1,16 @@
 TOKEN TYPE     VALUE
 ====================
 T_ID           my_str
-T_DTYPE        str
+T_DTYPE        nil
 T_EQL          =
-T_STR          ÀHello, World!
+T_ID           TRUE
+T_WHEN         when
+T_LPAREN       (
+T_ID           i
+T_EQL          =
+T_RPAREN       )
+T_WHILE        while
+T_LPAREN       (
+T_ID           i
+T_EQL          =
+T_RPAREN       )
