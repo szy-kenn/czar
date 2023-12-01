@@ -1,13 +1,2 @@
 TOKEN TYPE     VALUE
 ====================
-T_INT          123
-T_SUB          -
-T_INT          -123
-T_DBL          456.789
-T_SUB          -
-T_DBL          -456.789
-T_DOT          .
-T_DBL          .88
-T_SUB          -
-T_DOT          .
-T_DBL          -.88
