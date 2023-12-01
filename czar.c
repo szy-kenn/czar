@@ -26,9 +26,13 @@ void get_file_ext(char *dest, const char *src) {
     dest[currentPosition - (dotPosition + 1)] = '\0';
 }
 
-void save_tokens(Token *token_array, int arr_length) {
+int save_tokens(Token *token_array, int arr_length) {
     // tokens_print(token_array, arr_length);
     FILE *fp = fopen("czar-lexer.txt", "w");
+
+    if (fp == NULL) {
+        return -1;
+    }
 
     int spaces_length = (15 - strlen("TOKEN TYPE"));
     char *spaces = malloc(spaces_length);
@@ -49,6 +53,7 @@ void save_tokens(Token *token_array, int arr_length) {
         free(spaces);
     }
     fclose(fp);
+    return 0;
 }
 
 /**
@@ -84,7 +89,7 @@ int main(int argc, char **argv) {
     FILE *fp = fopen(fileName, "r");
 
     if (fp == NULL) {
-        printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m%s\033[0;37m", fileName);
+        printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m`%s`\033[0;37m", fileName);
         return -1;
     }
 
@@ -95,7 +100,12 @@ int main(int argc, char **argv) {
     int token_count;
     token_count = start_tokenization(fp, token_array);
 
-    save_tokens(token_array, token_count);
+    if (save_tokens(token_array, token_count) < 0) {
+        printf("\033[0;31mTask failed. A problem has occured while opening a file.\033[0;37m");
+    } else {
+        printf("\033[0;32mSuccess:\033[0;37m Tokenization output saved in "
+               "\033[0;33m`czar-lexer.txt`\033[0;37m");
+    }
 
     fclose(fp);
     tokens_free(token_array, token_count);
