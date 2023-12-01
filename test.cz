@@ -1,1 +1,2 @@
-myChr: chr = 'C'
+my_str: str = "Sam"
+mychar: char = 'A'
