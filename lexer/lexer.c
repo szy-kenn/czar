@@ -174,7 +174,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 }
 
                 *substring = '\0';
-                // TODO: get all consecutive digits
             }
 
             else if (isalnum(current_char) || current_char == '_') {
@@ -430,6 +429,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
+                        char invalid_char[1] = {current_char};
+                        token_add(token_array, &token_count, T_INVALID, invalid_char, "T_INVALID");
                         break;
                 }
             }
