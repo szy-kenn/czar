@@ -59,6 +59,8 @@ typedef enum {
     T_GLOBAL,
     T_FIXED,
     T_FLEX,
+    
+    T_ENUM,
 
     T_IS,
     T_AS,

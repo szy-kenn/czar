@@ -1,4 +1,5 @@
-my_str: nil = TRUE
-
-when (i = 1)
-while (i = 2)
+global flex myInt: int = 10
+flex myInt: int = 10
+fixed myStr: str = "Nigga"
+is a ? b : c
+fixed tokens: enum = [T_ADD, T_SUB, T_MUL]
