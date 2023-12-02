@@ -337,7 +337,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                               "T_DTYPE"); // adds token
                 }
                 // tokenization for keywords (control)
-                else if (strcmp(substring, "when") == 0) { // TODO: keywords (control)
+                else if (strcmp(substring, "when") == 0) {
                     token_add(token_array, &token_count, T_WHEN, substring, "T_WHEN"); // adds token
                 } else if (strcmp(substring, "else") == 0) {
                     token_add(token_array, &token_count, T_ELSE, substring, "T_ELSE"); // adds token
@@ -354,18 +354,28 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                 // tokenization for reserved words
                 else if (strcmp(substring, "true") == 0) {
-                    token_add(token_array, &token_count, T_TRUE, substring, "T_TRUE");
+                    token_add(token_array, &token_count, T_TRUE, substring, "T_TRUE");// adds token
                 } else if (strcmp(substring, "false") == 0) {
-                    token_add(token_array, &token_count, T_FALSE, substring, "T_FALSE");
+                    token_add(token_array, &token_count, T_FALSE, substring, "T_FALSE");// adds token
                 } else if (strcmp(substring, "and") == 0) {
-                    token_add(token_array, &token_count, T_AND, substring, "T_AND");
+                    token_add(token_array, &token_count, T_AND, substring, "T_AND");// adds token
                 } else if (strcmp(substring, "or") == 0) {
-                    token_add(token_array, &token_count, T_OR, substring, "T_OR");
+                    token_add(token_array, &token_count, T_OR, substring, "T_OR");// adds token
                 } else if (strcmp(substring, "not") == 0) {
-                    token_add(token_array, &token_count, T_NOT, substring, "T_NOT");
+                    token_add(token_array, &token_count, T_NOT, substring, "T_NOT");// adds token
+                } else if (strcmp(substring, "global") == 0) {
+                    token_add(token_array, &token_count, T_GLOBAL, substring, "T_GLOBAL");// adds token
+                } else if (strcmp(substring, "fixed") == 0) {
+                    token_add(token_array, &token_count, T_FIXED, substring, "T_FIXED");// adds token
+                } else if (strcmp(substring, "flex") == 0) {
+                    token_add(token_array, &token_count, T_FLEX, substring, "T_FLEX");// adds token
+                } else if (strcmp(substring, "enum") == 0) {
+                    token_add(token_array, &token_count, T_ENUM, substring, "T_ENUM");// adds token
+                } else if (strcmp(substring, "is") == 0) {
+                    token_add(token_array, &token_count, T_IS, substring, "T_IS");// adds token
+                } else if (strcmp(substring, "as") == 0) {
+                    token_add(token_array, &token_count, T_AS, substring, "T_AS");// adds token
                 }
-
-                // TODO: add 'global','fixed', 'flex', 'enum', 'as', 'is'
 
                 else {
                     token_add(token_array, &token_count, T_IDENT, substring, "T_ID"); // adds token
