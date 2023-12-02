@@ -139,6 +139,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
         char next_char;
 
         if (current_char != ' ') {
+
+            // TODO: fix
             if (isdigit(current_char)) {
                 underbefore_char = char_peek(fp, current_position - 2);
                 before_char = char_peek(fp, current_position - 1);
@@ -300,6 +302,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 *substring = '\0';
             }  
 
+            // TODO: fix
             else if (isalnum(current_char) || current_char == '_') {
                 int word_get_status = word_get(fp, substring, &current_position);
 
@@ -314,53 +317,64 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
                 }
                 // tokenization for keywords (datatype)
-                else if (strcmp(substring, "int") == 0) { 
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                else if (strcmp(substring, "int") == 0) {
+                    token_add(token_array, &token_count, T_DTYPE, substring,
+                              "T_DTYPE"); // adds token
                 } else if (strcmp(substring, "str") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                    token_add(token_array, &token_count, T_DTYPE, substring,
+                              "T_DTYPE"); // adds token
                 } else if (strcmp(substring, "chr") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                    token_add(token_array, &token_count, T_DTYPE, substring,
+                              "T_DTYPE"); // adds token
                 } else if (strcmp(substring, "dbl") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                    token_add(token_array, &token_count, T_DTYPE, substring,
+                              "T_DTYPE"); // adds token
                 } else if (strcmp(substring, "bool") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
+                    token_add(token_array, &token_count, T_DTYPE, substring,
+                              "T_DTYPE"); // adds token
                 } else if (strcmp(substring, "nil") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");// adds token
-                } 
-                // tokenization for keywords (control)
-                else if (strcmp(substring, "when") == 0) { //TODO: keywords (control)
-                    token_add(token_array, &token_count, T_WHEN, substring, "T_WHEN");// adds token
-                } else if (strcmp(substring, "else") == 0) {
-                    token_add(token_array, &token_count, T_ELSE, substring, "T_ELSE");// adds token
-                } else if (strcmp(substring, "loop") == 0) {
-                    token_add(token_array, &token_count, T_LOOP, substring, "T_LOOP");// adds token
-                } else if (strcmp(substring, "to") == 0) {
-                    token_add(token_array, &token_count, T_TO, substring, "T_TO");// adds token
-                } else if (strcmp(substring, "by") == 0) {
-                    token_add(token_array, &token_count, T_BY, substring, "T_BY");// adds token
-                } else if (strcmp(substring, "while") == 0) {
-                    token_add(token_array, &token_count, T_WHILE, substring, "T_WHILE");// adds token
+                    token_add(token_array, &token_count, T_DTYPE, substring,
+                              "T_DTYPE"); // adds token
                 }
-                
-                //tokenization for reserved words
+                // tokenization for keywords (control)
+                else if (strcmp(substring, "when") == 0) { // TODO: keywords (control)
+                    token_add(token_array, &token_count, T_WHEN, substring, "T_WHEN"); // adds token
+                } else if (strcmp(substring, "else") == 0) {
+                    token_add(token_array, &token_count, T_ELSE, substring, "T_ELSE"); // adds token
+                } else if (strcmp(substring, "loop") == 0) {
+                    token_add(token_array, &token_count, T_LOOP, substring, "T_LOOP"); // adds token
+                } else if (strcmp(substring, "to") == 0) {
+                    token_add(token_array, &token_count, T_TO, substring, "T_TO"); // adds token
+                } else if (strcmp(substring, "by") == 0) {
+                    token_add(token_array, &token_count, T_BY, substring, "T_BY"); // adds token
+                } else if (strcmp(substring, "while") == 0) {
+                    token_add(token_array, &token_count, T_WHILE, substring,
+                              "T_WHILE"); // adds token
+                }
+
+                // tokenization for reserved words
                 else if (strcmp(substring, "true") == 0) {
                     token_add(token_array, &token_count, T_TRUE, substring, "T_TRUE");
-                }else if (strcmp(substring, "false") == 0) {
+                } else if (strcmp(substring, "false") == 0) {
                     token_add(token_array, &token_count, T_FALSE, substring, "T_FALSE");
-                }else if (strcmp(substring, "and") == 0) {
+                } else if (strcmp(substring, "and") == 0) {
                     token_add(token_array, &token_count, T_AND, substring, "T_AND");
-                }else if (strcmp(substring, "or") == 0) {
+                } else if (strcmp(substring, "or") == 0) {
                     token_add(token_array, &token_count, T_OR, substring, "T_OR");
-                }else if (strcmp(substring, "not") == 0) {
+                } else if (strcmp(substring, "not") == 0) {
                     token_add(token_array, &token_count, T_NOT, substring, "T_NOT");
                 }
 
+                // TODO: add 'global','fixed', 'flex', 'enum', 'as', 'is'
+
                 else {
-                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID");// adds token
+                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID"); // adds token
                 }
 
                 *substring = '\0';
             } else {
+
+                // TODO: add '@' and '!=', array data type [], string concatenation '+'
                 switch (current_char) {
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
@@ -556,6 +570,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                         break;
 
+                    case '!':
+                        // TODO: not equal token
+                        break;
+
                     case '?':
                         token_add(token_array, &token_count, T_QMARK, "?", "T_QMARK");
                         break;
@@ -616,8 +634,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
-                        // char invalid_char[1] = {current_char};
-                        // token_add(token_array, &token_count, T_INVALID, invalid_char, "T_INVALID");
+                        // TODO: invalid token
+                        // invalid_char[1] = {current_char};
+                        // token_add(token_array, &token_count, T_INVALID, invalid_char,
+                        // "T_INVALID");
                         break;
                 }
             }
