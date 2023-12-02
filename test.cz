@@ -1,5 +1,0 @@
-global flex myInt: int = 10
-flex myInt: int = 10
-fixed myStr: str = "Nigga"
-is a ? b : c
-fixed tokens: enum = [T_ADD, T_SUB, T_MUL]
