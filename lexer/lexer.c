@@ -32,10 +32,11 @@ void digits_get(FILE *fp, char *dest, int *cur_pos) {
     char underbefore_char;
     char before_char;
     char current_digit;
-
+    char next_char;
     before_char = char_peek(fp, *cur_pos - 1);
     underbefore_char = char_peek(fp, *cur_pos - 2);
 
+<<<<<<< Updated upstream
     if(underbefore_char == '-') {
         char_concat(dest, underbefore_char);
         if (before_char == '.') {
@@ -48,6 +49,25 @@ void digits_get(FILE *fp, char *dest, int *cur_pos) {
     while (isdigit(current_digit = char_get(fp, *cur_pos)) || (current_digit == '.')) {
         char_concat(dest, current_digit);
         (*cur_pos)++; 
+=======
+    if (underbefore_char == '-') {
+        if (!isdigit(before_char)) {
+        }
+        else if (before_char == '.') {
+            char_concat(dest, before_char);
+        }
+    } 
+
+    while (isdigit(current_digit = char_get(fp, *cur_pos)) || (current_digit == '.')) {
+        next_char = char_peek(fp, *cur_pos + 1);
+        if (isdigit(next_char)) {
+            char_concat(dest, current_digit);
+            (*cur_pos)++;
+        } else {
+            char_concat(dest, current_digit);
+            break;
+        }
+>>>>>>> Stashed changes
     }
 }
 
@@ -141,35 +161,155 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 
                 if (underbefore_char == '-') {
                     if (before_char == '.') {
+                        char_concat(substring, underbefore_char);
+                        char_concat(substring, before_char);
                         digits_get(fp, substring, &current_position);
-                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                        while (isdigit(current_char = char_get(fp, current_position)) || (current_char == '.')) {
+                            next_char = char_peek(fp, current_position + 1);
+                            if (isdigit(next_char)) {
+                                char_concat(substring, current_char);
+                                (current_position)++;
+                            }
+                            else if (!isdigit(next_char)) {
+                                break;
+                            }
+                        }
+                        if (next_char != '.') {
+                            token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                        } else {
+                            print_error("Lexical Error", "It must only contain one decimal",
+                                         current_line);
+                            return -1;
+                        }
+                    } else if (before_char == '+' || before_char == ' ') {
+                        while (isdigit(current_char = char_get(fp, current_position))) {
+                            next_char = char_peek(fp, current_position + 1);
+                            if (isdigit(next_char)) {
+                                char_concat(substring, current_char);
+                                (current_position)++;
+                            } else {
+                                break;
+                            }
+                        }
+                        if (next_char == '.') {
+                            current_position++;
+                            char_concat(substring, current_char);
+                            while (isdigit(current_char = char_get(fp, current_position)) || (current_char == '.')) {
+                                next_char = char_peek(fp, current_position + 1);
+                                if (isdigit(next_char)) {
+                                    char_concat(substring, current_char);
+                                    (current_position)++;
+                                } else {
+                                    break;
+                                }
+                            } if (next_char != '.') {
+                                digits_get(fp, substring, &current_position);
+                                token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                            } else if (next_char == '.') {
+                                print_error("Lexical Error", "It must only contain one decimal",
+                                            current_line);
+                                return -1;
+                            } 
+                        } else {
+                            digits_get(fp, substring, &current_position);
+                            token_add(token_array, &token_count, T_INT, substring, "T_INT");
+                        }
+                    } else {
+                        char_concat(substring, before_char);
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_INT, substring, "T_INT");
                     }
+<<<<<<< Updated upstream
                 }
                 else if (before_char == '-') {
                     char_concat(substring, before_char);
                     while (isdigit(current_char = char_get(fp, current_position))) {
                         char_concat(substring, current_char);
                         (current_position)++;
+=======
+                } else if (before_char == '-') {
+                    if (!isdigit(underbefore_char)){
+                        char_concat(substring, before_char);
+                    } else if (underbefore_char == '-'){
+                        char_concat(substring, before_char);
+>>>>>>> Stashed changes
                     }
-                    if (current_char == '.') {
-                        digits_get(fp, substring, &current_position);
-                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                    while (isdigit(current_char = char_get(fp, current_position))) {
+                        next_char = char_peek(fp, current_position + 1);
+                        if (isdigit(next_char)) {
+                            char_concat(substring, current_char);
+                            (current_position)++;
+                        } 
+                        else {
+                            break;
+                        }
+                    }
+                    if (next_char == '.') {
+                        current_position++;
+                        char_concat(substring, current_char);
+                        while (isdigit(current_char = char_get(fp, current_position)) || (current_char == '.')) {
+                            next_char = char_peek(fp, current_position + 1);
+                            if (isdigit(next_char)) {
+                                char_concat(substring, current_char);
+                                (current_position)++;
+                            }
+                            else if (!isdigit(next_char)) {
+                                break;
+                            }
+                        } if (next_char != '.') {
+                            digits_get(fp, substring, &current_position);
+                            token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                        } else {
+                            print_error("Lexical Error", "It must only contain one decimal",
+                                         current_line);
+                            return -1;
+                        }
+                    
                     } else {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_INT, substring, "T_INT");
+<<<<<<< Updated upstream
                       }
                 } 
                 else if (before_char != '-' && before_char != '.' || before_char == '+') {
-                    while (isdigit(current_char = char_get(fp, current_position))) {
-                        char_concat(substring, current_char);
-                        (current_position)++;
+=======
                     }
-                    if (current_char == '.') {
-                        digits_get(fp, substring, &current_position);
-                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                    } else {
+                } else if (before_char != '-' && before_char != '.') {
+>>>>>>> Stashed changes
+                    while (isdigit(current_char = char_get(fp, current_position))) {
+                        next_char = char_peek(fp, current_position + 1);
+                        if (isdigit(next_char)) {
+                            char_concat(substring, current_char);
+                            (current_position)++;
+                        } else {
+                            break;
+                        }
+                    }
+                    current_position++;
+                    if (next_char == '.') {
+                        char_concat(substring, current_char);
+                        while (isdigit(current_char = char_get(fp, current_position)) || (current_char == '.')) {
+                            next_char = char_peek(fp, current_position + 1);
+                            if (isdigit(next_char)) {
+                                char_concat(substring, current_char);
+                                (current_position)++;
+                            } else {
+                                break;
+                            }
+                        } if (next_char != '.') {
+                            digits_get(fp, substring, &current_position);
+                            token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                        } if (next_char == '.') {
+                            print_error("Lexical Error", "It must only contain one decimal",
+                                         current_line);
+                            return -1;
+                        }
+                        
+                    } else if (next_char != '.') {
+                        current_position--;
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_INT, substring, "T_INT");
+<<<<<<< Updated upstream
                       }
                 }
                 else {
@@ -180,6 +320,28 @@ int start_tokenization(FILE *fp, Token *token_array) {
             *substring = '\0';
                 // TODO: get all consecutive digits
             }
+=======
+                    }
+                } 
+                else if (before_char == '.') {
+                    if (underbefore_char == '.') {
+                        print_error("Lexical Error", "Itat must only contain one decimal",
+                                    current_line);
+                        return -1;
+                    } else {
+                        char_concat(substring, before_char);
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                    }
+                }
+                else {
+                    print_error("Lexical Error", "Itat must only contain one decimal",
+                                current_line);
+                            return -1;
+                }
+                *substring = '\0';
+            }  
+>>>>>>> Stashed changes
 
             else if (isalnum(current_char) || current_char == '_') {
                 int word_get_status = word_get(fp, substring, &current_position);
@@ -223,10 +385,17 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     // TODO: symbols
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
+                        before_char = char_peek(fp, current_position - 1);
                         if (next_char == '=') {
                             token_add(token_array, &token_count, T_ADD_EQL, "+=", "T_ADD_EQL");
                             current_position++;
-                        } else {
+                        } 
+                        else if (isdigit(next_char) && (before_char == '-') || (before_char == '+')) {
+                            break;
+                        } else if (next_char == '.' && before_char == '-') {
+                            break;
+                        }
+                        else {
                             token_add(token_array, &token_count, T_ADD, "+", "T_ADD");
                         }
                         break;
@@ -241,7 +410,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 token_add(token_array, &token_count, T_DDASH_STAR, "--*",
                                           "T_DDASH_STAR");
                                 current_position += 2;
-                            } else {
+                            } else if (isalnum(char_peek(fp, current_position - 1)) && (isdigit(current_char = (char_peek(fp, current_position + 2)))) || current_char == '.' ) {
+                                token_add(token_array, &token_count, T_SUB, "-", "T_SUB"); } 
+                                else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
                                 current_position++;
 
@@ -250,6 +421,25 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                     current_position++;
                                     current_char = char_get(fp, current_position);
                                 }
+                            }
+                        } else if (isdigit(next_char) && (!isdigit(char_peek(fp, current_position - 1)))) {
+                            if (char_peek(fp, current_position - 1) != '-' || char_peek(fp, current_position - 1) != ' ' ) {
+                                break;
+                            }
+                            else {
+                                token_add(token_array, &token_count, T_SUB, "-", "T_bSUB");// if (next_char != '.'){
+                            }
+                            break;
+                        } 
+                        else if (next_char == '.' ) {
+                            if (char_peek(fp, current_position - 1) != '\0'){
+                                if(isdigit(char_peek(fp, current_position - 1))) {
+                                    token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
+                                }
+                                else {
+                                    break;
+                                }
+                                
                             }
                         } else {
                             token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
@@ -416,8 +606,15 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '.':
-                        token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
-                        break;
+                        next_char = char_peek(fp, current_position + 1);
+                        if (isdigit(next_char)){
+                            break;
+                        } else if (next_char = char_peek(fp, current_position + 1) && (isdigit(next_char))){
+                            break;
+                        } else {
+                            token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
+                            break;
+                        }
 
                     case ',':
                         token_add(token_array, &token_count, T_COMMA, ",", "T_COMMA");
@@ -464,6 +661,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
+<<<<<<< Updated upstream
+=======
+                        // char invalid_char[1] = {current_char};
+                        // token_add(token_array, &token_count, T_INVALID, invalid_char, "T_INVALID");
+>>>>>>> Stashed changes
                         break;
                 }
             }
