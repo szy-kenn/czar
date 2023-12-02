@@ -29,10 +29,22 @@ void char_concat(char *dest, char new_chr) {
 }
 
 void digits_get(FILE *fp, char *dest, int *cur_pos) {
+    char underbefore_char;
+    char before_char;
     char current_digit;
-    char next_char;
 
-    while (isdigit(current_digit = char_get(fp, *cur_pos))) {
+    before_char = char_peek(fp, *cur_pos - 1);
+    underbefore_char = char_peek(fp, *cur_pos - 2);
+
+    if (underbefore_char == '-') {
+        char_concat(dest, underbefore_char);
+        if (before_char == '.') {
+            char_concat(dest, before_char);
+        }
+    } else if (before_char == '-' || before_char == '.') {
+        char_concat(dest, before_char);
+    }
+    while (isdigit(current_digit = char_get(fp, *cur_pos)) || (current_digit == '.')) {
         char_concat(dest, current_digit);
         (*cur_pos)++;
     }
@@ -108,6 +120,8 @@ void token_add(Token *token_array, int *token_count, token_t token_type, char *v
 
 int start_tokenization(FILE *fp, Token *token_array) {
     char current_char;
+    char underbefore_char;
+    char before_char;
     int current_position = 0;
     int current_line = 0;
     int token_count = 0;
@@ -120,7 +134,46 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         if (current_char != ' ') {
             if (isdigit(current_char)) {
-                // TODO: get all consecutive digits
+                underbefore_char = char_peek(fp, current_position - 2);
+                before_char = char_peek(fp, current_position - 1);
+                next_char = char_peek(fp, current_position + 1);
+
+                if (underbefore_char == '-') {
+                    if (before_char == '.') {
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                    }
+                } else if (before_char == '-') {
+                    char_concat(substring, before_char);
+                    while (isdigit(current_char = char_get(fp, current_position))) {
+                        char_concat(substring, current_char);
+                        (current_position)++;
+                    }
+                    if (current_char == '.') {
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                    } else {
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_INT, substring, "T_INT");
+                    }
+                } else if (before_char != '-' && before_char != '.' || before_char == '+') {
+                    while (isdigit(current_char = char_get(fp, current_position))) {
+                        char_concat(substring, current_char);
+                        (current_position)++;
+                    }
+                    if (current_char == '.') {
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                    } else {
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_INT, substring, "T_INT");
+                    }
+                } else {
+                    digits_get(fp, substring, &current_position);
+                    token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                }
+
+                *substring = '\0';
             }
 
             else if (isalnum(current_char) || current_char == '_') {
@@ -172,7 +225,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 *substring = '\0';
             } else {
                 switch (current_char) {
-                    // TODO: symbols
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
@@ -283,8 +335,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '"':
-
-                        // token_add(token_array, &token_count, T_DQUOTE, "\"", "T_DQUOTE");
                         current_position++;
 
                         next_char = char_peek(fp, current_position);
@@ -313,40 +363,18 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '\'':
-                        // token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                         current_position++;
-
-                        // current_char = char_get(fp, current_position);
-                        // if (current_char == '\'') {
-                        //     print_error("Lexical Error",
-                        //                 "Quoted strings must contain atleast one character.",
-                        //                 current_line);
-
-                        //     return -1;
-                        // }
-
-                        // char_concat(substring, current_char);
-                        // token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
-                        // current_position++;
-                        // substring = '\0';``
-
-                        // if (current_char != '\'') {
-                        //     print_error("Lexical Error",
-                        //                 "Single-quoted string must only contain one character.",
-                        //                 current_line);
-                        //     return -1;
-                        // }
 
                         while ((current_char = char_get(fp, current_position)) != EOF) {
                             if (current_char == '\n') {
                                 printf("Error: Not terminated");
                                 break;
                             } else if (current_char == '\'') {
-                                int char_size = sizeof(substring) / sizeof(char);
+                                int char_size = sizeof(substring) / sizeof(char *);
                                 if (char_size == 1) {
                                     token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
                                     current_position++;
-                                    substring = '\0';
+                                    *substring = '\0';
                                     break;
                                 } else if (char_size == 0) {
                                     printf("Error: Must contain one character");
@@ -416,6 +444,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
+                        char invalid_char[1] = {current_char};
+                        token_add(token_array, &token_count, T_INVALID, invalid_char, "T_INVALID");
                         break;
                 }
             }

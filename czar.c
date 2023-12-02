@@ -26,9 +26,13 @@ void get_file_ext(char *dest, const char *src) {
     dest[currentPosition - (dotPosition + 1)] = '\0';
 }
 
-void save_tokens(Token *token_array, int arr_length) {
+int save_tokens(Token *token_array, int arr_length, const char *outputFile) {
     // tokens_print(token_array, arr_length);
-    FILE *fp = fopen("czar-lexer.txt", "w");
+    FILE *fp = fopen(outputFile, "w");
+
+    if (fp == NULL) {
+        return -1;
+    }
 
     int spaces_length = (15 - strlen("TOKEN TYPE"));
     char *spaces = malloc(spaces_length);
@@ -49,6 +53,7 @@ void save_tokens(Token *token_array, int arr_length) {
         free(spaces);
     }
     fclose(fp);
+    return 0;
 }
 
 /**
@@ -61,19 +66,31 @@ void save_tokens(Token *token_array, int arr_length) {
 int main(int argc, char **argv) {
 
     // check if one argument has been passed
-    if (argc != 2) {
-        printf("\033[0;31mError:\033[0;37m No file name has been passed.\n");
-        printf("\033[0;32mUsage:\033[0;37m czar \033[0;93m<file-name>\033[0;37m.cz");
+    if (argc == 1) {
+        printf("\033[0;31mError:\033[0;37m No czar file has been passed.\n");
+        printf("\033[0;32mUsage:\033[0;37m czar \033[0;93m<file-name>\033[0;37m.cz "
+               "\033[0;93m<file-name>\033[0;37m.txt");
         return -1;
     }
 
-    // get the file name from the passed argument
-    char fileName[strcspn(argv[1], "\0")];
-    strcpy(fileName, argv[1]);
+    if (argc == 2) {
+        printf("\033[0;31mError:\033[0;37m No output file name has been passed.\n");
+        printf("\033[0;32mUsage:\033[0;37m czar \033[0;93m<file-name>\033[0;37m.cz "
+               "\033[0;93m<file-name>\033[0;37m.txt");
+        return -1;
+    }
+
+    // get the output txt file from the passed argument
+    char outputFile[strcspn(argv[2], "\0")];
+    strcpy(outputFile, argv[2]);
+
+    // get the czar file from the passed argument
+    char czarFile[strcspn(argv[1], "\0")];
+    strcpy(czarFile, argv[1]);
 
     // check if the file extension is valid (.cz)
     char fileExt[REG_BUFFER];
-    get_file_ext(fileExt, fileName);
+    get_file_ext(fileExt, czarFile);
 
     if (strcmp(fileExt, "cz") != 0) {
         printf("\033[0;31mError:\033[0;37m Invalid file type. Please input a `.cz` file.");
@@ -81,10 +98,10 @@ int main(int argc, char **argv) {
     }
 
     // open the file
-    FILE *fp = fopen(fileName, "r");
+    FILE *fp = fopen(czarFile, "r");
 
     if (fp == NULL) {
-        printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m%s\033[0;37m", fileName);
+        printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m`%s`\033[0;37m", czarFile);
         return -1;
     }
 
@@ -95,7 +112,13 @@ int main(int argc, char **argv) {
     int token_count;
     token_count = start_tokenization(fp, token_array);
 
-    save_tokens(token_array, token_count);
+    if (save_tokens(token_array, token_count, outputFile) < 0) {
+        printf("\033[0;31mTask failed. A problem has occured while opening a file.\033[0;37m");
+    } else {
+        printf("\033[0;32mSuccess:\033[0;37m Tokenization output saved in "
+               "\033[0;33m`%s`\033[0;37m",
+               outputFile);
+    }
 
     fclose(fp);
     tokens_free(token_array, token_count);
