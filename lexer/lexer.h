@@ -5,8 +5,8 @@
 
 typedef enum {
     // operators
-    T_ADD,
-    T_SUB,
+    T_PLUS,
+    T_MINUS,
     T_MUL,
     T_DIV,
     T_MOD,
@@ -15,8 +15,8 @@ typedef enum {
 
     // assignment
     T_EQL,
-    T_ADD_EQL,
-    T_SUB_EQL,
+    T_PLUS_EQL,
+    T_MINUS_EQL,
     T_MUL_EQL,
     T_DIV_EQL,
 
@@ -60,7 +60,7 @@ typedef enum {
     T_GLOBAL,
     T_FIXED,
     T_FLEX,
-    
+
     T_ENUM,
 
     T_IS,

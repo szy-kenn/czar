@@ -395,7 +395,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         next_char = char_peek(fp, current_position + 1);
                         before_char = char_peek(fp, current_position - 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_ADD_EQL, "+=", "T_ADD_EQL");
+                            token_add(token_array, &token_count, T_PLUS_EQL, "+=", "T_PLUS_EQL");
                             current_position++;
                         } else if (isdigit(next_char) &&
                                    ((before_char == '-') || (before_char == '+'))) {
@@ -403,14 +403,14 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         } else if (next_char == '.' && before_char == '-') {
                             break;
                         } else {
-                            token_add(token_array, &token_count, T_ADD, "+", "T_ADD");
+                            token_add(token_array, &token_count, T_PLUS, "+", "T_PLUS");
                         }
                         break;
 
                     case '-':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_SUB_EQL, "-=", "T_SUB_EQL");
+                            token_add(token_array, &token_count, T_MINUS_EQL, "-=", "T_MINUS_EQL");
                             current_position++;
                         } else if (next_char == '-') {
                             if (char_peek(fp, current_position + 2) == '*') {
@@ -421,7 +421,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                            (isdigit(current_char =
                                                         (char_peek(fp, current_position + 2)))) ||
                                        current_char == '.') {
-                                token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
+                                token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
                                 current_position++;
@@ -438,20 +438,20 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 char_peek(fp, current_position - 1) != ' ') {
                                 break;
                             } else {
-                                token_add(token_array, &token_count, T_SUB, "-",
+                                token_add(token_array, &token_count, T_MINUS, "-",
                                           "T_bSUB"); // if (next_char != '.'){
                             }
                             break;
                         } else if (next_char == '.') {
                             if (char_peek(fp, current_position - 1) != '\0') {
                                 if (isdigit(char_peek(fp, current_position - 1))) {
-                                    token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
+                                    token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
                                 } else {
                                     break;
                                 }
                             }
                         } else {
-                            token_add(token_array, &token_count, T_SUB, "-", "T_SUB");
+                            token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
                         }
                         break;
 
@@ -587,13 +587,12 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '!':
-                        // TODO: not equal token
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
                             token_add(token_array, &token_count, T_NOT_EQL, "!=", "T_NOT_EQL");
                             current_position++;
                         } else {
-                            // TODO: add invalid
+                            token_add(token_array, &token_count, T_INVALID, "!", "T_INVALID");
                         }
                         break;
 
