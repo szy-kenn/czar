@@ -112,12 +112,16 @@ int main(int argc, char **argv) {
     int token_count;
     token_count = start_tokenization(fp, token_array);
 
-    if (save_tokens(token_array, token_count, outputFile) < 0) {
-        printf("\033[0;31mTask failed. A problem has occured while opening a file.\033[0;37m");
-    } else {
-        printf("\033[0;32mSuccess:\033[0;37m Tokenization output saved in "
-               "\033[0;33m`%s`\033[0;37m",
-               outputFile);
+    if (token_count > 0) {
+        if (save_tokens(token_array, token_count, outputFile) < 0) {
+            printf("\033[0;31mTask failed. A problem has occured while opening a file.\033[0;37m");
+        } else {
+            printf("\033[0;32mDone:\033[0;37m Tokenization output saved in "
+                   "\033[0;33m`%s`\033[0;37m",
+                   outputFile);
+        }
+    } else if (token_count == 0) {
+        printf("\033[0;32mDone: \033[0;37mNo tokens created.\n");
     }
 
     fclose(fp);
