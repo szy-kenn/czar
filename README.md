@@ -19,13 +19,13 @@ To start, run the following command:
 In Windows:
 
 ```bash
-./run [cz-file]
+./run [cz-file] [output-txt-file]
 ```
 
 In Linux:
 
 ```bash
-./run.sh [cz-file]
+./run.sh [cz-file] [output-txt-file]
 ```
 
 ## 🟢 Examples
@@ -39,15 +39,15 @@ my_str: str = "Hello, World!"
 Run the program:
 
 ```bash
-./run test.cz
+./run test.cz output.txt
 ```
 
-And the output file should look like this:
+And the output file *(output.txt)* should look like this:
 
 > [!CAUTION]
 > The lexical analyzer isn't finished yet so there might be some issues in the output
 
-```plaintext
+```output.txt
 TOKEN TYPE     VALUE
 ====================
 T_ID           my_str
