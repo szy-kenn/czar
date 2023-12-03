@@ -101,6 +101,10 @@ int space_consume(FILE *fp, int *current_position) {
         (*current_position)++;
     }
 
+    if (count > 0) {
+        (*current_position)--;
+    }
+
     return count;
 }
 
@@ -136,6 +140,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
     int token_count = 0;
 
     Stack *indent_stack = stack_create();
+    stack_push(indent_stack, 0);
+
     char *substring = malloc(sizeof(char) * MAX_BUFFER);
     *substring = '\0';
 
@@ -144,20 +150,42 @@ int start_tokenization(FILE *fp, Token *token_array) {
         char next_char;
 
         if (current_position == 0 || char_get(fp, current_position - 1) == '\n') {
-            if (current_char == ' ') {
-                int spaces = space_consume(fp, &current_position);
+            int spaces = space_consume(fp, &current_position);
+            if (indent_stack->top->value < spaces) {
                 stack_push(indent_stack, spaces);
-                stack_print(indent_stack);
+
+                int length = snprintf(NULL, 0, "%d", spaces);
+                char *digit_str = malloc(length + 1);
+                snprintf(digit_str, length + 1, "%d", spaces);
+
+                token_add(token_array, &token_count, T_INDENT, digit_str, "T_INDENT");
+                free(digit_str);
+
+            } else if (indent_stack->top->value > spaces) {
+                while (indent_stack->top->value > spaces) {
+
+                    int indent_val = stack_pop(indent_stack)->value;
+                    int length = snprintf(NULL, 0, "%d", indent_val);
+                    char *digit_str = malloc(length + 1);
+                    snprintf(digit_str, length + 1, "%d", indent_val);
+
+                    token_add(token_array, &token_count, T_DEDENT, digit_str, "T_DEDENT");
+                    free(digit_str);
+
+                    if (indent_stack->top->value < spaces) {
+                        print_error("Indentation Error", "Inconsistent indentation", current_line);
+                        _status = -1;
+                        break;
+                    }
+                }
+            }
+
+            if (_status < 0) {
+                break;
             }
         }
 
-        // if (current_position == 0 || char_get(fp, current_position - 1) == '\n') {
-        //     if (current_char == ' ' || current_char == '\t') {
-        //         int spaces = space_consume(fp, &current_position);
-        //     }
-        // }
-
-        else if (current_char != ' ') {
+        if (current_char != ' ') {
 
             if (isdigit(current_char)) {
                 next_char = char_peek(fp, current_position + 1);
@@ -444,13 +472,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         while ((current_char = char_get(fp, current_position)) != EOF) {
                             if (current_char == '\n') {
                                 printf("Error: Not terminated");
+                                current_position--;
                                 break;
                             } else if (current_char == '\'') {
                                 int char_size = strlen(substring);
                                 if (char_size == 1) {
                                     token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
                                     token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
-                                    current_position++;
                                     *substring = '\0';
                                     break;
                                 } else if (char_size == 0) {
@@ -458,6 +486,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                         "Lexical Error",
                                         "Single-quoted string must contain a single character",
                                         current_line);
+                                    current_position--;
                                     _status = -1;
                                     break;
                                 } else {
@@ -465,12 +494,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                                 "Single-quoted string must only "
                                                 "contain a single character",
                                                 current_line);
+                                    current_position--;
                                     _status = -1;
                                     break;
                                 }
                             }
 
-                            char_concat(substring, char_get(fp, current_position));
+                            char_concat(substring, current_char);
                             current_position++;
                         }
 
@@ -558,6 +588,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
         }
 
         current_position++;
+    }
+
+    if (current_char == EOF) {
+        token_add(token_array, &token_count, T_EOF, "EOF", "T_EOF");
     }
 
     free(substring);
