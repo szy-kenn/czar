@@ -149,6 +149,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         char next_char;
 
+        if (current_position == 0 &&
+            (char_get(fp, current_position) == ' ' || char_get(fp, current_position) == '\t')) {
+            print_error("Indentation Error", "Inconsistent indentation", current_line);
+            _status = -1;
+            break;
+        }
+
         if (current_position == 0 || char_get(fp, current_position - 1) == '\n') {
             int spaces = space_consume(fp, &current_position);
             if (indent_stack->top->value < spaces) {
@@ -520,14 +527,14 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         token_add(token_array, &token_count, T_QMARK, "?", "T_QMARK");
                         break;
 
-                    case '.':
-                        next_char = char_peek(fp, current_position + 1);
-                        if (isdigit(next_char)) {
-                            break;
-                        } else {
-                            token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
-                            break;
-                        }
+                        // case '.':
+                        //     next_char = char_peek(fp, current_position + 1);
+                        //     if (isdigit(next_char)) {
+                        //         break;
+                        //     } else {
+                        //         token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
+                        //         break;
+                        //     }
 
                     case '@':
                         token_add(token_array, &token_count, T_FUNCTION, "@", "T_FUNCTION");
@@ -554,7 +561,47 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '[':
-                        token_add(token_array, &token_count, T_LBRACKET, "[", "T_LBRACKET");
+
+                        current_position++;
+                        int _pos = current_position;
+
+                        char_concat(substring, current_char);
+
+                        char *temp_substr = malloc(sizeof(char) * MAX_BUFFER);
+                        *temp_substr = '\0';
+
+                        while (char_get(fp, current_position) == ' ') {
+                            current_position++;
+                        }
+
+                        word_get(fp, temp_substr, &current_position);
+                        current_position++;
+
+                        if (strcmp(temp_substr, "int") == 0 || strcmp(temp_substr, "chr") == 0 ||
+                            strcmp(temp_substr, "str") == 0 || strcmp(temp_substr, "dbl") == 0 ||
+                            strcmp(temp_substr, "bool") == 0) {
+
+                            while (char_get(fp, current_position) == ' ') {
+                                current_position++;
+                            }
+
+                            if ((current_char = char_get(fp, current_position)) == ']') {
+                                strcat(substring, temp_substr);
+                                char_concat(substring, current_char);
+                                token_add(token_array, &token_count, T_DTYPE, substring, "T_DTYPE");
+                                *substring = '\0';
+
+                            } else {
+                                token_add(token_array, &token_count, T_LBRACKET, "[", "T_LBRACKET");
+                                current_position = _pos - 1;
+                            }
+                        } else {
+                            token_add(token_array, &token_count, T_LBRACKET, "[", "T_LBRACKET");
+                            current_position = _pos - 1;
+                        }
+
+                        free(temp_substr);
+                        *substring = '\0';
                         break;
 
                     case ']':
