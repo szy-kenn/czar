@@ -94,6 +94,10 @@ typedef enum {
     T_STAR_DDASH,
     T_DDASH_STAR, // / *-- --*
 
+    T_NEWLINE,
+    T_INDENT,
+    T_DEDENT,
+
     // INVALID
     T_INVALID
 } token_t;
