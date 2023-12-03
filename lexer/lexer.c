@@ -91,6 +91,19 @@ int delimited_str_get(FILE *fp, char *dest, int *cur_pos, char *delimiters, int 
     return length;
 }
 
+// returns the number of spaces consumed (discarded)
+int space_consume(FILE *fp, int *current_position) {
+    char current_char;
+    int count = 0;
+
+    while ((current_char = char_get(fp, *current_position)) == ' ' || current_char == '\t') {
+        count++;
+        (*current_position)++;
+    }
+
+    return count;
+}
+
 void tokens_print(Token *token_array, int tokenCount) {
     for (int i = 0; i < tokenCount; i++) {
         printf("[%s | %s]\n", token_array[i].name, token_array[i].value);
@@ -118,7 +131,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
     char current_char;
     char before_char;
     int current_position = 0;
-    int current_line = 0;
+    int current_line = 1;
     int token_count = 0;
     char *substring = malloc(sizeof(char) * MAX_BUFFER);
     *substring = '\0';
@@ -127,66 +140,51 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         char next_char;
 
+        if (current_position > 0 && char_get(fp, current_position - 1) == '\n') {
+            if (current_char == ' ' || current_char == '\t') {
+                int spaces = space_consume(fp, &current_position);
+                printf("%d", spaces);
+            }
+        }
+
         if (current_char != ' ') {
 
             if (isdigit(current_char)) {
-                next_char = char_peek(fp, current_position + 2);
+                next_char = char_peek(fp, current_position + 1);
                 before_char = char_peek(fp, current_position - 1);
 
-                if (before_char == '.') {
+                if (before_char == '.' && current_position > 0) {
                     char_concat(substring, before_char);
                     while (isdigit(current_char = char_get(fp, current_position))) {
-                        next_char = char_peek(fp, current_position + 1);
-                        if (isdigit(next_char)) {
-                            char_concat(substring, current_char);
-                            (current_position)++;
-                        } else {
-                            break;
-                        }
+                        char_concat(substring, current_char);
+                        current_position++;
                     }
-                    if (next_char != '.') {
+
+                    if (current_char != '.') {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                    } else if (next_char == '.') {
-                        if (current_line == 0) {
-                            current_line++;
-                        }
+                    } else {
                         print_error("Lexical Error", "It must only contain one decimal",
                                     current_line);
                         return -1;
-                    } else {
-                        digits_get(fp, substring, &current_position);
-                        token_add(token_array, &token_count, T_INT, substring, "T_INT");
                     }
                 } else {
                     while (isdigit(current_char = char_get(fp, current_position))) {
-                        next_char = char_peek(fp, current_position + 1);
-                        if (isdigit(next_char)) {
-                            char_concat(substring, current_char);
-                            (current_position)++;
-                        } else {
-                            break;
-                        }
+                        char_concat(substring, current_char);
+                        current_position++;
                     }
-                    if (next_char == '.') {
+
+                    if (current_char == '.') {
                         current_position++;
                         char_concat(substring, current_char);
-                        while (isdigit(current_char = char_get(fp, current_position)) ||
-                                (current_char == '.')) {
-                                next_char = char_peek(fp, current_position + 1);
-                                if (isdigit(next_char)) {
-                                    char_concat(substring, current_char);
-                                    (current_position)++;
-                                } else {
-                                    break;
-                                }
-                        } if (next_char != '.') {
+                        while (isdigit(current_char = char_get(fp, current_position))) {
+                            char_concat(substring, current_char);
+                            current_position++;
+                        }
+                        if (current_char != '.') {
                             digits_get(fp, substring, &current_position);
                             token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                        } else if (next_char == '.') {
-                            if (current_line == 0) {
-                                current_line++;
-                            }
+                        } else if (current_char == '.') {
                             print_error("Lexical Error", "It must only contain one decimal",
                                         current_line);
                             return -1;
@@ -195,7 +193,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_INT, substring, "T_INT");
                     }
-                } *substring = '\0';
+                }
+                current_position--;
+                *substring = '\0';
             }
 
             else if (isalnum(current_char) || current_char == '_') {
@@ -282,28 +282,29 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 *substring = '\0';
             } else {
 
-                // TODO: array data type [], string concatenation '+'
+                // TODO: array data type []
                 switch (current_char) {
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_PLUS_EQL, "+=", "T_ADD_EQL");
+                            token_add(token_array, &token_count, T_PLUS_EQL, "+=", "T_PLUS_EQL");
                             current_position++;
                         } else {
-                            token_add(token_array, &token_count, T_PLUS, "+", "T_ADD");
+                            token_add(token_array, &token_count, T_PLUS, "+", "T_PLUS");
                         }
                         break;
 
                     case '-':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_MINUS_EQL, "-=", "T_SUB_EQL");
+                            token_add(token_array, &token_count, T_MINUS_EQL, "-=", "T_MINUS_EQL");
                             current_position++;
                         } else if (next_char == '-') {
                             if (char_peek(fp, current_position + 2) == '*') {
                                 token_add(token_array, &token_count, T_DDASH_STAR, "--*",
                                           "T_DDASH_STAR");
                                 current_position += 2;
+                                // TODO: consume comments
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
                                 current_position++;
@@ -312,10 +313,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 while (current_char != '\n' && current_char != EOF) {
                                     current_position++;
                                     current_char = char_get(fp, current_position);
+                                    printf("here");
                                 }
                             }
                         } else {
-                            token_add(token_array, &token_count, T_MINUS, "-", "T_SUB");
+                            token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
                         }
                         break;
 
@@ -394,6 +396,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '"':
+                        token_add(token_array, &token_count, T_SQUOTE, "\"", "T_DQUOTE");
                         current_position++;
 
                         next_char = char_peek(fp, current_position);
@@ -419,9 +422,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             return -1;
                         }
 
+                        token_add(token_array, &token_count, T_SQUOTE, "\"", "T_DQUOTE");
                         break;
 
                     case '\'':
+                        token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                         current_position++;
 
                         while ((current_char = char_get(fp, current_position)) != EOF) {
@@ -432,6 +437,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 int char_size = strlen(substring);
                                 if (char_size == 1) {
                                     token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
+                                    token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                                     current_position++;
                                     *substring = '\0';
                                     break;
@@ -475,9 +481,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     case '.':
                         next_char = char_peek(fp, current_position + 1);
                         if (isdigit(next_char)) {
-                            break;
-                        } else if (next_char = char_peek(fp, current_position + 1) &&
-                                               (isdigit(next_char))) {
                             break;
                         } else {
                             token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
@@ -524,12 +527,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         token_add(token_array, &token_count, T_AMP, "&", "T_AMP");
                         break;
 
-                    case '\t':
-                        token_add(token_array, &token_count, T_TAB, "\\t", "T_TAB");
-                        break;
+                        // case '\t':
+                        //     token_add(token_array, &token_count, T_TAB, "\\t", "T_TAB");
+                        //     break;
 
                     case '\n':
                         current_line++;
+                        token_add(token_array, &token_count, T_NEWLINE, "\\n", "T_NEWLINE");
                         break;
 
                     default:
