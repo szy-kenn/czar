@@ -306,7 +306,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 *substring = '\0';
             }
 
-            // TODO: fix
             else if (isalnum(current_char) || current_char == '_') {
                 int word_get_status = word_get(fp, substring, &current_position);
 
@@ -399,8 +398,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (next_char == '=') {
                             token_add(token_array, &token_count, T_ADD_EQL, "+=", "T_ADD_EQL");
                             current_position++;
-                        } else if (isdigit(next_char) && (before_char == '-') ||
-                                   (before_char == '+')) {
+                        } else if (isdigit(next_char) &&
+                                   ((before_char == '-') || (before_char == '+'))) {
                             break;
                         } else if (next_char == '.' && before_char == '-') {
                             break;
@@ -662,9 +661,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                     default:
                         // TODO: invalid token
-                        // invalid_char[1] = {current_char};
-                        // token_add(token_array, &token_count, T_INVALID, invalid_char,
-                        // "T_INVALID");
+                        char_concat(substring, current_char);
+                        token_add(token_array, &token_count, T_INVALID, substring, "T_INVALID");
+                        *substring = '\0';
                         break;
                 }
             }
