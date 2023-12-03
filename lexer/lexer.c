@@ -36,13 +36,6 @@ void digits_get(FILE *fp, char *dest, int *cur_pos) {
     before_char = char_peek(fp, *cur_pos - 1);
     underbefore_char = char_peek(fp, *cur_pos - 2);
 
-    if (underbefore_char == '-') {
-        if (!isdigit(before_char)) {
-        } else if (before_char == '.') {
-            char_concat(dest, before_char);
-        }
-    }
-
     while (isdigit(current_digit = char_get(fp, *cur_pos)) || (current_digit == '.')) {
         next_char = char_peek(fp, *cur_pos + 1);
         if (isdigit(next_char)) {
@@ -392,35 +385,24 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 switch (current_char) {
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
-                        before_char = char_peek(fp, current_position - 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_PLUS_EQL, "+=", "T_PLUS_EQL");
+                            token_add(token_array, &token_count, T_PLUS_EQL, "+=", "T_ADD_EQL");
                             current_position++;
-                        } else if (isdigit(next_char) &&
-                                   ((before_char == '-') || (before_char == '+'))) {
-                            break;
-                        } else if (next_char == '.' && before_char == '-') {
-                            break;
                         } else {
-                            token_add(token_array, &token_count, T_PLUS, "+", "T_PLUS");
+                            token_add(token_array, &token_count, T_PLUS, "+", "T_ADD");
                         }
                         break;
 
                     case '-':
                         next_char = char_peek(fp, current_position + 1);
                         if (next_char == '=') {
-                            token_add(token_array, &token_count, T_MINUS_EQL, "-=", "T_MINUS_EQL");
+                            token_add(token_array, &token_count, T_MINUS_EQL, "-=", "T_SUB_EQL");
                             current_position++;
                         } else if (next_char == '-') {
                             if (char_peek(fp, current_position + 2) == '*') {
                                 token_add(token_array, &token_count, T_DDASH_STAR, "--*",
                                           "T_DDASH_STAR");
                                 current_position += 2;
-                            } else if (isalnum(char_peek(fp, current_position - 1)) &&
-                                           (isdigit(current_char =
-                                                        (char_peek(fp, current_position + 2)))) ||
-                                       current_char == '.') {
-                                token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
                             } else {
                                 token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
                                 current_position++;
@@ -431,26 +413,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                     current_char = char_get(fp, current_position);
                                 }
                             }
-                        } else if (isdigit(next_char) &&
-                                   (!isdigit(char_peek(fp, current_position - 1)))) {
-                            if (char_peek(fp, current_position - 1) != '-' ||
-                                char_peek(fp, current_position - 1) != ' ') {
-                                break;
-                            } else {
-                                token_add(token_array, &token_count, T_MINUS, "-",
-                                          "T_MINUS"); // if (next_char != '.'){
-                            }
-                            break;
-                        } else if (next_char == '.') {
-                            if (char_peek(fp, current_position - 1) != '\0') {
-                                if (isdigit(char_peek(fp, current_position - 1))) {
-                                    token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
-                                } else {
-                                    break;
-                                }
-                            }
                         } else {
-                            token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
+                            token_add(token_array, &token_count, T_MINUS, "-", "T_SUB");
                         }
                         break;
 
