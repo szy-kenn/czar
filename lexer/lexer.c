@@ -582,6 +582,14 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                     case '!':
                         // TODO: not equal token
+                        next_char = char_peek(fp, current_position + 1);
+                        if (next_char == '=') {
+                            token_add(token_array, &token_count, T_NOT_EQL, "!=", "T_NOT_EQL");
+                            current_position++;
+                        }
+                        else {
+                            // TODO: add invalid
+                        }
                         break;
 
                     case '?':

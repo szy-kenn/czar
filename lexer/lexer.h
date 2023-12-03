@@ -29,6 +29,7 @@ typedef enum {
     T_AND,
     T_OR,
     T_NOT,
+    T_NOT_EQL,
 
     // data types
     T_INT,
