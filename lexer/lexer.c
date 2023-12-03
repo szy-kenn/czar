@@ -615,6 +615,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             break;
                         }
 
+                    case '@':
+                        token_add(token_array, &token_count, T_FUNCTION, "@", "T_FUNCTION");
+                        break;
+
                     case ',':
                         token_add(token_array, &token_count, T_COMMA, ",", "T_COMMA");
                         break;
