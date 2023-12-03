@@ -44,6 +44,29 @@ void digits_get(FILE *fp, char *dest, int *cur_pos) {
     }
 }
 
+char decimal_checker(FILE *fp, char *dest, int *cur_pos) {
+    char current_digit;
+    char next_char;
+    int current_position;
+    
+
+    while (isdigit(current_digit = char_get(fp, *cur_pos))) {
+        next_char = char_peek(fp, *cur_pos + 1);
+        if (isdigit(next_char)) {
+            char_concat(dest, current_digit);
+            (*cur_pos)++;
+        } else if (next_char == '.') {
+            char_concat(dest, current_digit);
+            return 1;
+            break;
+        } else {
+            return 0;
+            break;
+        }
+    }
+    
+}
+
 int word_get(FILE *fp, char *dest, int *cur_pos) {
     char current_char;
     char next_char;
@@ -133,68 +156,42 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 next_char = char_peek(fp, current_position + 2);
                 before_char = char_peek(fp, current_position - 1);
 
+                //digit starts with decimal
                 if (before_char == '.') {
                     char_concat(substring, before_char);
-                    while (isdigit(current_char = char_get(fp, current_position))) {
-                        next_char = char_peek(fp, current_position + 1);
-                        if (isdigit(next_char)) {
-                            char_concat(substring, current_char);
-                            (current_position)++;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (next_char != '.') {
-                        digits_get(fp, substring, &current_position);
-                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                    } else if (next_char == '.') {
-                        if (current_line == 0) {
-                            current_line++;
-                        }
+                    //contains another starting decimal
+                    if ((char_peek(fp, current_position - 2)) == '.') {
                         print_error("Lexical Error", "It must only contain one decimal",
                                     current_line);
                         return -1;
-                    } else {
+                    //contains another decimal
+                    } else if (decimal_checker(fp, substring, &current_position) == 1) {
+                        print_error("Lexical Error", "It must only contain one decimal",
+                                    current_line);
+                        return -1;
+                    //double
+                    } else if (decimal_checker(fp, substring, &current_position) == 0) {
                         digits_get(fp, substring, &current_position);
-                        token_add(token_array, &token_count, T_INT, substring, "T_INT");
-                    }
-                } else {
-                    while (isdigit(current_char = char_get(fp, current_position))) {
-                        next_char = char_peek(fp, current_position + 1);
-                        if (isdigit(next_char)) {
-                            char_concat(substring, current_char);
-                            (current_position)++;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (next_char == '.') {
+                        token_add(token_array, &token_count, T_INT, substring, "T_DBL");
+                    } 
+                }
+                else {
+                    //contains decimal
+                    if (decimal_checker(fp, substring, &current_position) == 1) {
                         current_position++;
-                        char_concat(substring, current_char);
-                        while (isdigit(current_char = char_get(fp, current_position)) ||
-                                (current_char == '.')) {
-                                next_char = char_peek(fp, current_position + 1);
-                                if (isdigit(next_char)) {
-                                    char_concat(substring, current_char);
-                                    (current_position)++;
-                                } else {
-                                    break;
-                                }
-                        } if (next_char != '.') {
-                            digits_get(fp, substring, &current_position);
-                            token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                        } else if (next_char == '.') {
-                            if (current_line == 0) {
-                                current_line++;
-                            }
+                        digits_get(fp, substring, &current_position);
+                        token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                        //contains another decimal
+                        if (decimal_checker(fp, substring, &current_position) == 1) {
                             print_error("Lexical Error", "It must only contain one decimal",
                                         current_line);
                             return -1;
                         }
-                    } else {
+                    //int
+                    } else if (decimal_checker(fp, substring, &current_position) == 0) {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_INT, substring, "T_INT");
-                    }
+                    } 
                 } *substring = '\0';
             }
 
@@ -479,7 +476,14 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         } else if (next_char = char_peek(fp, current_position + 1) &&
                                                (isdigit(next_char))) {
                             break;
-                        } else {
+                        } else if (char_peek(fp, current_position - 1) == '.' 
+                                    && isdigit(char_peek(fp, current_position - 3))) {
+                                        print_error("Lexical Error",
+                                                "It must only contain 1 decimal",
+                                                current_line);
+                                        return -1;
+                                    }
+                        else {
                             token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
                             break;
                         }
