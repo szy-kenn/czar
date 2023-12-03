@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "../utils/stack.h"
 #include "../utils/utils.h"
 #include <ctype.h>
 #include <stdio.h>
@@ -93,10 +94,9 @@ int delimited_str_get(FILE *fp, char *dest, int *cur_pos, char *delimiters, int 
 
 // returns the number of spaces consumed (discarded)
 int space_consume(FILE *fp, int *current_position) {
-    char current_char;
     int count = 0;
 
-    while ((current_char = char_get(fp, *current_position)) == ' ' || current_char == '\t') {
+    while (char_get(fp, *current_position) == ' ') {
         count++;
         (*current_position)++;
     }
@@ -128,11 +128,14 @@ void token_add(Token *token_array, int *token_count, token_t token_type, char *v
 }
 
 int start_tokenization(FILE *fp, Token *token_array) {
+    int _status = 0;
     char current_char;
     char before_char;
     int current_position = 0;
     int current_line = 1;
     int token_count = 0;
+
+    Stack *indent_stack = stack_create();
     char *substring = malloc(sizeof(char) * MAX_BUFFER);
     *substring = '\0';
 
@@ -140,14 +143,21 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         char next_char;
 
-        if (current_position > 0 && char_get(fp, current_position - 1) == '\n') {
-            if (current_char == ' ' || current_char == '\t') {
+        if (current_position == 0 || char_get(fp, current_position - 1) == '\n') {
+            if (current_char == ' ') {
                 int spaces = space_consume(fp, &current_position);
-                printf("%d", spaces);
+                stack_push(indent_stack, spaces);
+                stack_print(indent_stack);
             }
         }
 
-        if (current_char != ' ') {
+        // if (current_position == 0 || char_get(fp, current_position - 1) == '\n') {
+        //     if (current_char == ' ' || current_char == '\t') {
+        //         int spaces = space_consume(fp, &current_position);
+        //     }
+        // }
+
+        else if (current_char != ' ') {
 
             if (isdigit(current_char)) {
                 next_char = char_peek(fp, current_position + 1);
@@ -164,9 +174,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
                     } else {
-                        print_error("Lexical Error", "It must only contain one decimal",
-                                    current_line);
-                        return -1;
+                        _status = -1;
+                        break;
                     }
                 } else {
                     while (isdigit(current_char = char_get(fp, current_position))) {
@@ -187,7 +196,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         } else if (current_char == '.') {
                             print_error("Lexical Error", "It must only contain one decimal",
                                         current_line);
-                            return -1;
+                            _status = -1;
+                            break;
                         }
                     } else {
                         digits_get(fp, substring, &current_position);
@@ -204,7 +214,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 if (word_get_status < 0) {
                     print_error("Lexical Error", "Variable name exceeds character limit",
                                 current_line);
-                    return -1;
+                    _status = -1;
+                    break;
                 }
 
                 // if the substring contains an underscore, then it is an identifier
@@ -313,7 +324,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 while (current_char != '\n' && current_char != EOF) {
                                     current_position++;
                                     current_char = char_get(fp, current_position);
-                                    printf("here");
                                 }
                             }
                         } else {
@@ -403,7 +413,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (next_char == '"') {
                             print_error("Lexical Error",
                                         "String must contain atleast one character", current_line);
-                            return -1;
+                            _status = -1;
+                            break;
                         }
 
                         int string_length =
@@ -419,7 +430,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (current_char != '"') {
                             print_error("Lexical Error", "Unterminated string literal",
                                         current_line);
-                            return -1;
+                            _status = -1;
+                            break;
                         }
 
                         token_add(token_array, &token_count, T_SQUOTE, "\"", "T_DQUOTE");
@@ -446,14 +458,14 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                         "Lexical Error",
                                         "Single-quoted string must contain a single character",
                                         current_line);
-                                    return -1;
+                                    _status = -1;
                                     break;
                                 } else {
                                     print_error("Lexical Error",
                                                 "Single-quoted string must only "
                                                 "contain a single character",
                                                 current_line);
-                                    return -1;
+                                    _status = -1;
                                     break;
                                 }
                             }
@@ -546,6 +558,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
         }
 
         current_position++;
+    }
+
+    free(substring);
+    stack_free(indent_stack);
+
+    if (_status < 0) {
+        return _status;
     }
 
     return token_count;
