@@ -289,7 +289,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     }
                 } else if (before_char == '.') {
                     if (underbefore_char == '.') {
-                        print_error("Lexical Error", "Itat must only contain one decimal",
+                        print_error("Lexical Error", "It must only contain one decimal",
                                     current_line);
                         return -1;
                     } else {
@@ -298,8 +298,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
                     }
                 } else {
-                    print_error("Lexical Error", "Itat must only contain one decimal",
-                                current_line);
+                    print_error("Lexical Error", "It must only contain one decimal", current_line);
                     return -1;
                 }
                 *substring = '\0';
@@ -439,7 +438,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 break;
                             } else {
                                 token_add(token_array, &token_count, T_MINUS, "-",
-                                          "T_bSUB"); // if (next_char != '.'){
+                                          "T_MINUS"); // if (next_char != '.'){
                             }
                             break;
                         } else if (next_char == '.') {
@@ -565,17 +564,25 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                 printf("Error: Not terminated");
                                 break;
                             } else if (current_char == '\'') {
-                                int char_size = sizeof(substring) / sizeof(char *);
+                                int char_size = strlen(substring);
                                 if (char_size == 1) {
                                     token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
                                     current_position++;
                                     *substring = '\0';
                                     break;
                                 } else if (char_size == 0) {
-                                    printf("Error: Must contain one character");
+                                    print_error(
+                                        "Lexical Error",
+                                        "Single-quoted string must contain a single character",
+                                        current_line);
+                                    return -1;
                                     break;
                                 } else {
-                                    printf("Error: Should contain one character");
+                                    print_error("Lexical Error",
+                                                "Single-quoted string must only "
+                                                "contain a single character",
+                                                current_line);
+                                    return -1;
                                     break;
                                 }
                             }
