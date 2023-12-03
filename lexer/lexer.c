@@ -141,7 +141,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         if (current_char != ' ') {
 
-            // TODO: fix
             if (isdigit(current_char)) {
                 underbefore_char = char_peek(fp, current_position - 2);
                 before_char = char_peek(fp, current_position - 1);
@@ -390,7 +389,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 *substring = '\0';
             } else {
 
-                // TODO: add '@' and '!=', array data type [], string concatenation '+'
+                // TODO: array data type [], string concatenation '+'
                 switch (current_char) {
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
@@ -593,8 +592,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (next_char == '=') {
                             token_add(token_array, &token_count, T_NOT_EQL, "!=", "T_NOT_EQL");
                             current_position++;
-                        }
-                        else {
+                        } else {
                             // TODO: add invalid
                         }
                         break;
@@ -664,7 +662,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
-                        // TODO: invalid token
                         char_concat(substring, current_char);
                         token_add(token_array, &token_count, T_INVALID, substring, "T_INVALID");
                         *substring = '\0';
