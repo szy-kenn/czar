@@ -49,7 +49,6 @@ char decimal_checker(FILE *fp, char *dest, int *cur_pos) {
     char current_digit;
     char next_char;
     int current_position;
-    
 
     while (isdigit(current_digit = char_get(fp, *cur_pos))) {
         next_char = char_peek(fp, *cur_pos + 1);
@@ -65,7 +64,6 @@ char decimal_checker(FILE *fp, char *dest, int *cur_pos) {
             break;
         }
     }
-    
 }
 
 int word_get(FILE *fp, char *dest, int *cur_pos) {
@@ -131,6 +129,35 @@ int space_consume(FILE *fp, int *current_position) {
     return count;
 }
 
+void print_error(FILE *fp, char *error, char *message, int line, int position) {
+
+    int error_position = position;
+    int linestart_position;
+    char current_char;
+
+    while (position >= 0 && char_get(fp, position) != '\n') {
+        position--;
+    }
+
+    position++;
+    linestart_position = position;
+
+    while ((current_char = char_get(fp, position)) != '\n' && (current_char != EOF)) {
+        printf("%c", current_char);
+        position++;
+    }
+
+    printf("\n");
+    position = linestart_position;
+    while (position != error_position) {
+        printf(" ");
+        position++;
+    }
+
+    printf("^\n");
+    printf("\033[0;31m%s\033[0;37m: %s at line %d", error, message, line);
+}
+
 void tokens_print(Token *token_array, int tokenCount) {
     for (int i = 0; i < tokenCount; i++) {
         printf("[%s | %s]\n", token_array[i].name, token_array[i].value);
@@ -174,12 +201,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
         if (current_position == 0 &&
             (char_get(fp, current_position) == ' ' || char_get(fp, current_position) == '\t')) {
-            print_error("Indentation Error", "Inconsistent indentation", current_line);
+            print_error(fp, "Indentation Error", "Unexpected indentation", current_line,
+                        current_position);
             _status = -1;
             break;
         }
 
-        if (current_position == 0 || char_get(fp, current_position - 1) == '\n') {
+        if (char_get(fp, current_position - 1) == '\n') {
             int spaces = space_consume(fp, &current_position);
             if (indent_stack->top->value < spaces) {
                 stack_push(indent_stack, spaces);
@@ -203,7 +231,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     free(digit_str);
 
                     if (indent_stack->top->value < spaces) {
-                        print_error("Indentation Error", "Inconsistent indentation", current_line);
+                        print_error(fp, "Indentation Error", "Unexpected indentation", current_line,
+                                    current_position);
                         _status = -1;
                         break;
                     }
@@ -220,53 +249,53 @@ int start_tokenization(FILE *fp, Token *token_array) {
             if (isdigit(current_char)) {
                 before_char = char_peek(fp, current_position - 1);
 
-                //digit starts with decimal
+                // digit starts with decimal
                 if (before_char == '.') {
                     char_concat(substring, before_char);
-                    //contains another starting decimal
+                    // contains another starting decimal
                     if ((char_peek(fp, current_position - 2)) == '.') {
-                        print_error("Lexical Error", "It must only contain one decimal",
-                                    current_line);
+                        print_error(fp, "Lexical Error", "It must only contain one decimal",
+                                    current_line, current_position);
                         return -1;
-                    //contains another decimal
+                        // contains another decimal
                     } else if (decimal_checker(fp, substring, &current_position) == 1) {
                         digits_get(fp, substring, &current_position);
-                        print_error("Lexical Error", "It must only contain one decimal",
-                                    current_line);
+                        print_error(fp, "Lexical Error", "It must only contain one decimal",
+                                    current_line, current_position);
                         return -1;
-                    //double
+                        // double
                     } else if (decimal_checker(fp, substring, &current_position) == 0) {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_INT, substring, "T_DBL");
-                    } 
-                }
-                else {
-                    //contains decimal
+                    }
+                } else {
+                    // contains decimal
                     if (decimal_checker(fp, substring, &current_position) == 1) {
                         current_position++;
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                        //contains another decimal
+                        // contains another decimal
                         if (decimal_checker(fp, substring, &current_position) == 1) {
-                            print_error("Lexical Error", "It must only contain one decimal",
-                                        current_line);
+                            print_error(fp, "Lexical Error", "It must only contain one decimal",
+                                        current_line, current_position);
                             _status = -1;
                             break;
                         }
-                    //int
+                        // int
                     } else if (decimal_checker(fp, substring, &current_position) == 0) {
                         digits_get(fp, substring, &current_position);
                         token_add(token_array, &token_count, T_INT, substring, "T_INT");
-                    } 
-                } *substring = '\0';
+                    }
+                }
+                *substring = '\0';
             }
 
             else if (isalnum(current_char) || current_char == '_') {
                 int word_get_status = word_get(fp, substring, &current_position);
 
                 if (word_get_status < 0) {
-                    print_error("Lexical Error", "Variable name exceeds character limit",
-                                current_line);
+                    print_error(fp, "Lexical Error", "Variable name exceeds character limit",
+                                current_line, current_position);
                     _status = -1;
                     break;
                 }
@@ -464,8 +493,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                         next_char = char_peek(fp, current_position);
                         if (next_char == '"') {
-                            print_error("Lexical Error",
-                                        "String must contain atleast one character", current_line);
+                            print_error(fp, "Lexical Error",
+                                        "String must contain atleast one character", current_line,
+                                        current_position);
                             _status = -1;
                             break;
                         }
@@ -481,8 +511,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                         current_char = char_get(fp, current_position);
                         if (current_char != '"') {
-                            print_error("Lexical Error", "Unterminated string literal",
-                                        current_line);
+                            print_error(fp, "Lexical Error", "Unterminated string literal",
+                                        current_line, current_position);
                             _status = -1;
                             break;
                         }
@@ -508,17 +538,17 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                     break;
                                 } else if (char_size == 0) {
                                     print_error(
-                                        "Lexical Error",
+                                        fp, "Lexical Error",
                                         "Single-quoted string must contain a single character",
-                                        current_line);
+                                        current_line, current_position);
                                     current_position--;
                                     _status = -1;
                                     break;
                                 } else {
-                                    print_error("Lexical Error",
+                                    print_error(fp, "Lexical Error",
                                                 "Single-quoted string must only "
                                                 "contain a single character",
-                                                current_line);
+                                                current_line, current_position);
                                     current_position--;
                                     _status = -1;
                                     break;
@@ -544,7 +574,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     case '?':
                         token_add(token_array, &token_count, T_QMARK, "?", "T_QMARK");
                         break;
-                    
+
                     case '.':
                         next_char = char_peek(fp, current_position + 1);
                         if (isdigit(next_char)) {
@@ -552,14 +582,12 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         } else if (next_char = char_peek(fp, current_position + 1) &&
                                                (isdigit(next_char))) {
                             break;
-                        } else if (char_peek(fp, current_position - 1) == '.' 
-                                    && isdigit(char_peek(fp, current_position - 2))) {
-                                        print_error("Lexical Error",
-                                                    "It must only contain 1 decimal",
-                                                    current_line);
-                                        return -1;
-                                    }
-                        else {
+                        } else if (char_peek(fp, current_position - 1) == '.' &&
+                                   isdigit(char_peek(fp, current_position - 2))) {
+                            print_error(fp, "Lexical Error", "It must only contain 1 decimal",
+                                        current_line, current_position);
+                            return -1;
+                        } else {
                             token_add(token_array, &token_count, T_DOT, ".", "T_DOT");
                             break;
                         }
