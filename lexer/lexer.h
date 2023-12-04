@@ -97,6 +97,7 @@ typedef enum {
     T_NEWLINE,
     T_INDENT,
     T_DEDENT,
+    T_EOF,
 
     // INVALID
     T_INVALID
