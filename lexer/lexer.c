@@ -521,13 +521,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     case '\'':
-                        token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                         current_position++;
 
                         while ((current_char = char_get(fp, current_position)) != EOF) {
                             if (current_char == '\n') {
-                                printf("Error: Not terminated");
-                                current_position--;
+                                print_error(fp, "Lexical Error", "Unterminated character literal",
+                                            current_line, current_position);
+                                _status = -1;
                                 break;
                             } else if (current_char == '\'') {
                                 int char_size = strlen(substring);
@@ -553,10 +553,26 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                     _status = -1;
                                     break;
                                 }
+                            } else {
+                                print_error(fp, "Lexical Error", "Unterminated character literal",
+                                            current_line, current_position);
+                                _status = -1;
+                                break;
                             }
 
                             char_concat(substring, current_char);
                             current_position++;
+                        }
+
+                        next_char = char_get(fp, current_position + 1);
+
+                        if (next_char == EOF || next_char == '\n') {
+                            print_error(fp, "Lexical Error", "Unterminated character literal",
+                                        current_line, current_position);
+                            _status = -1;
+                            break;
+                        } else {
+                            token_add(token_array, &token_count, T_SQUOTE, "'", "T_SQUOTE");
                         }
 
                         break;
