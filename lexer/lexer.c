@@ -331,6 +331,8 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     token_add(token_array, &token_count, T_ELSE, substring, "T_ELSE"); // adds token
                 } else if (strcmp(substring, "loop") == 0) {
                     token_add(token_array, &token_count, T_LOOP, substring, "T_LOOP"); // adds token
+                } else if (strcmp(substring, "in") == 0) {
+                    token_add(token_array, &token_count, T_IN, substring, "T_IN"); // adds token
                 } else if (strcmp(substring, "to") == 0) {
                     token_add(token_array, &token_count, T_TO, substring, "T_TO"); // adds token
                 } else if (strcmp(substring, "by") == 0) {
@@ -366,6 +368,12 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     token_add(token_array, &token_count, T_IS, substring, "T_IS"); // adds token
                 } else if (strcmp(substring, "as") == 0) {
                     token_add(token_array, &token_count, T_AS, substring, "T_AS"); // adds token
+                } else if (strcmp(substring, "input") == 0) {
+                    token_add(token_array, &token_count, T_INPUT, substring,
+                              "T_INPUT"); // adds token
+                } else if (strcmp(substring, "output") == 0) {
+                    token_add(token_array, &token_count, T_OUTPUT, substring,
+                              "T_OUTPUT"); // adds token
                 }
 
                 else {
@@ -687,10 +695,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     case '&':
                         token_add(token_array, &token_count, T_AMP, "&", "T_AMP");
                         break;
-
-                        // case '\t':
-                        //     token_add(token_array, &token_count, T_TAB, "\\t", "T_TAB");
-                        //     break;
 
                     case '\n':
                         current_line++;

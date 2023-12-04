@@ -99,6 +99,9 @@ typedef enum {
     T_DEDENT,
     T_EOF,
 
+    T_INPUT,
+    T_OUTPUT,
+
     // INVALID
     T_INVALID
 } token_t;
