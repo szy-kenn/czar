@@ -91,8 +91,6 @@ typedef enum {
 
     // COMMENT
     T_DDASH,
-    T_STAR_DDASH,
-    T_DDASH_STAR, // / *-- --*
 
     T_NEWLINE,
     T_INDENT,
