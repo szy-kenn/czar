@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     }
 
     // open the file
-    FILE *fp = fopen(czarFile, "r");
+    FILE *fp = fopen(czarFile, "rb");
 
     if (fp == NULL) {
         printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m`%s`\033[0;37m", czarFile);

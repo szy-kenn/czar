@@ -227,15 +227,16 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     char *digit_str = malloc(length + 1);
                     snprintf(digit_str, length + 1, "%d", indent_val);
 
-                    token_add(token_array, &token_count, T_DEDENT, digit_str, "T_DEDENT");
-                    free(digit_str);
-
                     if (indent_stack->top->value < spaces) {
                         print_error(fp, "Indentation Error", "Unexpected indentation", current_line,
                                     current_position);
+                        free(digit_str);
                         _status = -1;
                         break;
+                    } else {
+                        token_add(token_array, &token_count, T_DEDENT, digit_str, "T_DEDENT");
                     }
+                    free(digit_str);
                 }
             }
 
@@ -383,7 +384,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                 *substring = '\0';
             } else {
 
-                // TODO: array data type []
                 switch (current_char) {
                     case '+':
                         next_char = char_peek(fp, current_position + 1);
@@ -401,21 +401,15 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             token_add(token_array, &token_count, T_MINUS_EQL, "-=", "T_MINUS_EQL");
                             current_position++;
                         } else if (next_char == '-') {
-                            if (char_peek(fp, current_position + 2) == '*') {
-                                token_add(token_array, &token_count, T_DDASH_STAR, "--*",
-                                          "T_DDASH_STAR");
-                                current_position += 2;
-                                // TODO: consume comments
-                            } else {
-                                token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
-                                current_position++;
+                            token_add(token_array, &token_count, T_DDASH, "--", "T_DDASH");
+                            current_position++;
 
+                            current_char = char_get(fp, current_position);
+                            while (current_char != '\n' && current_char != EOF) {
+                                current_position++;
                                 current_char = char_get(fp, current_position);
-                                while (current_char != '\n' && current_char != EOF) {
-                                    current_position++;
-                                    current_char = char_get(fp, current_position);
-                                }
                             }
+
                         } else {
                             token_add(token_array, &token_count, T_MINUS, "-", "T_MINUS");
                         }
@@ -426,14 +420,6 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (next_char == '=') {
                             token_add(token_array, &token_count, T_MUL_EQL, "*=", "T_MUL_EQL");
                             current_position++;
-                        } else if (next_char == '-') {
-                            if (next_char == char_peek(fp, current_position + 2)) {
-                                token_add(token_array, &token_count, T_STAR_DDASH, "*--",
-                                          "T_STAR_DDASH");
-                                current_position += 2;
-                            } else {
-                                token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
-                            }
                         } else {
                             token_add(token_array, &token_count, T_MUL, "*", "T_MUL");
                         }
