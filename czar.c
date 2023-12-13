@@ -35,18 +35,24 @@ int save_tokens(Token *token_array, int arr_length, const char *outputFile) {
     }
 
     int spaces_length = (15 - strlen("TOKEN TYPE"));
-    char *spaces = malloc(spaces_length);
-    memset(spaces, ' ', spaces_length);
-    spaces[spaces_length] = '\0';
-    fprintf(fp, "TOKEN TYPE%sVALUE\n", spaces);
-    free(spaces);
+    char *init_spaces = malloc(sizeof(char) * spaces_length + 1);
+
+    for (int i = 0; i < spaces_length; i++) {
+        init_spaces[i] = ' ';
+    }
+    init_spaces[spaces_length] = '\0';
+
+    fprintf(fp, "TOKEN TYPE%sVALUE\n", init_spaces);
+    free(init_spaces);
 
     fprintf(fp, "====================\n");
 
     for (int i = 0; i < arr_length; i++) {
         int spaces_length = (15 - strlen(token_array[i].name));
-        char *spaces = malloc(spaces_length);
-        memset(spaces, ' ', spaces_length);
+        char *spaces = malloc(sizeof(char) * spaces_length + 1);
+        for (int i = 0; i < spaces_length; i++) {
+            spaces[i] = ' ';
+        }
         spaces[spaces_length] = '\0';
 
         fprintf(fp, "%s%s%s\n", token_array[i].name, spaces, token_array[i].value);
@@ -113,7 +119,10 @@ int main(int argc, char **argv) {
     token_count = start_tokenization(fp, token_array);
 
     if (token_count > 0) {
-        if (save_tokens(token_array, token_count, outputFile) < 0) {
+        tokens_print(token_array, token_count);
+
+        int tokens_save_res = save_tokens(token_array, token_count, outputFile);
+        if (tokens_save_res < 0) {
             printf("\033[0;31mTask failed. A problem has occured while opening a file.\033[0;37m");
         } else {
             printf("\033[0;32mDone:\033[0;37m Tokenization output saved in "
@@ -122,6 +131,8 @@ int main(int argc, char **argv) {
         }
     } else if (token_count == 0) {
         printf("\033[0;32mDone: \033[0;37mNo tokens created.\n");
+    } else {
+        printf("ERROR\n");
     }
 
     fclose(fp);
