@@ -497,7 +497,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         int string_length =
                             delimited_str_get(fp, NULL, &current_position, "\"\n", 2);
                         current_position -= string_length;
+
                         char *string_buffer = malloc(string_length + 1);
+                        *string_buffer = '\0';
+
                         delimited_str_get(fp, string_buffer, &current_position, "\"\n", 2);
                         token_add(token_array, &token_count, T_STR, string_buffer, "T_STR");
 
@@ -681,6 +684,9 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     case '&':
                         token_add(token_array, &token_count, T_AMP, "&", "T_AMP");
                         break;
+
+                    case '\r':
+                        current_position++;
 
                     case '\n':
                         current_line++;
