@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_BUFFER 100 // max buffer size for memory allocation
 #define REG_BUFFER 30 // regular buffer size for memory allocation
@@ -27,7 +28,6 @@ void get_file_ext(char *dest, const char *src) {
 }
 
 int save_tokens(Token *token_array, int arr_length, const char *outputFile) {
-    // tokens_print(token_array, arr_length);
     FILE *fp = fopen(outputFile, "w");
 
     if (fp == NULL) {
@@ -86,6 +86,8 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    clock_t begin = clock();
+
     // get the output txt file from the passed argument
     char outputFile[strcspn(argv[2], "\0")];
     strcpy(outputFile, argv[2]);
@@ -119,7 +121,7 @@ int main(int argc, char **argv) {
     token_count = start_tokenization(fp, token_array);
 
     if (token_count > 0) {
-        tokens_print(token_array, token_count);
+        // tokens_print(token_array, token_count);
 
         int tokens_save_res = save_tokens(token_array, token_count, outputFile);
         if (tokens_save_res < 0) {
@@ -137,5 +139,9 @@ int main(int argc, char **argv) {
 
     fclose(fp);
     tokens_free(token_array, token_count);
+
+    clock_t end = clock();
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("\nExecution Time: %fms", time_spent);
     return 0;
 }
