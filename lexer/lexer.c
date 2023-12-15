@@ -6,6 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* clear substring and increment cursor's current position */
+void cursor_advance(char *substring, int *cursor_position) {
+    *substring = '\0';
+    (*cursor_position)++;
+}
+
+int is_ident_char(char chr) { return isalnum(chr) || chr == '_'; }
+
 // get the character with the given positon in the file
 char char_get(FILE *fp, int position) {
     fseek(fp, position, SEEK_SET);
@@ -73,24 +81,21 @@ char decimal_checker(FILE *fp, char *dest, int *cur_pos) {
 }
 
 int word_get(FILE *fp, char *dest, int *cur_pos) {
-    char current_char;
+    char current_char = char_get(fp, *cur_pos);
     char next_char;
 
-    while (isalnum(current_char = char_get(fp, *cur_pos)) || current_char == '_') {
+    while (is_ident_char(current_char)) {
         if (strlen(dest) >= MAX_BUFFER) {
             return -1;
         }
-        // current_char = char_get(fp, *cur_pos);
         char_concat(dest, current_char);
+        current_char = char_get(fp, *cur_pos);
         (*cur_pos)++;
     }
 
     (*cur_pos)--;
-
     return 0;
 }
-
-int is_ident_char(char chr) { return isalnum(chr) || chr == '_'; }
 
 int is_delimiter(char chr, char *delimiters, int delimiter_count) {
     for (int i = 0; i < delimiter_count; i++) {
@@ -200,7 +205,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
     Stack *indent_stack = stack_create();
     stack_push(indent_stack, 0);
 
-    char *substring = malloc(sizeof(char) * MAX_BUFFER);
+    char *substring = (char *)malloc(sizeof(char) * MAX_BUFFER);
     *substring = '\0';
 
     while ((current_char = char_add(fp, substring, current_position)) != EOF) {
@@ -317,29 +322,31 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                 switch (current_char) {
                     case 'a':
-                        switch (char_add(fp, substring, ++current_position)) {
+                        next_char = char_get(fp, current_position);
+                        switch (next_char) {
+                            /* and */
                             case 'n':
-                                /* and */
-                                if (char_add(fp, substring, ++current_position) == 'd') {
+                                char_concat(substring, next_char);
+                                next_char = char_get(fp, current_position + 1);
+                                if (next_char == 'd') {
                                     /*
                                      * check if there's no valid identifier char in the next input
                                      */
                                     if (!is_ident_char(char_get(fp, current_position + 1))) {
                                         token_add(token_array, &token_count, T_AND, substring,
                                                   "T_AND");
-                                        current_position++;
-                                        *substring = '\0';
+                                        cursor_advance(substring, &current_position);
                                         continue;
                                     }
                                 }
                                 break;
 
+                            /* as */
                             case 's':
-                                /* as */
+                                char_add(fp, substring, ++current_position);
                                 if (!is_ident_char(char_get(fp, current_position + 1))) {
                                     token_add(token_array, &token_count, T_AS, substring, "T_AS");
-                                    current_position++;
-                                    *substring = '\0';
+                                    cursor_advance(substring, &current_position);
                                     continue;
                                 }
                                 break;
@@ -351,8 +358,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         if (char_add(fp, substring, ++current_position) == 'y') {
                             if (!is_ident_char(char_get(fp, current_position + 1))) {
                                 token_add(token_array, &token_count, T_BY, substring, "T_BY");
-                                current_position++;
-                                *substring = '\0';
+                                cursor_advance(substring, &current_position);
                                 continue;
                             }
                         }
@@ -364,8 +370,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             char_add(fp, substring, ++current_position) == 'r') {
                             if (!is_ident_char(char_get(fp, current_position + 1))) {
                                 token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
-                                current_position++;
-                                *substring = '\0';
+                                cursor_advance(substring, &current_position);
                                 continue;
                             }
                         }
@@ -377,26 +382,25 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             char_add(fp, substring, ++current_position) == 'l') {
                             if (!is_ident_char(char_get(fp, current_position + 1))) {
                                 token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
-                                current_position++;
-                                *substring = '\0';
+                                cursor_advance(substring, &current_position);
                                 continue;
                             }
                         }
                         break;
 
                     case 'e':
-                        next_char = char_add(fp, substring, ++current_position);
+                        next_char = char_get(fp, current_position);
 
                         switch (next_char) {
                             /* else */
                             case 'l':
+                                char_add(fp, substring, ++current_position);
                                 if (char_add(fp, substring, ++current_position) == 's' &&
                                     char_add(fp, substring, ++current_position) == 'e') {
                                     if (!is_ident_char(char_get(fp, current_position + 1))) {
                                         token_add(token_array, &token_count, T_ELSE, substring,
                                                   "T_ELSE");
-                                        current_position++;
-                                        *substring = '\0';
+                                        cursor_advance(substring, &current_position);
                                         continue;
                                     }
                                 }
@@ -404,13 +408,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                             /* enum */
                             case 'n':
+                                char_add(fp, substring, ++current_position);
                                 if (char_add(fp, substring, ++current_position) == 'u' &&
                                     char_add(fp, substring, ++current_position) == 'm') {
                                     if (!is_ident_char(char_get(fp, current_position + 1))) {
                                         token_add(token_array, &token_count, T_ENUM, substring,
                                                   "T_ENUM");
-                                        current_position++;
-                                        *substring = '\0';
+                                        cursor_advance(substring, &current_position);
                                         continue;
                                     }
                                 }
@@ -430,8 +434,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                                     char_add(fp, substring, ++current_position) == 'e') {
                                     token_add(token_array, &token_count, T_FALSE, substring,
                                               "T_FALSE");
-                                    current_position++;
-                                    *substring = '\0';
+                                    cursor_advance(substring, &current_position);
                                     continue;
                                 }
                                 break;
@@ -462,8 +465,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
 
                             if (!is_ident_char(char_get(fp, current_position + 1))) {
                                 token_add(token_array, &token_count, T_DTYPE, substring, "T_INT");
-                                current_position++;
-                                *substring = '\0';
+                                cursor_advance(substring, &current_position);
                                 continue;
                             }
                         }
@@ -484,8 +486,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             next_char = char_get(fp, current_position + 1);
                             if (!is_ident_char(char_get(fp, current_position + 1))) {
                                 token_add(token_array, &token_count, T_OR, substring, "T_OR");
-                                current_position++;
-                                *substring = '\0';
+                                cursor_advance(substring, &current_position);
                                 continue;
                             }
                         }
@@ -499,8 +500,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             next_char = char_get(fp, current_position + 1);
                             if (!is_ident_char(char_get(fp, current_position + 1))) {
                                 token_add(token_array, &token_count, T_DTYPE, substring, "T_STR");
-                                current_position++;
-                                *substring = '\0';
+                                cursor_advance(substring, &current_position);
                                 continue;
                             }
                         }
@@ -517,6 +517,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
                 }
 
+                /* increment current position since it has identifier chars  */
                 ++current_position;
                 int word_get_status = word_get(fp, substring, &current_position);
 
@@ -845,15 +846,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
-                        char_concat(substring, current_char);
                         token_add(token_array, &token_count, T_INVALID, substring, "T_INVALID");
                         *substring = '\0';
                         break;
                 }
             }
         }
-
-        current_position++;
+        cursor_advance(substring, &current_position);
     }
 
     if (current_char == EOF) {
