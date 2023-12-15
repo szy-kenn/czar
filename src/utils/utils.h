@@ -5,6 +5,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum { S_START, S_IN, S_ACCEPT, S_ERROR } State;
+typedef enum { S_START, S_INSIDE, S_FINAL, S_ERROR } State;
 
 #endif
