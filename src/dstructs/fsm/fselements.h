@@ -7,13 +7,13 @@
 typedef struct state_node_t StateNode;
 
 typedef struct state_node_t {
-    int state_type_count;
-    State *types;
+    int idx;
+    bool is_accepting_state;
     Hashmap *delta;
 } StateNode;
 
 void fsnode_print(StateNode *state_node);
-StateNode *fsnode_create(int state_type_count, ...);
+StateNode *fsnode_create(int idx, bool is_accepting_state);
 void fsnode_free(StateNode *state_node);
 void fsnode_add_transition(StateNode *state_node, char *inputs, StateNode *next_state);
 

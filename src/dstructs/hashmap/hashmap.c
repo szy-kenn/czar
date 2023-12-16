@@ -20,8 +20,8 @@ void hashmap_init(Hashmap *hashmap) {
 void hashmap_add(Hashmap *hashmap, char *key, void *value) {
     int idx = hash(key);
     if (hashmap->table[idx] != NULL) {
-        printf("COLLISION!!!");
-        return;
+        printf("Error: Hashmap Collision");
+        exit(-4);
     }
     Pair *pair = malloc(sizeof(Pair));
     pair->key = key;
@@ -29,9 +29,9 @@ void hashmap_add(Hashmap *hashmap, char *key, void *value) {
     hashmap->table[idx] = pair;
 };
 
-Pair *hashmap_get(Hashmap *hashmap, char *key) {
+void *hashmap_get(Hashmap *hashmap, char *key) {
     int idx = hash(key);
-    return hashmap->table[idx]->value;
+    return (hashmap->table[idx] != NULL ? hashmap->table[idx]->value : NULL);
 }
 
 void hashmap_update(Hashmap *hashmap, char *key, void *new_value) {
@@ -52,6 +52,12 @@ void hashmap_delete(Hashmap *hashmap, char *key) {
 void hashmap_free(Hashmap *hashmap) {
     for (int i = 0; i < TABLE_SIZE; i++) {
         if (hashmap->table[i] != NULL) {
+            free(hashmap->table[i]->key);
+            /*
+             * this is just a pointer to another state node that will get freed in the loop in
+             * another free function in fsmachine
+             */
+            // free(hashmap->table[i]->value);
             free(hashmap->table[i]);
         }
     }

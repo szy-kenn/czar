@@ -3,24 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-StateNode *fsnode_create(int state_type_count, ...) {
+StateNode *fsnode_create(int idx, bool is_accepting_state) {
 
     StateNode *state_node = (StateNode *)malloc(sizeof(StateNode));
-    State *types = (State *)malloc(sizeof(State) * state_type_count);
-
-    va_list ptr;
-    va_start(ptr, state_type_count);
-
-    for (int i = 0; i < state_type_count; i++) {
-        types[i] = va_arg(ptr, State);
-    }
-
-    va_end(ptr);
-
+    state_node->idx = idx;
     state_node->delta = malloc(sizeof(Hashmap));
     hashmap_init(state_node->delta);
-    state_node->state_type_count = state_type_count;
-    state_node->types = types;
+    state_node->is_accepting_state = is_accepting_state;
     return state_node;
 }
 
@@ -40,7 +29,6 @@ void fsnode_print(StateNode *state_node) {
 }
 
 void fsnode_free(StateNode *state_node) {
-    free(state_node->types);
     hashmap_free(state_node->delta);
     free(state_node);
 }
