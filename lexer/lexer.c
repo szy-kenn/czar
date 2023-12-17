@@ -6,6 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* clear substring and increment cursor's current position */
+void cursor_advance(char *substring, int *cursor_position) {
+    *substring = '\0';
+    (*cursor_position)++;
+}
+
+int is_ident_char(char chr) { return isalnum(chr) || chr == '_'; }
+
 // get the character with the given positon in the file
 char char_get(FILE *fp, int position) {
     fseek(fp, position, SEEK_SET);
@@ -27,6 +35,12 @@ void char_concat(char *dest, char new_chr) {
     int length = strcspn(dest, "\0");
     dest[length] = new_chr;
     dest[length + 1] = '\0';
+}
+
+char char_add(FILE *fp, char *dest, int position) {
+    char current_char = char_get(fp, position);
+    char_concat(dest, current_char);
+    return current_char;
 }
 
 void digits_get(FILE *fp, char *dest, int *cur_pos) {
@@ -67,20 +81,19 @@ char decimal_checker(FILE *fp, char *dest, int *cur_pos) {
 }
 
 int word_get(FILE *fp, char *dest, int *cur_pos) {
-    char current_char;
+    char current_char = char_get(fp, *cur_pos);
     char next_char;
 
-    while (isalnum(current_char = char_get(fp, *cur_pos)) || current_char == '_') {
+    while (is_ident_char(current_char)) {
         if (strlen(dest) >= MAX_BUFFER) {
             return -1;
         }
-        // current_char = char_get(fp, *cur_pos);
         char_concat(dest, current_char);
+        current_char = char_get(fp, *cur_pos);
         (*cur_pos)++;
     }
 
     (*cur_pos)--;
-
     return 0;
 }
 
@@ -192,10 +205,10 @@ int start_tokenization(FILE *fp, Token *token_array) {
     Stack *indent_stack = stack_create();
     stack_push(indent_stack, 0);
 
-    char *substring = malloc(sizeof(char) * MAX_BUFFER);
+    char *substring = (char *)malloc(sizeof(char) * MAX_BUFFER);
     *substring = '\0';
 
-    while ((current_char = char_get(fp, current_position)) != EOF) {
+    while ((current_char = char_add(fp, substring, current_position)) != EOF) {
 
         char next_char;
 
@@ -292,6 +305,220 @@ int start_tokenization(FILE *fp, Token *token_array) {
             }
 
             else if (isalnum(current_char) || current_char == '_') {
+
+                /**
+                 * @brief
+                 * In scanning for the keywords / reserved words,
+                 * it must follow the finite state machine developed in the documentation.
+                 * Check first for the first input, then check the following inputs for any valid
+                 * inputs that will fall under the keywords category
+                 *
+                 * @example
+                 * Scan and use the char_add() function that will essentially get the current
+                 * character in the file pointer and add it in a temporary char pointer (char*
+                 * substring) that holds the current value of the string, then check if it is
+                 * accepted in the next state, if not, then it will fall under the identifier token
+                 */
+
+                switch (current_char) {
+                    case 'a':
+                        next_char = char_get(fp, current_position);
+                        switch (next_char) {
+                            /* and */
+                            case 'n':
+                                char_concat(substring, next_char);
+                                next_char = char_get(fp, current_position + 1);
+                                if (next_char == 'd') {
+                                    /*
+                                     * check if there's no valid identifier char in the next input
+                                     */
+                                    if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                        token_add(token_array, &token_count, T_AND, substring,
+                                                  "T_AND");
+                                        cursor_advance(substring, &current_position);
+                                        continue;
+                                    }
+                                }
+                                break;
+
+                            /* as */
+                            case 's':
+                                char_add(fp, substring, ++current_position);
+                                if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                    token_add(token_array, &token_count, T_AS, substring, "T_AS");
+                                    cursor_advance(substring, &current_position);
+                                    continue;
+                                }
+                                break;
+                        }
+                        break;
+
+                    case 'b':
+                        /* by */
+                        if (char_add(fp, substring, ++current_position) == 'y') {
+                            if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                token_add(token_array, &token_count, T_BY, substring, "T_BY");
+                                cursor_advance(substring, &current_position);
+                                continue;
+                            }
+                        }
+                        break;
+
+                    case 'c':
+                        /* chr */
+                        if (char_add(fp, substring, ++current_position) == 'h' &&
+                            char_add(fp, substring, ++current_position) == 'r') {
+                            if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                token_add(token_array, &token_count, T_CHR, substring, "T_CHR");
+                                cursor_advance(substring, &current_position);
+                                continue;
+                            }
+                        }
+                        break;
+
+                    case 'd':
+                        /* dbl */
+                        if (char_add(fp, substring, ++current_position) == 'b' &&
+                            char_add(fp, substring, ++current_position) == 'l') {
+                            if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                token_add(token_array, &token_count, T_DBL, substring, "T_DBL");
+                                cursor_advance(substring, &current_position);
+                                continue;
+                            }
+                        }
+                        break;
+
+                    case 'e':
+                        next_char = char_get(fp, current_position);
+
+                        switch (next_char) {
+                            /* else */
+                            case 'l':
+                                char_add(fp, substring, ++current_position);
+                                if (char_add(fp, substring, ++current_position) == 's' &&
+                                    char_add(fp, substring, ++current_position) == 'e') {
+                                    if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                        token_add(token_array, &token_count, T_ELSE, substring,
+                                                  "T_ELSE");
+                                        cursor_advance(substring, &current_position);
+                                        continue;
+                                    }
+                                }
+                                break;
+
+                            /* enum */
+                            case 'n':
+                                char_add(fp, substring, ++current_position);
+                                if (char_add(fp, substring, ++current_position) == 'u' &&
+                                    char_add(fp, substring, ++current_position) == 'm') {
+                                    if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                        token_add(token_array, &token_count, T_ENUM, substring,
+                                                  "T_ENUM");
+                                        cursor_advance(substring, &current_position);
+                                        continue;
+                                    }
+                                }
+                                break;
+                        }
+                        break;
+
+                    case 'f':
+                        next_char = char_add(fp, substring, current_position);
+
+                        switch (next_char) {
+
+                            /* false */
+                            case 'a':
+                                if (char_add(fp, substring, ++current_position) == 'l' &&
+                                    char_add(fp, substring, ++current_position) == 's' &&
+                                    char_add(fp, substring, ++current_position) == 'e') {
+                                    token_add(token_array, &token_count, T_FALSE, substring,
+                                              "T_FALSE");
+                                    cursor_advance(substring, &current_position);
+                                    continue;
+                                }
+                                break;
+
+                            /* fixed */
+                            case 'i':
+                                break;
+
+                            /* flex */
+                            case 'l':
+
+                                break;
+                        }
+                        break;
+
+                    case 'g':
+                        // global
+                        break;
+
+                    case 'i':
+                        // in
+                        // input
+                        // is
+
+                        /* int */
+                        if (char_add(fp, substring, ++current_position) == 'n' &&
+                            char_add(fp, substring, ++current_position) == 't') {
+
+                            if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                token_add(token_array, &token_count, T_DTYPE, substring, "T_INT");
+                                cursor_advance(substring, &current_position);
+                                continue;
+                            }
+                        }
+                        break;
+
+                    case 'l':
+                        // loop
+                        break;
+
+                    case 'n':
+                        // nil
+                        // not
+                        break;
+
+                    case 'o':
+                        // or
+                        if (char_add(fp, substring, ++current_position) == 'r') {
+                            next_char = char_get(fp, current_position + 1);
+                            if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                token_add(token_array, &token_count, T_OR, substring, "T_OR");
+                                cursor_advance(substring, &current_position);
+                                continue;
+                            }
+                        }
+                        // output
+                        break;
+
+                    case 's':
+                        /* `str` keyword */
+                        if (char_add(fp, substring, ++current_position) == 't' &&
+                            char_add(fp, substring, ++current_position) == 'r') {
+                            next_char = char_get(fp, current_position + 1);
+                            if (!is_ident_char(char_get(fp, current_position + 1))) {
+                                token_add(token_array, &token_count, T_DTYPE, substring, "T_STR");
+                                cursor_advance(substring, &current_position);
+                                continue;
+                            }
+                        }
+                        break;
+
+                    case 't':
+                        // then
+                        // to
+                        // true
+
+                    case 'w':
+                        // when
+                        // while
+                        break;
+                }
+
+                /* increment current position since it has identifier chars  */
+                ++current_position;
                 int word_get_status = word_get(fp, substring, &current_position);
 
                 if (word_get_status < 0) {
@@ -301,87 +528,11 @@ int start_tokenization(FILE *fp, Token *token_array) {
                     break;
                 }
 
-                // if the substring contains an underscore, then it is an identifier
-                if (strchr(substring, '_') != NULL) {
-                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID");
-                }
-                // tokenization for keywords (datatype)
-                else if (strcmp(substring, "int") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring,
-                              "T_DTYPE"); // adds token
-                } else if (strcmp(substring, "str") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring,
-                              "T_DTYPE"); // adds token
-                } else if (strcmp(substring, "chr") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring,
-                              "T_DTYPE"); // adds token
-                } else if (strcmp(substring, "dbl") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring,
-                              "T_DTYPE"); // adds token
-                } else if (strcmp(substring, "bool") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring,
-                              "T_DTYPE"); // adds token
-                } else if (strcmp(substring, "nil") == 0) {
-                    token_add(token_array, &token_count, T_DTYPE, substring,
-                              "T_DTYPE"); // adds token
-                }
-                // tokenization for keywords (control)
-                else if (strcmp(substring, "when") == 0) {
-                    token_add(token_array, &token_count, T_WHEN, substring, "T_WHEN"); // adds token
-                } else if (strcmp(substring, "else") == 0) {
-                    token_add(token_array, &token_count, T_ELSE, substring, "T_ELSE"); // adds token
-                } else if (strcmp(substring, "loop") == 0) {
-                    token_add(token_array, &token_count, T_LOOP, substring, "T_LOOP"); // adds token
-                } else if (strcmp(substring, "in") == 0) {
-                    token_add(token_array, &token_count, T_IN, substring, "T_IN"); // adds token
-                } else if (strcmp(substring, "to") == 0) {
-                    token_add(token_array, &token_count, T_TO, substring, "T_TO"); // adds token
-                } else if (strcmp(substring, "by") == 0) {
-                    token_add(token_array, &token_count, T_BY, substring, "T_BY"); // adds token
-                } else if (strcmp(substring, "while") == 0) {
-                    token_add(token_array, &token_count, T_WHILE, substring,
-                              "T_WHILE"); // adds token
-                }
-
-                // tokenization for reserved words
-                else if (strcmp(substring, "true") == 0) {
-                    token_add(token_array, &token_count, T_TRUE, substring, "T_TRUE"); // adds token
-                } else if (strcmp(substring, "false") == 0) {
-                    token_add(token_array, &token_count, T_FALSE, substring,
-                              "T_FALSE"); // adds token
-                } else if (strcmp(substring, "and") == 0) {
-                    token_add(token_array, &token_count, T_AND, substring, "T_AND"); // adds token
-                } else if (strcmp(substring, "or") == 0) {
-                    token_add(token_array, &token_count, T_OR, substring, "T_OR"); // adds token
-                } else if (strcmp(substring, "not") == 0) {
-                    token_add(token_array, &token_count, T_NOT, substring, "T_NOT"); // adds token
-                } else if (strcmp(substring, "global") == 0) {
-                    token_add(token_array, &token_count, T_GLOBAL, substring,
-                              "T_GLOBAL"); // adds token
-                } else if (strcmp(substring, "fixed") == 0) {
-                    token_add(token_array, &token_count, T_FIXED, substring,
-                              "T_FIXED"); // adds token
-                } else if (strcmp(substring, "flex") == 0) {
-                    token_add(token_array, &token_count, T_FLEX, substring, "T_FLEX"); // adds token
-                } else if (strcmp(substring, "enum") == 0) {
-                    token_add(token_array, &token_count, T_ENUM, substring, "T_ENUM"); // adds token
-                } else if (strcmp(substring, "is") == 0) {
-                    token_add(token_array, &token_count, T_IS, substring, "T_IS"); // adds token
-                } else if (strcmp(substring, "as") == 0) {
-                    token_add(token_array, &token_count, T_AS, substring, "T_AS"); // adds token
-                } else if (strcmp(substring, "input") == 0) {
-                    token_add(token_array, &token_count, T_INPUT, substring,
-                              "T_INPUT"); // adds token
-                } else if (strcmp(substring, "output") == 0) {
-                    token_add(token_array, &token_count, T_OUTPUT, substring,
-                              "T_OUTPUT"); // adds token
-                }
-
-                else {
-                    token_add(token_array, &token_count, T_IDENT, substring, "T_ID"); // adds token
-                }
-
+                token_add(token_array, &token_count, T_IDENT, substring, "T_IDENT");
+                current_position++;
                 *substring = '\0';
+                continue;
+
             } else {
 
                 switch (current_char) {
@@ -408,6 +559,7 @@ int start_tokenization(FILE *fp, Token *token_array) {
                             while (current_char != '\n' && current_char != EOF) {
                                 current_position++;
                                 current_char = char_get(fp, current_position);
+                                // TODO: tokenize the comments
                             }
 
                         } else {
@@ -694,15 +846,13 @@ int start_tokenization(FILE *fp, Token *token_array) {
                         break;
 
                     default:
-                        char_concat(substring, current_char);
                         token_add(token_array, &token_count, T_INVALID, substring, "T_INVALID");
                         *substring = '\0';
                         break;
                 }
             }
         }
-
-        current_position++;
+        cursor_advance(substring, &current_position);
     }
 
     if (current_char == EOF) {
