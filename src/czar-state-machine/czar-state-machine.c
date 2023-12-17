@@ -96,6 +96,24 @@ StateMachine *czar_state_machine_init() {
     int dbl_idx = fsmachine_state_add(state_machine, true, T_DTYPE);
 
     /* ===== dbl ===== */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("d"), a_idx);
+
+    /* d -> identifier state */
+    fsmachine_transition_add(state_machine, d_idx, charset_excludes(IDENTIFIER_SET, "b"),
+                             ident_idx);
+
+    /* d -> db */
+    fsmachine_transition_add(state_machine, d_idx, charset_create("b"), an_idx);
+
+    /* db -> identifier state */
+    fsmachine_transition_add(state_machine, db_idx, charset_excludes(IDENTIFIER_SET, "l"),
+                             ident_idx);
+
+    /* db -> dbl */
+    fsmachine_transition_add(state_machine, db_idx, charset_create("l"), and_idx);
+
+    /* dbl -> identifier state */
+    fsmachine_transition_add(state_machine, dbl_idx, charset_create(IDENTIFIER_SET), ident_idx);
 
     /* ========== E ========== */
     int e_idx = fsmachine_state_add(state_machine, true, T_IDENT);
