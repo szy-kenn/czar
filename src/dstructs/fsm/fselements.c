@@ -3,13 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-StateNode *fsnode_create(int idx, bool is_accepting_state) {
+StateNode *fsnode_create(int idx, bool is_accepting_state, int output) {
 
     StateNode *state_node = (StateNode *)malloc(sizeof(StateNode));
     state_node->idx = idx;
     state_node->delta = malloc(sizeof(Hashmap));
     hashmap_init(state_node->delta);
     state_node->is_accepting_state = is_accepting_state;
+    state_node->output = output;
     return state_node;
 }
 

@@ -14,7 +14,7 @@ typedef struct {
 void fsmachine_initialize(StateMachine *state_machine);
 void fsmachine_transition_add(StateMachine *state_machine, int current_state_idx, char *inputs,
                               int next_state_idx);
-StateNode *fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state);
+int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state, int output);
 StateNode *fsmachine_state_get(StateMachine *state_machine, int idx);
 void fsmachine_print(StateMachine *state_machine);
 void fsmachine_free(StateMachine *state_machine);

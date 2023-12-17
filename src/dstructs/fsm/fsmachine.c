@@ -3,6 +3,7 @@
 #include "../../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static void _fsmachine_print(StateNode *state_node) {
     StateNode *current_state = state_node;
@@ -76,7 +77,7 @@ StateNode *fsmachine_state_get(StateMachine *state_machine, int idx) {
     return NULL;
 }
 
-StateNode *fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state) {
+int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state, int output) {
     if (state_machine->state_memory < state_machine->state_count + 1) {
         int old_memory = state_machine->state_memory;
         state_machine->state_memory = capacity_expand(old_memory);
@@ -86,22 +87,35 @@ StateNode *fsmachine_state_add(StateMachine *state_machine, bool is_accepting_st
     }
 
     state_machine->states[state_machine->state_count] =
-        fsnode_create(state_machine->state_count, is_accepting_state);
+        fsnode_create(state_machine->state_count, is_accepting_state, output);
 
     if (state_machine->state_count == 0) {
         state_machine->init_state = state_machine->states[state_machine->state_count];
     }
 
     state_machine->state_count++;
-    return state_machine->states[state_machine->state_count];
+    return state_machine->state_count - 1;
 }
 
+/* pass a dynamically allocated char *inputs */
 void fsmachine_transition_add(StateMachine *state_machine, int current_state_idx, char *inputs,
                               int next_state_idx) {
     StateNode *current_state, *next_state;
     current_state = fsmachine_state_get(state_machine, current_state_idx);
     next_state = fsmachine_state_get(state_machine, next_state_idx);
-    fsnode_add_transition(current_state, inputs, next_state);
+
+    int current = 0;
+    while (inputs[current] != '\0') {
+
+        char *tmp;
+        tmp = malloc(2);
+        *tmp = inputs[current];
+        *(tmp + 1) = '\0';
+        fsnode_add_transition(current_state, tmp, next_state);
+        current++;
+    }
+
+    free(inputs);
 }
 
 void fsmachine_initialize(StateMachine *state_machine) {

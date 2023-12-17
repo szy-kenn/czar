@@ -1,4 +1,6 @@
+#include "czar-state-machine/czar-state-machine.h"
 #include "file_handler/file_handler.h"
+#include "lexer/lexer.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,9 +85,15 @@ int main(int argc, char **argv) {
     }
 
     char *source_code = get_file_content(czar_file);
-    printf("%s", source_code);
 
-    // // ==================== start lexical analysis here ==================== //
+    // ==================== start lexical analysis here ==================== //
+
+    StateMachine *czar_state_machine = czar_state_machine_init();
+    int token_count = 0;
+    lexer_initialize(source_code, czar_state_machine);
+    lexer_start();
+
+    printf("done!");
 
     // // create array of tokens (for symbol table)
     // Token *token_array = (Token *)malloc(sizeof(Token) * MAX_BUFFER);
@@ -113,6 +121,8 @@ int main(int argc, char **argv) {
     // tokens_free(token_array, token_count);
 
     free(source_code);
+    free(czar_state_machine);
+    lexer_free();
 
     clock_t end = clock();
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;

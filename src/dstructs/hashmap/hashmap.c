@@ -1,16 +1,29 @@
 #include "hashmap.h"
+#include "../../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-unsigned long hash(unsigned char *str) {
-    unsigned long hash = 5381;
-    int c;
+// unsigned long hash(unsigned char *str) {
+//     unsigned long hash = 5381;
+//     int c;
 
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+//     while (c = *str++)
+//         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-    return hash % TABLE_SIZE;
+//     return hash % TABLE_SIZE;
+// }
+
+unsigned int hash(char *str) {
+    unsigned int h;
+    unsigned char *p;
+
+    h = 0;
+    for (p = (unsigned char *)str; *p != '\0'; p++)
+        h = 37 * h + *p;
+    return h % TABLE_SIZE;
 }
+
 void hashmap_init(Hashmap *hashmap) {
     for (int i = 0; i < TABLE_SIZE; i++) {
         hashmap->table[i] = NULL;
@@ -19,6 +32,7 @@ void hashmap_init(Hashmap *hashmap) {
 
 void hashmap_add(Hashmap *hashmap, char *key, void *value) {
     int idx = hash(key);
+    // printf("%s", key);
     if (hashmap->table[idx] != NULL) {
         printf("Error: Hashmap Collision");
         exit(-4);

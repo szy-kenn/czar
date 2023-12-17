@@ -1,8 +1,13 @@
 #ifndef LEXER_H_
 #define LEXER_H_
 
+#include "../dstructs/fsm/fsmachine.h"
+#include "../dstructs/fsm/fsutils.h"
+#include "../memory_manager/memory_manager.h"
 #include "../utils/utils.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef enum {
     // operators
@@ -45,7 +50,10 @@ typedef enum {
 
     // DATA TYPES (RESERVED WORD) / IDENTIFIER
     T_DTYPE,
+
+    // literals
     T_IDENT,
+    T_NUMBER,
 
     // keywords
     T_LOOP,
@@ -102,27 +110,34 @@ typedef enum {
     T_OUTPUT,
 
     // INVALID
-    T_INVALID
+    T_INVALID,
+    T_ERROR
 } token_t;
 
 typedef struct {
     int key;
     token_t token_type;
-    const char *start;
-    int length;
+    char *lexeme;
     int line;
     int col;
 } Token;
 
 typedef struct {
+    StateMachine *state_machine;
+    StateNode *current_state;
+    Token *token_array;
+    int token_count;
+    int token_memory;
     const char *source;
-    State state;
-    int position;
+    int start;
+    int current;
     int line;
 } Lexer;
 
 void tokens_print(Token *token_array, int tokenCount);
-void tokens_free(Token *token_array, int arr_length);
-void lexer_initialize(const char *src);
+void tokens_free(Token *token_array);
+void lexer_initialize(char *src, StateMachine *state_machine);
+void lexer_start();
+void lexer_free();
 
 #endif

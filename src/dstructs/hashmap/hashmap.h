@@ -1,4 +1,4 @@
-#define TABLE_SIZE 10
+#define TABLE_SIZE 200
 
 typedef struct {
     char *key;
