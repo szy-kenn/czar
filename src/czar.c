@@ -93,10 +93,11 @@ int main(int argc, char **argv) {
     // ==================== start lexical analysis here ==================== //
 
     StateMachine *czar_state_machine = czar_state_machine_init();
+    StateMachine *indentation_state_machine = indentation_state_machine_init();
     int token_count = 0;
-    lexer_initialize(source_code, czar_state_machine);
+    lexer_initialize(source_code, czar_state_machine,
+                     indentation_state_machine);
     lexer_start();
-
     printf("done!");
 
     // // create array of tokens (for symbol table)
@@ -126,6 +127,7 @@ int main(int argc, char **argv) {
 
     free(source_code);
     free(czar_state_machine);
+    free(indentation_state_machine);
     lexer_free();
 
     clock_t end = clock();

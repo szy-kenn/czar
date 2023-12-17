@@ -1,11 +1,7 @@
 #include "lexer.h"
-#include "../czar-state-machine/czar-state-machine.h"
 #include <stdio.h>
 
 Lexer lexer;
-StateMachine *indentation_state_machine;
-StateNode *current_indentation_state;
-int indent_val = 0;
 
 // gets the current character, and updates the position
 char char_get() { return lexer.source[lexer.current++]; }
@@ -51,19 +47,51 @@ void token_add(char *lexeme) {
     lexer.token_count++;
 }
 
-void indentation_check(char current_char) {
-    StateNode *indent_next_state =
-        transition_from(current_indentation_state, current_char);
-    current_indentation_state = indent_next_state;
+void escape_char_print(char c) {
 
-    if (current_indentation_state) {
-        switch (current_indentation_state->output) {
+    switch (c) {
+        case '\n':
+            printf("\\n");
+            break;
+        case '\r':
+            printf("\\r");
+            break;
+
+        case '\t':
+            printf("\\t");
+            break;
+
+        default:
+            printf("%c", c);
+            break;
+    }
+}
+
+void token_print(Token *token) {
+    printf("%03d | %04d | ", token->key, token->token_type);
+    for (int i = 0; i < strlen(token->lexeme); i++) {
+        escape_char_print(token->lexeme[i]);
+    }
+    printf("\n");
+}
+
+void indentation_check(char current_char) {
+
+    StateNode *indent_next_state =
+        transition_from(lexer.indent_current_state, current_char);
+
+    if (indent_next_state != NULL) {
+        lexer.indent_current_state = indent_next_state;
+        switch (lexer.indent_current_state->output) {
             case 1:
-                indent_val++;
+                lexer.indent_val++;
                 break;
             case T_INDENT:
-                printf("Indent Value: %d\n", indent_val);
-                indent_val = 0;
+                printf("Indent Value: %d\n", lexer.indent_val);
+                char *indent = malloc(7);
+                strcpy(indent, "INDENT");
+                token_add(indent);
+                lexer.indent_val = 0;
                 break;
             default:
                 break;
@@ -71,9 +99,11 @@ void indentation_check(char current_char) {
     }
 }
 
-void lexer_initialize(char *src, StateMachine *state_machine) {
+void lexer_initialize(char *src, StateMachine *state_machine,
+                      StateMachine *indent_state_machine) {
     lexer.source = src;
     lexer.state_machine = state_machine;
+    lexer.indent_state_machine = indent_state_machine;
     lexer.line = 1;
     lexer.start = 0;
     lexer.current = 0;
@@ -81,14 +111,15 @@ void lexer_initialize(char *src, StateMachine *state_machine) {
     lexer.token_memory = 0;
     lexer.token_array = NULL;
     lexer.current_state = NULL;
-
-    indentation_state_machine = indentation_state_machine_init();
-    current_indentation_state = indentation_state_machine->init_state;
+    lexer.indent_current_state = NULL;
+    lexer.indent_val = 0;
 }
 
 void lexer_start() {
     lexer.current_state = lexer.state_machine->init_state;
-    printf("##### STARTING LEXICAL ANALYSIS #####\n");
+    lexer.indent_current_state = lexer.indent_state_machine->init_state;
+
+    printf("========== STARTING LEXICAL ANALYSIS ==========\n");
 
     char current_char = char_get();
 
@@ -107,33 +138,34 @@ void lexer_start() {
             StateNode *next_state =
                 transition_from(lexer.current_state, current_char);
 
-            /*
+            /**
              * if we landed to an existing state, then get the next input
              * that will be used in the next iteration
              */
 
             if (next_state != NULL) {
-                printf("| q%d -- %c --> q%d | \n", lexer.current_state->idx,
-                       current_char, next_state->idx);
+                printf("| q%d - ", lexer.current_state->idx);
+                escape_char_print(current_char);
+                printf(" -> q%d | \n", next_state->idx);
                 current_char = char_get();
                 lexer.current_state = next_state;
             }
 
             /**
-             * if the next state is NULL, meaning the input stream ends here,
-             * and we'll add a token depending on what state we finished
+             * if the next state is NULL, meaning the input stream ends
+             * here, and we'll add a token depending on what state we
+             * finished
              */
 
             else {
                 printf(" -> NULL\n");
                 char *lexeme = lexeme_get();
                 token_add(lexeme);
-                printf("ADD TOKEN: %s -> %d\n", lexeme,
-                       lexer.current_state->output);
+                token_print(&lexer.token_array[lexer.token_count - 1]);
+                printf("---------------------------\n");
                 break;
             }
         }
-
         lexer.current_state = lexer.state_machine->init_state;
     }
 }

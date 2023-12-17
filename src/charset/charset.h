@@ -1,10 +1,15 @@
-#define CHARACTER_SET                                                                              \
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t"                           \
+#define STRING_SET                                                             \
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t\r"     \
+    " !@#$%^&*()_+-={[]}:;\"'|\\?/>.<,~`"
+
+#define CHARACTER_SET                                                          \
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t\r"     \
     " +-*/=><'\"?%_()[]:,|^@"
 #define ALPHABETS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define UPPERCASE "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define LOWERCASE "abcdefghijklmnopqrstuvwxyz"
-#define IDENTIFIER_SET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
+#define IDENTIFIER_SET                                                         \
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
 #define DIGITS "0123456789"
 #define SPACES "\n\t "
 #define SYMBOLS "+-*/=><'\"?%_()[]:,|^@"

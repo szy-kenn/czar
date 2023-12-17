@@ -273,28 +273,58 @@ StateMachine *czar_state_machine_init() {
     /* ########## FLOAT ########## */
 
     int digit_idx = fsmachine_state_add(state_machine, true, T_INT);
-    int decimal_point_idx = fsmachine_state_add(state_machine, false, T_INVALID);
-    int decimal_digit_idx = fsmachine_state_add(state_machine, true, T_INT);
-    int dead_decimal_point_idx = fsmachine_state_add(state_machine, false, T_ERROR);
+    int decimal_point_idx =
+        fsmachine_state_add(state_machine, false, T_INVALID);
+    int decimal_digit_idx = fsmachine_state_add(state_machine, true, T_DBL);
+    int dead_decimal_point_idx =
+        fsmachine_state_add(state_machine, false, T_ERROR);
 
     /* ===== digit ===== */
-    fsmachine_transition_add(state_machine, start_idx, charset_create(DIGITS), digit_idx);
-    fsmachine_transition_add(state_machine, digit_idx, charset_create(DIGITS), digit_idx);
-    fsmachine_transition_add(state_machine, digit_idx, charset_create("."), decimal_point_idx);
+    fsmachine_transition_add(state_machine, start_idx, charset_create(DIGITS),
+                             digit_idx);
+    fsmachine_transition_add(state_machine, start_idx, charset_create("."),
+                             decimal_point_idx);
+    fsmachine_transition_add(state_machine, digit_idx, charset_create(DIGITS),
+                             digit_idx);
+    fsmachine_transition_add(state_machine, digit_idx, charset_create("."),
+                             decimal_point_idx);
 
     /* ===== decimal ===== */
-    fsmachine_transition_add(state_machine, decimal_point_idx, charset_create(DIGITS), decimal_digit_idx);
+    fsmachine_transition_add(state_machine, decimal_point_idx,
+                             charset_create(DIGITS), decimal_digit_idx);
+    fsmachine_transition_add(state_machine, decimal_point_idx,
+                             charset_create("."), dead_decimal_point_idx);
 
     /* ===== decimal digit ===== */
-    fsmachine_transition_add(state_machine, decimal_digit_idx, charset_create(DIGITS), decimal_digit_idx);
-    fsmachine_transition_add(state_machine, decimal_digit_idx, charset_create("."), dead_decimal_point_idx);
-    
+    fsmachine_transition_add(state_machine, decimal_digit_idx,
+                             charset_create(DIGITS), decimal_digit_idx);
+    fsmachine_transition_add(state_machine, decimal_digit_idx,
+                             charset_create("."), dead_decimal_point_idx);
+
     /* ===== DEAD decimal digit ===== */
-    fsmachine_transition_add(state_machine, dead_decimal_point_idx, charset_includes(DIGITS, "."), dead_decimal_point_idx);
-    
+    fsmachine_transition_add(state_machine, dead_decimal_point_idx,
+                             charset_includes(DIGITS, "."),
+                             dead_decimal_point_idx);
+
     /* ########## WHITESPACES ########## */
+    int return_idx = fsmachine_state_add(state_machine, true, T_INVALID);
+    int newline_idx = fsmachine_state_add(state_machine, true, T_NEWLINE);
+
     /* Q0 - space -> Q0 */
-    fsmachine_transition_add(state_machine, 0, charset_create(" "), 0);
+    fsmachine_transition_add(state_machine, start_idx, charset_create(" "),
+                             start_idx);
+
+    /* Q0 --> /r */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("\r"),
+                             return_idx);
+
+    /* /r -> newline */
+    fsmachine_transition_add(state_machine, return_idx, charset_create("\n"),
+                             newline_idx);
+
+    /* Q0 --> newline */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("\n"),
+                             newline_idx);
 
     // fsmachine_print(state_machine);
     // fsmachine_free(state_machine);

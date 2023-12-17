@@ -7,7 +7,8 @@
 /* compare the passed file's extension to the passed string */
 bool file_ext_cmp(const char *path, const char *ext) {
 
-    /* get the last idx value of the two strings (file name and ext to be compared) */
+    /* get the last idx value of the two strings (file name and ext to be
+     * compared) */
     int path_idx = strlen(path) - 1;
     int ext_idx = strlen(ext) - 1;
 
@@ -50,7 +51,9 @@ char *get_file_content(char *czar_file) {
     FILE *fp = fopen(czar_file, "rb");
 
     if (fp == NULL) {
-        printf("\033[0;31mError:\033[0;37m Could not open \033[0;93m`%s`\033[0;37m", czar_file);
+        printf("\033[0;31mError:\033[0;37m Could not open "
+               "\033[0;93m`%s`\033[0;37m",
+               czar_file);
         exit(-1);
     }
 

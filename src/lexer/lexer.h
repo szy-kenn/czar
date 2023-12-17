@@ -124,8 +124,11 @@ typedef struct {
 
 typedef struct {
     StateMachine *state_machine;
+    StateMachine *indent_state_machine;
     StateNode *current_state;
+    StateNode *indent_current_state;
     Token *token_array;
+    int indent_val;
     int token_count;
     int token_memory;
     const char *source;
@@ -136,7 +139,8 @@ typedef struct {
 
 void tokens_print(Token *token_array, int tokenCount);
 void tokens_free(Token *token_array);
-void lexer_initialize(char *src, StateMachine *state_machine);
+void lexer_initialize(char *src, StateMachine *state_machine,
+                      StateMachine *indent_state_machine);
 void lexer_start();
 void lexer_free();
 
