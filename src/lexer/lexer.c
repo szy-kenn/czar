@@ -27,7 +27,6 @@ void tokens_free(Token *token_array) {
 }
 
 void token_add() {
-
     if (lexer.token_memory < lexer.token_count + 1) {
         int old_memory = lexer.token_memory;
         lexer.token_memory = capacity_expand(old_memory);
@@ -69,13 +68,13 @@ void lexer_start() {
 
     while (current_char != '\0') {
 
-        /* -1 since the lexer.current has already been incremented in char_get()
+        /* -1 since lexer.current has already been incremented in char_get()
          */
         lexer.start = lexer.current - 1;
 
         for (;;) {
-            /* transition to the next state with the current input
-             * (current_char) */
+
+            /* transition to the next state with the current input */
             StateNode *next_state =
                 transition_from(lexer.current_state, current_char);
 
@@ -83,7 +82,10 @@ void lexer_start() {
              * if we landed to an existing state, then get the next input
              * that will be used in the next iteration
              */
+
             if (next_state != NULL) {
+                printf("| q%d -- %c --> q%d | \n", lexer.current_state->idx,
+                       current_char, next_state->idx);
                 current_char = char_get();
                 lexer.current_state = next_state;
             }
@@ -94,6 +96,7 @@ void lexer_start() {
              */
 
             else {
+                printf(" -> NULL\n");
                 char *lexeme = lexeme_get();
                 token_add();
                 printf("ADD TOKEN: %s -> %d\n", lexeme,
@@ -101,6 +104,8 @@ void lexer_start() {
                 break;
             }
         }
+
+        lexer.current_state = lexer.state_machine->init_state;
     }
 }
 
