@@ -5,4 +5,4 @@ BreakBeforeTernaryOperators: true
 AlignTrailingComments:
   Kind: Never
   OverEmptyLines: 1
-ColumnLimit: 100
+ColumnLimit: 80
