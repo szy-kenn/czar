@@ -38,8 +38,8 @@
 //         }
 //         spaces[spaces_length] = '\0';
 
-//         fprintf(fp, "%s%s%s\n", token_array[i].name, spaces, token_array[i].value);
-//         free(spaces);
+//         fprintf(fp, "%s%s%s\n", token_array[i].name, spaces,
+//         token_array[i].value); free(spaces);
 //     }
 //     fclose(fp);
 //     return 0;
@@ -47,9 +47,9 @@
 
 /**
  * argc is the length of argv (command-line arguments + command)
- * argv is an array of character pointers of all arguments passed after the command
- * argv[0] is the actual command invoked (e.g. ./czar),
- * argv[1], argv[2], ... argv[argc-1] are all the strings passed as arguments after the command
+ * argv is an array of character pointers of all arguments passed after the
+ *command argv[0] is the actual command invoked (e.g. ./czar), argv[1], argv[2],
+ *... argv[argc-1] are all the strings passed as arguments after the command
  * (e.g. "test.cz" in ./czar test.cz)
  **/
 int main(int argc, char **argv) {
@@ -57,14 +57,17 @@ int main(int argc, char **argv) {
     // check if one argument has been passed
     if (argc == 1) {
         printf("\033[0;31mError:\033[0;37m No czar file has been passed.\n");
-        printf("\033[0;32mUsage:\033[0;37m czar \033[0;93m<file-name>\033[0;37m.cz "
+        printf("\033[0;32mUsage:\033[0;37m czar "
+               "\033[0;93m<file-name>\033[0;37m.cz "
                "\033[0;93m<file-name>\033[0;37m.txt");
         return -1;
     }
 
     if (argc == 2) {
-        printf("\033[0;31mError:\033[0;37m No output file name has been passed.\n");
-        printf("\033[0;32mUsage:\033[0;37m czar \033[0;93m<file-name>\033[0;37m.cz "
+        printf("\033[0;31mError:\033[0;37m No output file name has been "
+               "passed.\n");
+        printf("\033[0;32mUsage:\033[0;37m czar "
+               "\033[0;93m<file-name>\033[0;37m.cz "
                "\033[0;93m<file-name>\033[0;37m.txt");
         return -1;
     }
@@ -80,7 +83,8 @@ int main(int argc, char **argv) {
     strcpy(output_file, argv[2]);
 
     if (!file_ext_cmp(czar_file, "cz")) {
-        printf("\033[0;31mError:\033[0;37m Invalid file type. Please input a `.cz` file.");
+        printf("\033[0;31mError:\033[0;37m Invalid file type. Please input a "
+               "`.cz` file.");
         return -1;
     }
 
@@ -103,10 +107,10 @@ int main(int argc, char **argv) {
     // if (token_count > 0) {
     //     tokens_print(token_array, token_count);
 
-    //     int tokens_save_res = save_tokens(token_array, token_count, output_file);
-    //     if (tokens_save_res < 0) {
-    //         printf("\033[0;31mTask failed. A problem has occured while opening a
-    //         file.\033[0;37m");
+    //     int tokens_save_res = save_tokens(token_array, token_count,
+    //     output_file); if (tokens_save_res < 0) {
+    //         printf("\033[0;31mTask failed. A problem has occured while
+    //         opening a file.\033[0;37m");
     //     } else {
     //         printf("\033[0;32mDone:\033[0;37m Tokenization output saved in "
     //                "\033[0;33m`%s`\033[0;37m",

@@ -4,9 +4,9 @@
 #include "../charset/charset.h"
 #include "../dstructs/fsm/fsutils.h"
 #include "../lexer/lexer.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 StateMachine *czar_state_machine_init();
+StateMachine *indentation_state_machine_init();
 
 #endif

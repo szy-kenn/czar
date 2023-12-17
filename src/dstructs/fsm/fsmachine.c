@@ -15,8 +15,9 @@ static void _fsmachine_print(StateNode *state_node) {
                 StateNode *tmp_sn = (StateNode *)tmp_p->value;
 
                 /* current state */
-                (current_state->is_accepting_state ? printf("[q%d] - ", current_state->idx)
-                                                   : printf("q%d - ", current_state->idx));
+                (current_state->is_accepting_state
+                     ? printf("[q%d] - ", current_state->idx)
+                     : printf("q%d - ", current_state->idx));
 
                 /* accepted input */
                 printf("%s - ", tmp_p->key);
@@ -65,7 +66,8 @@ static void _fsmachine_free(StateNode *state_node) {
 void fsmachine_free(StateMachine *state_machine) {
     StateNode *current_state = state_machine->init_state;
     _fsmachine_free(current_state);
-    memory_free(sizeof(state_machine->states), state_machine->states, state_machine->state_memory);
+    memory_free(sizeof(state_machine->states), state_machine->states,
+                state_machine->state_memory);
     state_machine->states = NULL;
     free(state_machine);
 }
@@ -77,28 +79,32 @@ StateNode *fsmachine_state_get(StateMachine *state_machine, int idx) {
     return NULL;
 }
 
-int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state, int output) {
+int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state,
+                        int output) {
+
     if (state_machine->state_memory < state_machine->state_count + 1) {
         int old_memory = state_machine->state_memory;
         state_machine->state_memory = capacity_expand(old_memory);
-        state_machine->states =
-            (StateNode **)memory_expand(sizeof(state_machine->states), state_machine->states,
-                                        old_memory, state_machine->state_memory);
+        state_machine->states = (StateNode **)memory_expand(
+            sizeof(state_machine->states), state_machine->states, old_memory,
+            state_machine->state_memory);
     }
 
     state_machine->states[state_machine->state_count] =
         fsnode_create(state_machine->state_count, is_accepting_state, output);
 
     if (state_machine->state_count == 0) {
-        state_machine->init_state = state_machine->states[state_machine->state_count];
+        state_machine->init_state =
+            state_machine->states[state_machine->state_count];
     }
 
-    state_machine->state_count++;
-    return state_machine->state_count - 1;
+    return state_machine->state_count++;
+    // return state_machine->state_count - 1;
 }
 
 /* pass a dynamically allocated char *inputs */
-void fsmachine_transition_add(StateMachine *state_machine, int current_state_idx, char *inputs,
+void fsmachine_transition_add(StateMachine *state_machine,
+                              int current_state_idx, char *inputs,
                               int next_state_idx) {
     StateNode *current_state, *next_state;
     current_state = fsmachine_state_get(state_machine, current_state_idx);
@@ -106,7 +112,6 @@ void fsmachine_transition_add(StateMachine *state_machine, int current_state_idx
 
     int current = 0;
     while (inputs[current] != '\0') {
-
         char *tmp;
         tmp = malloc(2);
         *tmp = inputs[current];
