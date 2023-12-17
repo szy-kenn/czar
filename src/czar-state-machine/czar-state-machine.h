@@ -7,5 +7,6 @@
 #include <stdlib.h>
 
 StateMachine *czar_state_machine_init();
+StateMachine *indentation_state_machine_init();
 
 #endif
