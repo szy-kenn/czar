@@ -11,7 +11,7 @@
 #define IDENTIFIER_SET                                                         \
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
 #define DIGITS "0123456789"
-#define SPACES "\n\t "
+#define SPACES "\n\t\r "
 #define SYMBOLS "+-*/=><'\"?%_()[]:,|^@"
 #define RELATIONAL "=<>"
 #define ARITHMETIC "+-*/%^|"

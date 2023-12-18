@@ -6,3 +6,4 @@ AlignTrailingComments:
   Kind: Never
   OverEmptyLines: 1
 ColumnLimit: 80
+AllowShortIfStatementsOnASingleLine: true 

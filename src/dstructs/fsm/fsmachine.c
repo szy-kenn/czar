@@ -86,7 +86,7 @@ int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state,
         int old_memory = state_machine->state_memory;
         state_machine->state_memory = capacity_expand(old_memory);
         state_machine->states = (StateNode **)memory_expand(
-            sizeof(state_machine->states), state_machine->states, old_memory,
+            sizeof(StateNode *), state_machine->states, old_memory,
             state_machine->state_memory);
     }
 
@@ -98,8 +98,8 @@ int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state,
             state_machine->states[state_machine->state_count];
     }
 
-    return state_machine->state_count++;
-    // return state_machine->state_count - 1;
+    state_machine->state_count++;
+    return state_machine->state_count - 1;
 }
 
 /* pass a dynamically allocated char *inputs */

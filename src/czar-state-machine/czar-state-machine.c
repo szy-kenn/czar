@@ -5,11 +5,17 @@ StateMachine *czar_state_machine_init() {
     StateMachine *state_machine = malloc(sizeof(StateMachine));
     fsmachine_initialize(state_machine);
 
-    // Q0 (STARTING STATE)
+    /* Q0 (STARTING STATE) */
     int start_idx = fsmachine_state_add(state_machine, false, T_ERROR);
 
-    // Q1 (IDENTIFIER)
+    /* Q1 (IDENTIFIER) */
     int ident_idx = fsmachine_state_add(state_machine, true, T_IDENT);
+
+    /* start -> identifier state */
+    fsmachine_transition_add(
+        state_machine, start_idx,
+        charset_excludes(IDENTIFIER_SET, "abcdefgilnostw0123456789"),
+        ident_idx);
 
     // identifier state to identifier state (self-loop)
     fsmachine_transition_add(state_machine, ident_idx,
@@ -145,8 +151,61 @@ StateMachine *czar_state_machine_init() {
     int enu_idx = fsmachine_state_add(state_machine, true, T_IDENT);
     int enum_idx = fsmachine_state_add(state_machine, true, T_ENUM);
 
+    fsmachine_transition_add(state_machine, start_idx, charset_create("e"),
+                             e_idx);
+
+    fsmachine_transition_add(state_machine, e_idx,
+                             charset_excludes(IDENTIFIER_SET, "ln"), ident_idx);
+
     /*  ===== else ===== */
+
+    /* e --> el */
+    fsmachine_transition_add(state_machine, e_idx, charset_create("l"), el_idx);
+
+    /* el --> els */
+    fsmachine_transition_add(state_machine, el_idx, charset_create("s"),
+                             els_idx);
+
+    /* el --> identifier */
+    fsmachine_transition_add(state_machine, el_idx,
+                             charset_excludes(IDENTIFIER_SET, "s"), ident_idx);
+
+    /* els --> else */
+    fsmachine_transition_add(state_machine, els_idx, charset_create("e"),
+                             else_idx);
+
+    /* els --> identifier */
+    fsmachine_transition_add(state_machine, els_idx,
+                             charset_excludes(IDENTIFIER_SET, "e"), ident_idx);
+
+    /* else --> identifier */
+    fsmachine_transition_add(state_machine, else_idx,
+                             charset_create(IDENTIFIER_SET), ident_idx);
+
     /* ===== enum ===== */
+
+    /* e --> en */
+    fsmachine_transition_add(state_machine, e_idx, charset_create("n"), en_idx);
+
+    /* en -> enu */
+    fsmachine_transition_add(state_machine, en_idx, charset_create("u"),
+                             enu_idx);
+
+    /* en -> identifier */
+    fsmachine_transition_add(state_machine, en_idx,
+                             charset_excludes(IDENTIFIER_SET, "u"), ident_idx);
+
+    /* enu -> enum */
+    fsmachine_transition_add(state_machine, enu_idx, charset_create("m"),
+                             enum_idx);
+
+    /* enu -> identifier */
+    fsmachine_transition_add(state_machine, enu_idx,
+                             charset_excludes(IDENTIFIER_SET, "m"), ident_idx);
+
+    /* enum -> identifier */
+    fsmachine_transition_add(state_machine, enum_idx,
+                             charset_create(IDENTIFIER_SET), ident_idx);
 
     /* ========== F ========== */
     int f_idx = fsmachine_state_add(state_machine, true, T_IDENT);
@@ -326,7 +385,5 @@ StateMachine *czar_state_machine_init() {
     fsmachine_transition_add(state_machine, start_idx, charset_create("\n"),
                              newline_idx);
 
-    // fsmachine_print(state_machine);
-    // fsmachine_free(state_machine);
     return state_machine;
 }

@@ -97,8 +97,7 @@ int main(int argc, char **argv) {
     int token_count = 0;
     lexer_initialize(source_code, czar_state_machine,
                      indentation_state_machine);
-    lexer_start();
-    printf("done!");
+    lexer_start(true);
 
     // // create array of tokens (for symbol table)
     // Token *token_array = (Token *)malloc(sizeof(Token) * MAX_BUFFER);
@@ -125,9 +124,6 @@ int main(int argc, char **argv) {
 
     // tokens_free(token_array, token_count);
 
-    free(source_code);
-    free(czar_state_machine);
-    free(indentation_state_machine);
     lexer_free();
 
     clock_t end = clock();

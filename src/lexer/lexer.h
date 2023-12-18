@@ -3,6 +3,7 @@
 
 #include "../dstructs/fsm/fsmachine.h"
 #include "../dstructs/fsm/fsutils.h"
+#include "../dstructs/stack/stack.h"
 #include "../memory_manager/memory_manager.h"
 #include "../utils/utils.h"
 #include <stdio.h>
@@ -127,21 +128,23 @@ typedef struct {
     StateMachine *indent_state_machine;
     StateNode *current_state;
     StateNode *indent_current_state;
+    Stack *indent_stack;
     Token *token_array;
     int indent_val;
     int token_count;
     int token_memory;
-    const char *source;
+    char *source;
     int start;
     int current;
     int line;
+    int col;
 } Lexer;
 
 void tokens_print(Token *token_array, int tokenCount);
 void tokens_free(Token *token_array);
 void lexer_initialize(char *src, StateMachine *state_machine,
                       StateMachine *indent_state_machine);
-void lexer_start();
+void lexer_start(bool print_transition);
 void lexer_free();
 
 #endif

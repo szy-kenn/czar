@@ -2,10 +2,11 @@
 #include <stdlib.h>
 
 int capacity_expand(int capacity) {
-    return (capacity < _INIT_BUFFER ? _INIT_BUFFER : capacity * 2);
+    return (capacity < _INIT_BUFFER ? _INIT_BUFFER : (capacity) * 2);
 }
 
-void *memory_expand(size_t size, void *pointer, size_t old_count, size_t new_count) {
+void *memory_expand(size_t size, void *pointer, size_t old_count,
+                    size_t new_count) {
     return reallocate(pointer, size * old_count, size * new_count);
 }
 
