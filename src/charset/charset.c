@@ -6,6 +6,8 @@ char *charset_create(char *new_char_set) {
     return dest;
 }
 
+char *charset_null_terminator() { return "\0"; }
+
 char *charset_includes(char *char_set, char *includes) {
     char *dest = malloc(strlen(char_set) + strlen(includes) + 1);
 

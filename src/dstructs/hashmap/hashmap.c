@@ -32,7 +32,7 @@ void hashmap_init(Hashmap *hashmap) {
 
 void hashmap_add(Hashmap *hashmap, char *key, void *value) {
     int idx = hash(key);
-    // printf("%s", key);
+    // printf("%s:%d\n", key, idx);
     if (hashmap->table[idx] != NULL) {
         printf("Error: Hashmap Collision");
         exit(-4);
@@ -68,8 +68,8 @@ void hashmap_free(Hashmap *hashmap) {
         if (hashmap->table[i] != NULL) {
             free(hashmap->table[i]->key);
             /*
-             * this is just a pointer to another state node that will get freed in the loop in
-             * another free function in fsmachine
+             * this is just a pointer to another state node that will get freed
+             * in the loop in another free function in fsmachine
              */
             // free(hashmap->table[i]->value);
             free(hashmap->table[i]);

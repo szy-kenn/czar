@@ -102,6 +102,15 @@ int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state,
     return state_machine->state_count - 1;
 }
 
+void fsmachine_null_terminator_transition_add(StateMachine *state_machine,
+                                              int current_state_idx,
+                                              int next_state_idx) {
+    StateNode *current_state, *next_state;
+    current_state = fsmachine_state_get(state_machine, current_state_idx);
+    next_state = fsmachine_state_get(state_machine, next_state_idx);
+    fsnode_null_terminator_add_transition(current_state, next_state);
+}
+
 /* pass a dynamically allocated char *inputs */
 void fsmachine_transition_add(StateMachine *state_machine,
                               int current_state_idx, char *inputs,
@@ -111,7 +120,8 @@ void fsmachine_transition_add(StateMachine *state_machine,
     next_state = fsmachine_state_get(state_machine, next_state_idx);
 
     int current = 0;
-    while (inputs[current] != '\0') {
+
+    while (current != strlen(inputs)) {
         char *tmp;
         tmp = malloc(2);
         *tmp = inputs[current];
