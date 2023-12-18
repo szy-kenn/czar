@@ -545,6 +545,73 @@ StateMachine *czar_state_machine_init() {
     fsmachine_transition_add(state_machine, str_arr_r_idx,
                              charset_excludes(STRING_SET, "]"), array_error);
 
+    /* ########## OPERATION SYMBOLS ########## */
+
+    /* ===== arithmetic operation ===== */
+    int plus_idx = fsmachine_state_add(state_machine, true, T_PLUS);
+    int minus_idx = fsmachine_state_add(state_machine, true, T_MINUS);
+    int mul_idx = fsmachine_state_add(state_machine, true, T_MUL);
+    int div_idx = fsmachine_state_add(state_machine, true, T_DIV);
+    int modulo_idx = fsmachine_state_add(state_machine, false, T_MOD);
+    int exponent_idx = fsmachine_state_add(state_machine, false, T_EXP);
+    int not_abs_idx = fsmachine_state_add(state_machine, true, T_ERROR);
+    int abs_idx = fsmachine_state_add(state_machine, false, T_ABS);
+
+    /* Q0 -> + */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("+"),
+                             plus_idx);
+
+    /* Q0 -> - */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("-"),
+                             minus_idx);
+
+    /* Q0 -> * */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("*"),
+                             mul_idx);
+
+    /* Q0 -> / */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("/"),
+                             div_idx);
+
+    /* Q0 -> % */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("%"),
+                             modulo_idx);
+
+    /* Q0 -> ^ */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("^"),
+                             exponent_idx);
+    
+    /* Q0 -> | */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("|"),
+                             not_abs_idx);
+
+    /* | -> || */
+    fsmachine_transition_add(state_machine, not_abs_idx, charset_create("|"),
+                             abs_idx);
+    
+
+    /* ===== shorthand operation ===== */
+    int plus_eql_idx = fsmachine_state_add(state_machine, false, T_PLUS_EQL);
+    int minus_eql_idx = fsmachine_state_add(state_machine, false, T_MINUS_EQL);
+    int mul_eql_idx = fsmachine_state_add(state_machine, false, T_MUL_EQL);
+    int div_eql_idx = fsmachine_state_add(state_machine, false, T_DIV_EQL);
+
+    /* + -> += */
+    fsmachine_transition_add(state_machine, plus_idx, charset_create("="),
+                             plus_eql_idx);
+
+    /* - -> -= */
+    fsmachine_transition_add(state_machine, minus_idx, charset_create("="),
+                             minus_eql_idx);
+
+    /* * -> *= */
+    fsmachine_transition_add(state_machine, mul_idx, charset_create("="),
+                             mul_eql_idx);
+
+    /* / -> /= */
+    fsmachine_transition_add(state_machine, div_idx, charset_create("="),
+                             div_eql_idx);                                                                           
+
     /* ########## WHITESPACES ########## */
     int return_idx = fsmachine_state_add(state_machine, true, T_INVALID);
     int newline_idx = fsmachine_state_add(state_machine, true, T_NEWLINE);
