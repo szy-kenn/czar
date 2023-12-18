@@ -14,7 +14,15 @@ StateNode *fsnode_create(int idx, bool is_accepting_state, int output) {
     return state_node;
 }
 
-void fsnode_add_transition(StateNode *state_node, char *inputs, StateNode *next_state) {
+void fsnode_null_terminator_add_transition(StateNode *state_node,
+                                           StateNode *next_state) {
+    char *null = malloc(10);
+    null = "#00000000";
+    hashmap_add(state_node->delta, null, next_state);
+}
+
+void fsnode_add_transition(StateNode *state_node, char *inputs,
+                           StateNode *next_state) {
     hashmap_add(state_node->delta, inputs, next_state);
 }
 

@@ -342,7 +342,7 @@ void lexer_start(bool print_transition) {
          */
         lexer.start = lexer.current - 1;
 
-        for (;;) {
+        for (; current_char != '\0';) {
 
             /* transition to the next state with the current input */
             next_state = transition_from(lexer.current_state, current_char);
@@ -369,6 +369,12 @@ void lexer_start(bool print_transition) {
                  * the state where we finished
                  */
 
+                if (lexer.current_state->output == T_NEWLINE) {
+                    lexer.line++;
+                    /* since the current char is already in the new line */
+                    lexer.col = 2;
+                }
+
                 if (print_transition)
                     transition_print(lexer.current_state, current_char,
                                      next_state);
@@ -377,15 +383,22 @@ void lexer_start(bool print_transition) {
                 token_add(lexer.current_state->output, lexeme);
                 token_print(&lexer.token_array[lexer.token_count - 1]);
 
-                if (lexer.current_state->output == T_NEWLINE) {
-                    lexer.line++;
-
-                    /* since the current char is already in the new line */
-                    lexer.col = 2;
-                }
                 break;
             }
         }
+
+        /* check for null terminator transition */
+        if (current_char == '\0') {
+            next_state = transition_from(lexer.current_state, '\0');
+            if (print_transition)
+                transition_print(lexer.current_state, current_char, next_state);
+
+            (next_state == NULL)
+                ? token_add(lexer.current_state->output, lexeme_get())
+                : token_add(next_state->output, lexeme_get());
+            token_print(&lexer.token_array[lexer.token_count - 1]);
+        }
+
         lexer.current_state = lexer.state_machine->init_state;
     }
 }

@@ -23,3 +23,4 @@
 char *charset_create(char *new_char_set);
 char *charset_includes(char *char_set, char *includes);
 char *charset_excludes(char *char_set, char *excludes);
+char *charset_null_terminator();
