@@ -390,11 +390,64 @@ StateMachine *czar_state_machine_init() {
 
     int int_idx = fsmachine_state_add(state_machine, true, T_INT);
     int is_idx = fsmachine_state_add(state_machine, true, T_IS);
-
+    
+    /* q0 --> i */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("i"),
+                             i_idx);
+    /* i --> Identifier state */
+    fsmachine_transition_add(state_machine, i_idx,
+                             charset_excludes(IDENTIFIER_SET, "ns"), ident_idx);
+    /* in --> Identifier state */
+    fsmachine_transition_add(state_machine, in_idx,
+                             charset_excludes(IDENTIFIER_SET, "pt"),
+                             ident_idx);
     /* ===== in ===== */
+        /*  i --> n */
+    fsmachine_transition_add(state_machine, i_idx, charset_create("n"),
+                             in_idx);
+    /* in --> identifier */
+    fsmachine_transition_add(state_machine, in_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx);
     /* ===== input ===== */
+    /* i --> n */
+    fsmachine_transition_add(state_machine, i_idx, charset_create("n"),
+                             in_idx);
+    /* in --> p */
+    fsmachine_transition_add(state_machine, in_idx, charset_create("p"),
+                             inp_idx);
+    /* inp --> u */
+    fsmachine_transition_add(state_machine, inp_idx, charset_create("u"),
+                             inpu_idx);
+    /* inp -> identifier */
+    fsmachine_transition_add(state_machine, inp_idx,
+                             charset_excludes(IDENTIFIER_SET, "u"), ident_idx);
+    /* inpu --> t */
+    fsmachine_transition_add(state_machine, inpu_idx, charset_create("t"),
+                             input_idx);
+    /* inpu --> identifier */
+    fsmachine_transition_add(state_machine, inpu_idx,
+                             charset_excludes(IDENTIFIER_SET, "t"), ident_idx);
+    /* input --> identifier */
+    fsmachine_transition_add(state_machine, input_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx);
     /* ===== int ===== */
+    /*  i --> n */
+    fsmachine_transition_add(state_machine, i_idx, charset_create("n"),
+                             in_idx);
+    /* in --> t */
+    fsmachine_transition_add(state_machine, in_idx, charset_create("t"),
+                             int_idx);
+    /* int --> identifier */  
+    fsmachine_transition_add(state_machine, int_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx);
     /* ===== is ===== */
+    fsmachine_transition_add(state_machine, i_idx, charset_create("n"),
+                             is_idx);
+    /* is --> identifier */
+    fsmachine_transition_add(state_machine, is_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx)
+
+
 
     /* ========== L ========== */
     int l_idx = fsmachine_state_add(state_machine, true, T_IDENT);
@@ -403,6 +456,30 @@ StateMachine *czar_state_machine_init() {
     int loop_idx = fsmachine_state_add(state_machine, true, T_LOOP);
 
     /* ===== loop ===== */
+    /* q0 --> l */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("l"),
+                             l_idx);
+    /*  l --> o */
+    fsmachine_transition_add(state_machine, l_idx, charset_create("o"),
+                             lo_idx);
+    /* l --> identifier */
+    fsmachine_transition_add(state_machine, l_idx,
+                             charset_excludes(IDENTIFIER_SET, "o"), ident_idx);
+    /* lo --> o */
+    fsmachine_transition_add(state_machine, lo_idx, charset_create("o"),
+                             loo_idx);
+    /* lo --> identifier */
+    fsmachine_transition_add(state_machine, lo_idx,
+                             charset_excludes(IDENTIFIER_SET, "o"), ident_idx);
+    /* loo --> p */
+    fsmachine_transition_add(state_machine, loo_idx, charset_create("p"),
+                             loop_idx);
+    /* loo --> identifier */
+    fsmachine_transition_add(state_machine, loo_idx,
+                             charset_excludes(IDENTIFIER_SET, "p"), ident_idx);
+    /* loop --> identifier */
+     fsmachine_transition_add(state_machine, loop_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx);
 
     /* ========== N ========== */
     int n_idx = fsmachine_state_add(state_machine, true, T_IDENT);
@@ -412,10 +489,40 @@ StateMachine *czar_state_machine_init() {
 
     int no_idx = fsmachine_state_add(state_machine, true, T_IDENT);
     int not_idx = fsmachine_state_add(state_machine, true, T_NOT);
+    /* q0 --> n */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("n"),
+                             n_idx);
+    /* n --> Identifier state */
+    fsmachine_transition_add(state_machine, n_idx,
+                             charset_excludes(IDENTIFIER_SET, "io"), ident_idx);
 
     /* ===== nil ===== */
-    /* ===== not ===== */
+    /* n --> i */
+    fsmachine_transition_add(state_machine, n_idx, charset_create("i"),
+                             ni_idx);
+    /* ni --> l */
+    fsmachine_transition_add(state_machine, ni_idx, charset_create("l"),
+                             nil_idx);   
+    /* ni --> identifier set */
+    fsmachine_transition_add(state_machine, ni_idx,
+                             charset_excludes(IDENTIFIER_SET, "l"), ident_idx);
+    /* nil --> identifier set */
+    fsmachine_transition_add(state_machine, nil_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx);
 
+    /* ===== not ===== */
+    /* n --> o */
+    fsmachine_transition_add(state_machine, n_idx, charset_create("o"),
+                             no_idx);
+    /* no --> t */
+    fsmachine_transition_add(state_machine, no_idx, charset_create("t"),
+                             not_idx);   
+    /* no --> identifier set */
+    fsmachine_transition_add(state_machine, no_idx,
+                             charset_excludes(IDENTIFIER_SET, "t"), ident_idx);
+    /* not --> identifier set */
+    fsmachine_transition_add(state_machine, not_idx,
+                             charset_excludes(IDENTIFIER_SET), ident_idx);
     /* ========== O ========== */
     int o_idx = fsmachine_state_add(state_machine, true, T_IDENT);
     int or_idx = fsmachine_state_add(state_machine, true, T_OR);
