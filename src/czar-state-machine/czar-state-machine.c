@@ -11,6 +11,12 @@ StateMachine *czar_state_machine_init() {
     /* Q1 (IDENTIFIER) */
     int ident_idx = fsmachine_state_add(state_machine, true, T_IDENT);
 
+    /* Q2 (INVALID STATE) - unrecognized token goes here */
+    int invalid_idx = fsmachine_state_add(state_machine, true, T_INVALID);
+    fsmachine_transition_add(state_machine, start_idx,
+                             charset_excludes(STRING_SET, CHARACTER_SET),
+                             invalid_idx);
+
     /* start -> identifier state */
     fsmachine_transition_add(
         state_machine, start_idx,

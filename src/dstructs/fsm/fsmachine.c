@@ -130,8 +130,8 @@ void fsmachine_transition_add(StateMachine *state_machine,
         current++;
     }
 
-    printf("Added q%d - %s -> q%d\n", current_state_idx, inputs,
-           next_state_idx);
+    // printf("Added q%d - %s -> q%d\n", current_state_idx, inputs,
+    //        next_state_idx);
     free(inputs);
 }
 

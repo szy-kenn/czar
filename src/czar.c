@@ -91,38 +91,28 @@ int main(int argc, char **argv) {
     char *source_code = get_file_content(czar_file);
 
     // ==================== start lexical analysis here ==================== //
-
     StateMachine *czar_state_machine = czar_state_machine_init();
     StateMachine *indentation_state_machine = indentation_state_machine_init();
-    int token_count = 0;
     lexer_initialize(source_code, czar_state_machine,
                      indentation_state_machine);
-    lexer_start(true);
+    int token_count = lexer_start(true);
 
-    // // create array of tokens (for symbol table)
-    // Token *token_array = (Token *)malloc(sizeof(Token) * MAX_BUFFER);
-    // int token_count;
-    // token_count = start_tokenization(fp, token_array);
-
-    // if (token_count > 0) {
-    //     tokens_print(token_array, token_count);
-
-    //     int tokens_save_res = save_tokens(token_array, token_count,
-    //     output_file); if (tokens_save_res < 0) {
-    //         printf("\033[0;31mTask failed. A problem has occured while
-    //         opening a file.\033[0;37m");
-    //     } else {
-    //         printf("\033[0;32mDone:\033[0;37m Tokenization output saved in "
-    //                "\033[0;33m`%s`\033[0;37m",
-    //                output_file);
-    //     }
-    // } else if (token_count == 0) {
+    if (token_count > 0) {
+        int tokens_save_res = tokens_save(output_file);
+        if (tokens_save_res < 0) {
+            printf("\033[0;31mTask failed. A problem has occured while "
+                   "opening a file.\033[0;37m");
+        } else {
+            printf("\033[0;32mDone:\033[0;37m Tokenization output saved in "
+                   "\033[0;33m`%s`\033[0;37m",
+                   output_file);
+        }
+    }
+    // else if (token_count == 0) {
     //     printf("\033[0;32mDone: \033[0;37mNo tokens created.\n");
     // } else {
     //     printf("ERROR\n");
     // }
-
-    // tokens_free(token_array, token_count);
 
     lexer_free();
 

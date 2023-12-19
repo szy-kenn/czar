@@ -4,7 +4,7 @@
 
 #define CHARACTER_SET                                                          \
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t\r"     \
-    " +-*/=><'\"?%_()[]:,|^@"
+    " +-*/=><'\"?%_()[]:,.|^@"
 #define ALPHABETS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define UPPERCASE "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define LOWERCASE "abcdefghijklmnopqrstuvwxyz"

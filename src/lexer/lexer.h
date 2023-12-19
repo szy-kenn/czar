@@ -144,7 +144,8 @@ void tokens_print(Token *token_array, int tokenCount);
 void tokens_free(Token *token_array);
 void lexer_initialize(char *src, StateMachine *state_machine,
                       StateMachine *indent_state_machine);
-void lexer_start(bool print_transition);
+int lexer_start(bool print_transition);
+int tokens_save(char *file_name);
 void lexer_free();
 
 #endif

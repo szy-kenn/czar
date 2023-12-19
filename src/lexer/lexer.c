@@ -325,7 +325,7 @@ void lexer_initialize(char *src, StateMachine *state_machine,
     lexer.indent_val = 0;
 }
 
-void lexer_start(bool print_transition) {
+int lexer_start(bool print_transition) {
     lexer.current_state = lexer.state_machine->init_state;
     lexer.indent_current_state = lexer.indent_state_machine->init_state;
     lexer.indent_stack = stack_create();
@@ -342,7 +342,7 @@ void lexer_start(bool print_transition) {
          */
         lexer.start = lexer.current - 1;
 
-        for (; current_char != '\0';) {
+        for (;;) {
 
             /* transition to the next state with the current input */
             next_state = transition_from(lexer.current_state, current_char);
@@ -369,12 +369,6 @@ void lexer_start(bool print_transition) {
                  * the state where we finished
                  */
 
-                if (lexer.current_state->output == T_NEWLINE) {
-                    lexer.line++;
-                    /* since the current char is already in the new line */
-                    lexer.col = 2;
-                }
-
                 if (print_transition)
                     transition_print(lexer.current_state, current_char,
                                      next_state);
@@ -383,11 +377,62 @@ void lexer_start(bool print_transition) {
                 token_add(lexer.current_state->output, lexeme);
                 token_print(&lexer.token_array[lexer.token_count - 1]);
 
+                if (lexer.current_state->output == T_NEWLINE) {
+                    lexer.line++;
+                    /* since the current char is already in the new line */
+                    lexer.col = 2;
+                }
                 break;
             }
         }
 
         lexer.current_state = lexer.state_machine->init_state;
+    }
+
+    return lexer.token_count;
+}
+
+int tokens_save(char *file_name) {
+    FILE *fp = fopen(file_name, "w");
+
+    if (fp == NULL) return -1;
+
+    fprintf(fp, "================================================\n");
+
+    for (int i = 0; i < lexer.token_count; i++) {
+        fprintf(fp, "#%003d | Ln %d:%d | %s | ", lexer.token_array[i].key,
+                lexer.token_array[i].line, lexer.token_array[i].col,
+                token_name_get(lexer.token_array[i].token_type));
+        printf("%s", lexer.token_array[i].lexeme);
+        for (int j = 0; j < strlen(lexer.token_array[i].lexeme); j++) {
+            char c = lexer.token_array[i].lexeme[j];
+            switch (c) {
+                case '\n':
+                    fprintf(fp, "\\n");
+                    break;
+
+                case '\r':
+                    fprintf(fp, "\\r");
+                    break;
+
+                case '\t':
+                    fprintf(fp, "\\t");
+                    break;
+
+                case '\0':
+                    fprintf(fp, "\\0");
+                    break;
+
+                case ' ':
+                    fprintf(fp, "<space>");
+                    break;
+
+                default:
+                    fprintf(fp, "%c", c);
+                    break;
+            }
+        }
+        fprintf(fp, "\n");
     }
 }
 
