@@ -397,13 +397,18 @@ int tokens_save(char *file_name) {
 
     if (fp == NULL) return -1;
 
-    fprintf(fp, "================================================\n");
+    fprintf(fp, "==========================================\n");
 
     for (int i = 0; i < lexer.token_count; i++) {
-        fprintf(fp, "#%003d | Ln %d:%d | %s | ", lexer.token_array[i].key,
-                lexer.token_array[i].line, lexer.token_array[i].col,
-                token_name_get(lexer.token_array[i].token_type));
-        printf("%s", lexer.token_array[i].lexeme);
+        int spaces_count =
+            15 - strlen(token_name_get(lexer.token_array[i].token_type));
+        char *spaces = malloc(spaces_count + 1);
+
+        memset(spaces, ' ', spaces_count);
+        spaces[spaces_count] = '\0';
+        fprintf(fp, "%03d | %s%s", lexer.token_array[i].key,
+                token_name_get(lexer.token_array[i].token_type), spaces);
+        free(spaces);
         for (int j = 0; j < strlen(lexer.token_array[i].lexeme); j++) {
             char c = lexer.token_array[i].lexeme[j];
             switch (c) {
@@ -421,10 +426,6 @@ int tokens_save(char *file_name) {
 
                 case '\0':
                     fprintf(fp, "\\0");
-                    break;
-
-                case ' ':
-                    fprintf(fp, "<space>");
                     break;
 
                 default:
