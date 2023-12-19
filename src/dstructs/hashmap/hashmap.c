@@ -32,7 +32,7 @@ void hashmap_init(Hashmap *hashmap) {
 
 void hashmap_add(Hashmap *hashmap, char *key, void *value) {
     int idx = hash(key);
-    // printf("%s:%d\n", key, idx);
+    printf("%s:%d\n", key, idx);
     if (hashmap->table[idx] != NULL) {
         printf("Error: Hashmap Collision");
         exit(-4);
