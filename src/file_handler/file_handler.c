@@ -57,7 +57,7 @@ char *get_file_content(char *czar_file) {
         exit(-1);
     }
 
-    char chars_read = fread(dest, sizeof(char), file_size, fp);
+    int chars_read = fread(dest, sizeof(char), file_size, fp);
     dest[chars_read] = '\0';
     fclose(fp);
     return dest;
