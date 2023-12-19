@@ -14,7 +14,7 @@ StateMachine *czar_state_machine_init() {
     /* Q2 (INVALID STATE) - unrecognized token goes here */
     int invalid_idx = fsmachine_state_add(state_machine, true, T_INVALID);
     fsmachine_transition_add(state_machine, start_idx,
-                             charset_excludes(STRING_SET, CHARACTER_SET),
+                             charset_create("#$&{};\\~`"),
                              invalid_idx);
 
     /* start -> identifier state */
@@ -795,29 +795,39 @@ StateMachine *czar_state_machine_init() {
     int dead_decimal_point_idx =
         fsmachine_state_add(state_machine, false, T_ERROR);
 
-    /* ===== digit ===== */
+    /* q0 --> digits */
     fsmachine_transition_add(state_machine, start_idx, charset_create(DIGITS),
                              digit_idx);
+
+    /* q0 --> . */
     fsmachine_transition_add(state_machine, start_idx, charset_create("."),
                              decimal_point_idx);
+
+    /* digits loop */
     fsmachine_transition_add(state_machine, digit_idx, charset_create(DIGITS),
                              digit_idx);
+
+    /* digits --> . */
     fsmachine_transition_add(state_machine, digit_idx, charset_create("."),
                              decimal_point_idx);
 
-    /* ===== decimal ===== */
+    /* . --> decimal digits */
     fsmachine_transition_add(state_machine, decimal_point_idx,
+                             charset_create(DIGITS), decimal_digit_idx);               
+
+    /* decimal digits loop */
+    fsmachine_transition_add(state_machine, decimal_digit_idx,
                              charset_create(DIGITS), decimal_digit_idx);
+
+    /* decimal digit --> . */
+    fsmachine_transition_add(state_machine, decimal_digit_idx,
+                             charset_create("."), dead_decimal_point_idx);
+
+    /* . --> dead state */
     fsmachine_transition_add(state_machine, decimal_point_idx,
                              charset_create("."), dead_decimal_point_idx);
 
-    /* ===== decimal digit ===== */
-    fsmachine_transition_add(state_machine, decimal_digit_idx,
-                             charset_create(DIGITS), decimal_digit_idx);
-    fsmachine_transition_add(state_machine, decimal_digit_idx,
-                             charset_create("."), dead_decimal_point_idx);
-
-    /* ===== DEAD decimal digit ===== */
+    /* ===== DEAD decimal point loop ===== */
     fsmachine_transition_add(state_machine, dead_decimal_point_idx,
                              charset_includes(DIGITS, "."),
                              dead_decimal_point_idx);
@@ -830,30 +840,32 @@ StateMachine *czar_state_machine_init() {
     int right_dquotation_idx = fsmachine_state_add(state_machine, true, T_STR);
     int string_error_idx = fsmachine_state_add(state_machine, true, T_ERROR);
 
-    /* ===== left double quotation ===== */
+    /* q0 --> " */
     fsmachine_transition_add(state_machine, start_idx, charset_create("\""),
                              left_dquotation_idx);
 
-    /* ===== quotation error ===== */
+    /* " --> " */
     fsmachine_transition_add(state_machine, left_dquotation_idx,
                              charset_create("\n\""), string_error_idx);
 
-    /* ===== string ===== */
+    /* " --> string */
     fsmachine_transition_add(state_machine, left_dquotation_idx,
                              charset_excludes(STRING_SET, "\n\""), string_idx);
+
+    /* string loop */
     fsmachine_transition_add(state_machine, string_idx,
                              charset_excludes(STRING_SET, "\n\""), string_idx);
 
-    /* ===== string error  ===== */
+    /* " --> new line */
     fsmachine_transition_add(state_machine, string_idx, charset_create("\n"),
                              string_error_idx);
 
-    // fsmachine_null_terminator_transition_add(state_machine, string_idx,
-    //                                          string_error_idx);
-
-    /* ===== right double quotation ===== */
+    /* string --> " */
     fsmachine_transition_add(state_machine, string_idx, charset_create("\""),
                              right_dquotation_idx);
+
+    // fsmachine_null_terminator_transition_add(state_machine, string_idx,
+    //                                          string_error_idx);
 
     /* ########## CHARACTER ########## */
 
@@ -863,25 +875,25 @@ StateMachine *czar_state_machine_init() {
     int right_squotation_idx = fsmachine_state_add(state_machine, true, T_CHR);
     int character_error_idx = fsmachine_state_add(state_machine, true, T_ERROR);
 
-    /* ===== left single quotation ===== */
+    /* q0 --> ' */
     fsmachine_transition_add(state_machine, start_idx, charset_create("'"),
                              left_squotation_idx);
 
-    /* ===== quotation error ===== */
+    /* ' --> ' */
     fsmachine_transition_add(state_machine, left_squotation_idx,
                              charset_create("\n'"), character_error_idx);
 
-    /* ===== character ===== */
+    /* ' --> char */
     fsmachine_transition_add(state_machine, left_squotation_idx,
                              charset_excludes(STRING_SET, "\n'"),
                              character_idx);
 
-    /* ===== character error  ===== */
+    /* char --> not ' */
     fsmachine_transition_add(state_machine, character_idx,
                              charset_excludes(STRING_SET, "'"),
                              character_error_idx);
 
-    /* ===== right single quotation ===== */
+    /* char --> ' */
     fsmachine_transition_add(state_machine, character_idx, charset_create("'"),
                              right_squotation_idx);
 
@@ -892,9 +904,11 @@ StateMachine *czar_state_machine_init() {
         fsmachine_state_add(state_machine, true, T_RBRACKET);
     int array_error = fsmachine_state_add(state_machine, true, T_ERROR);
 
-    /* ===== LEFT BRACKET  ===== */
+    /* q0 --> [ */
     fsmachine_transition_add(state_machine, start_idx, charset_create("["),
                              left_bracket_idx);
+
+    /* [ --> ] */
     fsmachine_transition_add(state_machine, start_idx, charset_create("]"),
                              right_bracket_idx);
 
@@ -904,12 +918,10 @@ StateMachine *czar_state_machine_init() {
     // fsmachine_transition_add(state_machine, left_bracket_idx,
     //                          charset_excludes(IDENTIFIER_SET, "cdis"),
     //                          array_error);
-
     // /* ===== CHAR ARRAY ===== */
     // int chr_arr_c_idx = fsmachine_state_add(state_machine, false, T_CHR);
     // int chr_arr_h_idx = fsmachine_state_add(state_machine, false, T_CHR);
     // int chr_arr_r_idx = fsmachine_state_add(state_machine, false, T_CHR);
-
     // fsmachine_transition_add(state_machine, left_bracket_idx,
     //                          charset_create("c"), chr_arr_c_idx);
     // fsmachine_transition_add(state_machine, chr_arr_c_idx,
@@ -921,7 +933,6 @@ StateMachine *czar_state_machine_init() {
     // fsmachine_transition_add(state_machine, chr_arr_r_idx,
     // charset_create("]"),
     //                          right_bracket_idx);
-
     // /* ===== chr array error  ===== */
     // fsmachine_transition_add(state_machine, chr_arr_c_idx,
     //                          charset_excludes(IDENTIFIER_SET, "h"),
@@ -931,12 +942,10 @@ StateMachine *czar_state_machine_init() {
     //                          array_error);
     // fsmachine_transition_add(state_machine, chr_arr_r_idx,
     //                          charset_excludes(STRING_SET, "]"), array_error);
-
     // /* ===== DBL ARRAY ===== */
     // int dbl_arr_d_idx = fsmachine_state_add(state_machine, false, T_DBL);
     // int dbl_arr_b_idx = fsmachine_state_add(state_machine, false, T_DBL);
     // int dbl_arr_l_idx = fsmachine_state_add(state_machine, false, T_DBL);
-
     // fsmachine_transition_add(state_machine, left_bracket_idx,
     //                          charset_create("d"), dbl_arr_d_idx);
     // fsmachine_transition_add(state_machine, dbl_arr_d_idx,
@@ -948,7 +957,6 @@ StateMachine *czar_state_machine_init() {
     // fsmachine_transition_add(state_machine, dbl_arr_l_idx,
     // charset_create("]"),
     //                          right_bracket_idx);
-
     // /* ===== dbl array error  ===== */
     // fsmachine_transition_add(state_machine, dbl_arr_d_idx,
     //                          charset_excludes(IDENTIFIER_SET, "b"),
@@ -958,12 +966,10 @@ StateMachine *czar_state_machine_init() {
     //                          array_error);
     // fsmachine_transition_add(state_machine, dbl_arr_l_idx,
     //                          charset_excludes(STRING_SET, "]"), array_error);
-
     // /* ===== INT ARRAY ===== */
     // int int_arr_i_idx = fsmachine_state_add(state_machine, false, T_INT);
     // int int_arr_n_idx = fsmachine_state_add(state_machine, false, T_INT);
     // int int_arr_t_idx = fsmachine_state_add(state_machine, false, T_INT);
-
     // fsmachine_transition_add(state_machine, left_bracket_idx,
     //                          charset_create("i"), int_arr_i_idx);
     // fsmachine_transition_add(state_machine, int_arr_i_idx,
@@ -975,7 +981,6 @@ StateMachine *czar_state_machine_init() {
     // fsmachine_transition_add(state_machine, int_arr_t_idx,
     // charset_create("]"),
     //                          right_bracket_idx);
-
     // /* ===== int array error  ===== */
     // fsmachine_transition_add(state_machine, int_arr_i_idx,
     //                          charset_excludes(IDENTIFIER_SET, "n"),
@@ -985,12 +990,10 @@ StateMachine *czar_state_machine_init() {
     //                          array_error);
     // fsmachine_transition_add(state_machine, int_arr_t_idx,
     //                          charset_excludes(STRING_SET, "]"), array_error);
-
     // /* ===== STR ARRAY ===== */
     // int str_arr_s_idx = fsmachine_state_add(state_machine, false, T_STR);
     // int str_arr_t_idx = fsmachine_state_add(state_machine, false, T_STR);
     // int str_arr_r_idx = fsmachine_state_add(state_machine, false, T_STR);
-
     // fsmachine_transition_add(state_machine, left_bracket_idx,
     //                          charset_create("s"), str_arr_s_idx);
     // fsmachine_transition_add(state_machine, str_arr_s_idx,
@@ -1002,7 +1005,6 @@ StateMachine *czar_state_machine_init() {
     // fsmachine_transition_add(state_machine, str_arr_r_idx,
     // charset_create("]"),
     //                          right_bracket_idx);
-
     // /* ===== str array error  ===== */
     // fsmachine_transition_add(state_machine, str_arr_s_idx,
     //                          charset_excludes(IDENTIFIER_SET, "t"),
@@ -1012,6 +1014,40 @@ StateMachine *czar_state_machine_init() {
     //                          array_error);
     // fsmachine_transition_add(state_machine, str_arr_r_idx,
     //                          charset_excludes(STRING_SET, "]"), array_error);
+
+    /* ########## RELATIONAL SYMBOLS ########## */
+    int less_than_idx = fsmachine_state_add(state_machine, true, T_LESS);
+    int greater_than_idx = fsmachine_state_add(state_machine, true, T_GREATER);
+    int less_than_eql_idx = fsmachine_state_add(state_machine, true, T_LESS_EQL);
+    int greater_than_eql_idx = fsmachine_state_add(state_machine, true, T_GREATER_EQL);
+    int eql_symbol_idx = fsmachine_state_add(state_machine, true, T_EQL);
+    int eql_eql_idx = fsmachine_state_add(state_machine, true, T_EQL_EQL);
+    int not_symbol_idx = fsmachine_state_add(state_machine, false, T_ERROR);
+    int not_eql_idx = fsmachine_state_add(state_machine, true, T_NOT_EQL);
+    
+    /* q0 --> < */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("<"), less_than_idx);
+
+    /* < --> = */
+    fsmachine_transition_add(state_machine, less_than_idx, charset_create("="), less_than_eql_idx);
+
+    /* q0 --> > */
+    fsmachine_transition_add(state_machine, start_idx, charset_create(">"), greater_than_idx);
+
+    /* > --> = */
+    fsmachine_transition_add(state_machine, greater_than_idx, charset_create("="), greater_than_eql_idx);
+
+    // /* q0 --> = */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("="), eql_symbol_idx);
+
+    // /* = --> = */
+    fsmachine_transition_add(state_machine, eql_symbol_idx, charset_create("="), eql_symbol_idx);
+
+    /* q0 --> ! */
+    fsmachine_transition_add(state_machine, start_idx, charset_create("!"), not_symbol_idx);
+
+    /* ! --> = */
+    fsmachine_transition_add(state_machine, not_symbol_idx, charset_create("="), not_eql_idx);
 
     /* ########## OPERATION SYMBOLS ########## */
 
@@ -1073,6 +1109,16 @@ StateMachine *czar_state_machine_init() {
     /* / -> /= */
     fsmachine_transition_add(state_machine, div_idx, charset_create("="),
                              div_eql_idx);
+
+    /* ########## COMMENT ########## */
+    int ddash_idx = fsmachine_state_add(state_machine, true, T_COMMENT);
+    int comment_idx = fsmachine_state_add(state_machine, true, T_COMMENT);
+
+    fsmachine_transition_add(state_machine, minus_idx, charset_create("-"), ddash_idx);
+    fsmachine_transition_add(state_machine, ddash_idx, charset_excludes(STRING_SET, "\n"), comment_idx);
+    fsmachine_transition_add(state_machine, comment_idx, charset_excludes(STRING_SET, "\n"), comment_idx);
+    
+    /* ########## COMMENT ########## */
 
     /* ########## WHITESPACES ########## */
     int return_idx = fsmachine_state_add(state_machine, true, T_INVALID);

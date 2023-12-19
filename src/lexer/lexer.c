@@ -180,8 +180,8 @@ char *token_name_get(token_t token_type) {
             return "T_FORM";
         case T_FUNCTION:
             return "T_FUNCTION";
-        case T_DDASH:
-            return "T_DDASH";
+        case T_COMMENT:
+            return "T_COMMENT";
         case T_INDENT:
             return "T_INDENT";
         case T_DEDENT:

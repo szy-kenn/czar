@@ -100,7 +100,6 @@ typedef enum {
     T_FUNCTION,
 
     // COMMENT
-    T_DDASH,
     T_COMMENT,
 
     // INDENTATIONS
