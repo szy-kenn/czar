@@ -1118,6 +1118,35 @@ StateMachine *czar_state_machine_init() {
     fsmachine_transition_add(state_machine, ddash_idx, charset_excludes(STRING_SET, "\n"), comment_idx);
     fsmachine_transition_add(state_machine, comment_idx, charset_excludes(STRING_SET, "\n"), comment_idx);
     
+    /* SYMBOLS */
+
+    /*Left Parenthesis*/
+    int left_parenthesis_idx = fsmachine_state_add(state_machine, true, T_LPAREN);
+
+    /* q0 -> ( */
+    fsmachine_transition_add(state_machine, start_idx, "(", left_parenthesis_idx);
+
+    /* Right Parenthesis*/
+    int right_parenthesis_idx = fsmachine_state_add(state_machine, true, T_RPAREN);
+
+    fsmachine_transition_add(state_machine, start_idx, ")", right_parenthesis_idx);
+
+    /* Colon*/
+    int colon_idx = fsmachine_state_add(state_machine, true, T_COLON);
+
+    fsmachine_transition_add(state_machine, start_idx, ":", colon_idx);
+
+    /*Comma*/
+    int comma_idx = fsmachine_state_add(state_machine, true, T_COMMA);
+
+    fsmachine_transition_add(state_machine, start_idx, ",", comma_idx);
+
+    /*Question Mark*/
+    int q_mark_idx = fsmachine_state_add(state_machine, true, T_QMARK);
+
+    fsmachine_transition_add(state_machine, start_idx, "?", q_mark_idx);
+
+
     /* ########## COMMENT ########## */
 
     /* ########## WHITESPACES ########## */
