@@ -44,9 +44,6 @@ Run the program:
 
 And the output file *(output.txt)* should look like this:
 
-> [!CAUTION]
-> The lexical analyzer isn't finished yet so there might be some issues in the output
-
 ```output.txt
 ==========================================
 000 | T_FIXED        fixed
