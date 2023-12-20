@@ -48,15 +48,12 @@ And the output file *(output.txt)* should look like this:
 > The lexical analyzer isn't finished yet so there might be some issues in the output
 
 ```output.txt
-TOKEN TYPE     VALUE
-====================
-T_FIXED        fixed
-T_ID           my_str
-T_COLON        :
-T_DTYPE        str
-T_EQL          =
-T_DQUOTE       "
-T_STR          Hello, World!
-T_DQUOTE       "
-T_EOF          EOF
+==========================================
+000 | T_FIXED        fixed
+001 | T_IDENT        my_str
+002 | T_COLON        :
+003 | T_DTYPE        str
+004 | T_EQL          =
+005 | T_STR          "Hello, World!"
+
 ```
