@@ -9,16 +9,12 @@ typedef struct {
     int state_memory;
     StateNode *init_state;
     StateNode **states;
-
 } StateMachine;
 
 void fsmachine_initialize(StateMachine *state_machine);
 void fsmachine_transition_add(StateMachine *state_machine,
                               int current_state_idx, char *inputs,
                               int next_state_idx);
-void fsmachine_null_terminator_transition_add(StateMachine *state_machine,
-                                              int current_state_idx,
-                                              int next_state_idx);
 int fsmachine_state_add(StateMachine *state_machine, bool is_accepting_state,
                         int output);
 StateNode *fsmachine_state_get(StateMachine *state_machine, int idx);

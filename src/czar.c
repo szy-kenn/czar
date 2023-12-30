@@ -7,44 +7,6 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_BUFFER 100 // max buffer size for memory allocation
-#define REG_BUFFER 30 // regular buffer size for memory allocation
-
-// int save_tokens(Token *token_array, int arr_length, const char *outputFile) {
-//     FILE *fp = fopen(outputFile, "w");
-
-//     if (fp == NULL) {
-//         return -1;
-//     }
-
-//     int spaces_length = (15 - strlen("TOKEN TYPE"));
-//     char *init_spaces = (char *)malloc(sizeof(char) * spaces_length + 1);
-
-//     for (int i = 0; i < spaces_length; i++) {
-//         init_spaces[i] = ' ';
-//     }
-//     init_spaces[spaces_length] = '\0';
-
-//     fprintf(fp, "TOKEN TYPE%sLEXEME\n", init_spaces);
-//     free(init_spaces);
-
-//     fprintf(fp, "====================\n");
-
-//     for (int i = 0; i < arr_length; i++) {
-//         int spaces_length = (15 - strlen(token_array[i].name));
-//         char *spaces = (char *)malloc(sizeof(char) * spaces_length + 1);
-//         for (int i = 0; i < spaces_length; i++) {
-//             spaces[i] = ' ';
-//         }
-//         spaces[spaces_length] = '\0';
-
-//         fprintf(fp, "%s%s%s\n", token_array[i].name, spaces,
-//         token_array[i].value); free(spaces);
-//     }
-//     fclose(fp);
-//     return 0;
-// }
-
 /**
  * argc is the length of argv (command-line arguments + command)
  * argv is an array of character pointers of all arguments passed after the
@@ -107,12 +69,11 @@ int main(int argc, char **argv) {
                    "\033[0;33m`%s`\033[0;37m",
                    output_file);
         }
+    } else if (token_count == 0) {
+        printf("\033[0;32mDone: \033[0;37mNo tokens created.\n");
+    } else {
+        printf("ERROR\n");
     }
-    // else if (token_count == 0) {
-    //     printf("\033[0;32mDone: \033[0;37mNo tokens created.\n");
-    // } else {
-    //     printf("ERROR\n");
-    // }
 
     lexer_free();
 
