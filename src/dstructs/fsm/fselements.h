@@ -16,7 +16,5 @@ StateNode *fsnode_create(int idx, bool is_accepting_state, int output);
 void fsnode_free(StateNode *state_node);
 void fsnode_add_transition(StateNode *state_node, char *inputs,
                            StateNode *next_state);
-void fsnode_null_terminator_add_transition(StateNode *state_node,
-                                           StateNode *next_state);
 
 #endif
