@@ -11,14 +11,14 @@ typedef struct {
 } Parser;
 
 typedef struct {
-    ParseTreeNode *root;
+    struct ParseTreeNode *root;
 } ParseTree;
 
 typedef struct {
     void *type;
     void *value;
-    ParseTreeNode *parent;
-    ParseTreeNode *children;
+    struct ParseTreeNode *parent;
+    struct ParseTreeNode *children;
 } ParseTreeNode;
 
 // node types (expressions)

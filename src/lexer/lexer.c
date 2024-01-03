@@ -307,8 +307,8 @@ void indentation_check(char current_char) {
     }
 }
 
-void lexer_initialize(char *src, StateMachine *state_machine,
-                      StateMachine *indent_state_machine) {
+Lexer *lexer_initialize(char *src, StateMachine *state_machine,
+                        StateMachine *indent_state_machine) {
     lexer.source = src;
     lexer.state_machine = state_machine;
     lexer.indent_state_machine = indent_state_machine;
@@ -323,6 +323,8 @@ void lexer_initialize(char *src, StateMachine *state_machine,
     lexer.indent_current_state = NULL;
     lexer.indent_stack = NULL;
     lexer.indent_val = 0;
+
+    return &lexer;
 }
 
 int lexer_start(bool print_transition) {

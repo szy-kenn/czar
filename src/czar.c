@@ -1,6 +1,7 @@
 #include "czar-state-machine/czar-state-machine.h"
 #include "file_handler/file_handler.h"
 #include "lexer/lexer.h"
+#include "parser/parser.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,8 +56,8 @@ int main(int argc, char **argv) {
     // ==================== start lexical analysis here ==================== //
     StateMachine *czar_state_machine = czar_state_machine_init();
     StateMachine *indentation_state_machine = indentation_state_machine_init();
-    lexer_initialize(source_code, czar_state_machine,
-                     indentation_state_machine);
+    Lexer *lexer = lexer_initialize(source_code, czar_state_machine,
+                                    indentation_state_machine);
     int token_count = lexer_start(true);
 
     if (token_count > 0) {
@@ -74,6 +75,9 @@ int main(int argc, char **argv) {
     } else {
         printf("ERROR\n");
     }
+
+    parser_initialize(lexer->token_array, token_count);
+    parser_start();
 
     lexer_free();
 
