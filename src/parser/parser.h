@@ -59,7 +59,7 @@ typedef struct {
 } Abs;
 
 typedef struct {
-    UnaryOperator unary_operator;
+    UnaryOperator operator;
     Abs *abs;
 } Unary;
 
@@ -70,25 +70,25 @@ typedef struct {
 
 typedef struct {
     Power *left;
-    FactorOperator factor_operator;
+    FactorOperator operator;
     Power *right;
 } Factor;
 
 typedef struct {
     Factor *left;
-    TermOperator term_operator;
+    TermOperator operator;
     Factor *right;
 } Term;
 
 typedef struct {
     Term *left;
-    RelationalOperator relational_operator;
+    RelationalOperator operator;
     Term *right;
 } Relational;
 
 typedef struct {
     Relational *left;
-    EqualityOperator equality_operator;
+    EqualityOperator operator;
     Relational *right;
 } Equality;
 

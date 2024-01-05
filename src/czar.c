@@ -1,7 +1,7 @@
 #include "czar-state-machine/czar-state-machine.h"
 #include "file_handler/file_handler.h"
 #include "lexer/lexer.h"
-#include "parser/parser.h"
+// #include "parser/parser.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,8 +76,8 @@ int main(int argc, char **argv) {
         printf("ERROR\n");
     }
 
-    parser_initialize(lexer->token_array, token_count);
-    parser_start();
+    // parser_initialize(lexer->token_array, token_count);
+    //  parser_start();
 
     lexer_free();
 

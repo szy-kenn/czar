@@ -1,3 +1,5 @@
+#ifndef _HASHMAP_H_
+#define _HASHMAP_H_
 #define TABLE_SIZE 200
 
 typedef struct {
@@ -15,3 +17,5 @@ void hashmap_update(Hashmap *hasmap, char *key, void *new_value);
 void *hashmap_get(Hashmap *hashmap, char *key);
 void hashmap_delete(Hashmap *hashmap, char *key);
 void hashmap_free(Hashmap *hashmap);
+
+#endif
