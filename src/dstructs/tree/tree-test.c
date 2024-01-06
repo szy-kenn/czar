@@ -1,12 +1,15 @@
-#include "tree.h"
-void main(void) {
-    Tree *tree = tree_create("4342342342");
-    TreeNode *child1 = tree_insert(tree->root, "w12242");
-    tree_insert(tree->root, "test1");
+#include "binary-tree/binary-tree.h"
 
-    tree_insert(child1, "child");
-    tree_insert(child1, "child2");
-    tree_print(tree);
-    tree_free(tree);
+void main(void) {
+
+    BinaryTree *btree = btree_create("root");
+    TreeNode *child1 = btree_insert(btree->root, "child1");
+    TreeNode *grandchild1 = btree_insert(child1, "grandchild1");
+    btree_insert(child1, "grandchild2");
+    TreeNode *child2 = btree_insert(btree->root, "child2");
+    btree_insert(child2, "grandchild2-1");
+    btree_insert(child2, "grandchild2-2");
+    btree_print(btree);
+    btree_free(btree);
     return;
 }

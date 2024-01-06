@@ -20,7 +20,7 @@ typedef struct tree_t {
     TreeNode *root;
 } Tree;
 
-Tree *tree_create(void *root);
+Tree *tree_create(void *root_value);
 void tree_free(Tree *tree);
 void tree_print(Tree *tree);
 TreeNode *tree_insert(TreeNode *parent, void *value);
