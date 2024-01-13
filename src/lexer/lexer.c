@@ -327,7 +327,7 @@ Lexer *lexer_initialize(char *src, StateMachine *state_machine,
     return &lexer;
 }
 
-int lexer_start(bool print_transition) {
+int lexer_start(bool debug) {
     lexer.current_state = lexer.state_machine->init_state;
     lexer.indent_current_state = lexer.indent_state_machine->init_state;
     lexer.indent_stack = stack_create();
@@ -357,7 +357,7 @@ int lexer_start(bool print_transition) {
 
                 /* check indentation */
                 indentation_check(current_char);
-                if (print_transition)
+                if (debug)
                     transition_print(lexer.current_state, current_char,
                                      next_state);
                 current_char = char_get();
@@ -371,13 +371,14 @@ int lexer_start(bool print_transition) {
                  * the state where we finished
                  */
 
-                if (print_transition)
+                if (debug)
                     transition_print(lexer.current_state, current_char,
                                      next_state);
 
                 char *lexeme = lexeme_get();
                 token_add(lexer.current_state->output, lexeme);
-                token_print(&lexer.token_array[lexer.token_count - 1]);
+                if (debug)
+                    token_print(&lexer.token_array[lexer.token_count - 1]);
 
                 if (lexer.current_state->output == T_NEWLINE) {
                     lexer.line++;
@@ -391,6 +392,10 @@ int lexer_start(bool print_transition) {
         lexer.current_state = lexer.state_machine->init_state;
     }
 
+    char *lexeme = malloc(4);
+
+    strcpy(lexeme, "EOF");
+    token_add(T_EOF, lexeme);
     return lexer.token_count;
 }
 

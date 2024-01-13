@@ -1048,7 +1048,7 @@ StateMachine *czar_state_machine_init() {
 
     // /* = --> = */
     fsmachine_transition_add(state_machine, eql_symbol_idx, charset_create("="),
-                             eql_symbol_idx);
+                             eql_eql_idx);
 
     /* q0 --> ! */
     fsmachine_transition_add(state_machine, start_idx, charset_create("!"),

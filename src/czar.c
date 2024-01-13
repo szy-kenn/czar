@@ -1,7 +1,7 @@
 #include "czar-state-machine/czar-state-machine.h"
 #include "file_handler/file_handler.h"
 #include "lexer/lexer.h"
-// #include "parser/parser.h"
+#include "parser/parser.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,10 +64,10 @@ int main(int argc, char **argv) {
         int tokens_save_res = tokens_save(output_file);
         if (tokens_save_res < 0) {
             printf("\033[0;31mTask failed. A problem has occured while "
-                   "opening a file.\033[0;37m");
+                   "opening a file.\033[0;37m\n");
         } else {
             printf("\033[0;32mDone:\033[0;37m Tokenization output saved in "
-                   "\033[0;33m`%s`\033[0;37m",
+                   "\033[0;33m`%s`\033[0;37m\n",
                    output_file);
         }
     } else if (token_count == 0) {
@@ -76,8 +76,8 @@ int main(int argc, char **argv) {
         printf("ERROR\n");
     }
 
-    // parser_initialize(lexer->token_array, token_count);
-    //  parser_start();
+    parser_initialize(lexer->token_array, token_count);
+    parser_start(true);
 
     lexer_free();
 
