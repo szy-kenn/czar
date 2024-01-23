@@ -71,30 +71,30 @@ Grammar
    50         | equality NOTEQUALS relational
    51         | relational
 
-   52 relational: relational GREATER abs
-   53           | relational GREATEREQUAL abs
-   54           | relational LESS abs
-   55           | relational LESSEQUAL abs
-   56           | abs
+   52 relational: relational GREATER term
+   53           | relational GREATEREQUAL term
+   54           | relational LESS term
+   55           | relational LESSEQUAL term
+   56           | term
 
-   57 abs: ABS abs ABS
-   58    | term
+   57 term: term PLUS factor
+   58     | term MINUS factor
+   59     | factor
 
-   59 term: term PLUS factor
-   60     | term MINUS factor
-   61     | factor
+   60 factor: factor TIMES power
+   61       | factor DIVIDE power
+   62       | factor MODULO power
+   63       | power
 
-   62 factor: factor TIMES power
-   63       | factor DIVIDE power
-   64       | factor MODULO power
-   65       | power
+   64 power: power POW unary
+   65      | unary
 
-   66 power: power POW unary
-   67      | unary
+   66 unary: NOT unary
+   67      | MINUS unary
+   68      | abs
 
-   68 unary: NOT unary
-   69      | MINUS unary
-   70      | literal
+   69 abs: ABS abs ABS
+   70    | literal
 
    71 literal: "(" expression ")"
    72        | INT
@@ -133,14 +133,14 @@ Terminals, with rules where they appear
     GREATEREQUAL (280) 53
     LESS (281) 54
     LESSEQUAL (282) 55
-    PLUS (283) 59
-    MINUS (284) 60 69
-    TIMES (285) 62
-    DIVIDE (286) 63
-    MODULO (287) 64
-    POW (288) 66
-    NOT (289) 68
-    ABS (290) 57
+    PLUS (283) 57
+    MINUS (284) 58 67
+    TIMES (285) 60
+    DIVIDE (286) 61
+    MODULO (287) 62
+    POW (288) 64
+    NOT (289) 66
+    ABS (290) 69
     COLON (291) 10 11 12 13 32 33 34 36 37 38
     EQUAL (292) 11 13 16
     "(" (293) 23 24 25 26 36 37 38 71
@@ -220,21 +220,21 @@ Nonterminals, with rules where they appear
     relational <str> (71)
         on left: 52 53 54 55 56
         on right: 49 50 51 52 53 54 55
-    abs <str> (72)
-        on left: 57 58
-        on right: 52 53 54 55 56 57
-    term <str> (73)
-        on left: 59 60 61
-        on right: 58 59 60
-    factor <str> (74)
-        on left: 62 63 64 65
-        on right: 59 60 61 62 63 64
-    power <str> (75)
-        on left: 66 67
-        on right: 62 63 64 65 66
-    unary <str> (76)
-        on left: 68 69 70
-        on right: 66 67 68 69
+    term <str> (72)
+        on left: 57 58 59
+        on right: 52 53 54 55 56 57 58
+    factor <str> (73)
+        on left: 60 61 62 63
+        on right: 57 58 59 60 61 62
+    power <str> (74)
+        on left: 64 65
+        on right: 60 61 62 63 64
+    unary <str> (75)
+        on left: 66 67 68
+        on right: 64 65 66 67
+    abs <str> (76)
+        on left: 69 70
+        on right: 68 69
     literal <str> (77)
         on left: 71 72 73 74 75 76
         on right: 70
@@ -349,25 +349,25 @@ State 7
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -389,11 +389,11 @@ State 7
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -535,25 +535,25 @@ State 19
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -582,11 +582,11 @@ State 19
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -614,25 +614,25 @@ State 21
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -659,11 +659,11 @@ State 21
     conjunction    go to state 33
     equality       go to state 34
     relational     go to state 35
-    abs            go to state 36
-    term           go to state 37
-    factor         go to state 38
-    power          go to state 39
-    unary          go to state 40
+    term           go to state 36
+    factor         go to state 37
+    power          go to state 38
+    unary          go to state 39
+    abs            go to state 40
     literal        go to state 41
 
 
@@ -683,25 +683,25 @@ State 22
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -728,11 +728,11 @@ State 22
     conjunction    go to state 33
     equality       go to state 34
     relational     go to state 35
-    abs            go to state 36
-    term           go to state 37
-    factor         go to state 38
-    power          go to state 39
-    unary          go to state 40
+    term           go to state 36
+    factor         go to state 37
+    power          go to state 38
+    unary          go to state 39
+    abs            go to state 40
     literal        go to state 41
 
 
@@ -759,73 +759,12 @@ State 25
 
 State 26
 
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   69      | MINUS • unary
-   70      | • literal
-   71 literal: • "(" expression ")"
-   72        | • INT
-   73        | • DBL
-   74        | • "true"
-   75        | • "false"
-   76        | • IDENT
-
-    IDENT    shift, and go to state 23
-    INT      shift, and go to state 24
-    DBL      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    NOT      shift, and go to state 27
-    "("      shift, and go to state 29
-    "true"   shift, and go to state 30
-    "false"  shift, and go to state 31
-
-    unary    go to state 62
-    literal  go to state 41
-
-
-State 27
-
-   68 unary: • NOT unary
-   68      | NOT • unary
-   69      | • MINUS unary
-   70      | • literal
-   71 literal: • "(" expression ")"
-   72        | • INT
-   73        | • DBL
-   74        | • "true"
-   75        | • "false"
-   76        | • IDENT
-
-    IDENT    shift, and go to state 23
-    INT      shift, and go to state 24
-    DBL      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    NOT      shift, and go to state 27
-    "("      shift, and go to state 29
-    "true"   shift, and go to state 30
-    "false"  shift, and go to state 31
-
-    unary    go to state 63
-    literal  go to state 41
-
-
-State 28
-
-   57 abs: • ABS abs ABS
-   57    | ABS • abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   67      | MINUS • unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -843,11 +782,62 @@ State 28
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
+    unary    go to state 62
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 27
+
+   66 unary: • NOT unary
+   66      | NOT • unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    unary    go to state 63
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 28
+
+   69 abs: • ABS abs ABS
+   69    | ABS • abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
     abs      go to state 64
-    term     go to state 37
-    factor   go to state 38
-    power    go to state 39
-    unary    go to state 40
     literal  go to state 41
 
 
@@ -860,25 +850,25 @@ State 29
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    71        | "(" • expression ")"
    72        | • INT
@@ -901,11 +891,11 @@ State 29
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -957,10 +947,10 @@ State 34
 State 35
 
    51 equality: relational •
-   52 relational: relational • GREATER abs
-   53           | relational • GREATEREQUAL abs
-   54           | relational • LESS abs
-   55           | relational • LESSEQUAL abs
+   52 relational: relational • GREATER term
+   53           | relational • GREATEREQUAL term
+   54           | relational • LESS term
+   55           | relational • LESSEQUAL term
 
     GREATER       shift, and go to state 71
     GREATEREQUAL  shift, and go to state 72
@@ -972,59 +962,59 @@ State 35
 
 State 36
 
-   56 relational: abs •
+   56 relational: term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
 
     $default  reduce using rule 56 (relational)
 
 
 State 37
 
-   58 abs: term •
-   59 term: term • PLUS factor
-   60     | term • MINUS factor
-
-    PLUS   shift, and go to state 75
-    MINUS  shift, and go to state 76
-
-    $default  reduce using rule 58 (abs)
-
-
-State 38
-
-   61 term: factor •
-   62 factor: factor • TIMES power
-   63       | factor • DIVIDE power
-   64       | factor • MODULO power
+   59 term: factor •
+   60 factor: factor • TIMES power
+   61       | factor • DIVIDE power
+   62       | factor • MODULO power
 
     TIMES   shift, and go to state 77
     DIVIDE  shift, and go to state 78
     MODULO  shift, and go to state 79
 
-    $default  reduce using rule 61 (term)
+    $default  reduce using rule 59 (term)
+
+
+State 38
+
+   63 factor: power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 63 (factor)
 
 
 State 39
 
-   65 factor: power •
-   66 power: power • POW unary
+   65 power: unary •
 
-    POW  shift, and go to state 80
-
-    $default  reduce using rule 65 (factor)
+    $default  reduce using rule 65 (power)
 
 
 State 40
 
-   67 power: unary •
+   68 unary: abs •
 
-    $default  reduce using rule 67 (power)
+    $default  reduce using rule 68 (unary)
 
 
 State 41
 
-   70 unary: literal •
+   70 abs: literal •
 
-    $default  reduce using rule 70 (unary)
+    $default  reduce using rule 70 (abs)
 
 
 State 42
@@ -1183,21 +1173,21 @@ State 61
 
 State 62
 
-   69 unary: MINUS unary •
+   67 unary: MINUS unary •
 
-    $default  reduce using rule 69 (unary)
+    $default  reduce using rule 67 (unary)
 
 
 State 63
 
-   68 unary: NOT unary •
+   66 unary: NOT unary •
 
-    $default  reduce using rule 68 (unary)
+    $default  reduce using rule 66 (unary)
 
 
 State 64
 
-   57 abs: ABS abs • ABS
+   69 abs: ABS abs • ABS
 
     ABS  shift, and go to state 87
 
@@ -1219,25 +1209,25 @@ State 66
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1258,11 +1248,11 @@ State 66
     conjunction  go to state 89
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -1279,25 +1269,25 @@ State 68
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1317,36 +1307,36 @@ State 68
 
     equality    go to state 91
     relational  go to state 35
-    abs         go to state 36
-    term        go to state 37
-    factor      go to state 38
-    power       go to state 39
-    unary       go to state 40
+    term        go to state 36
+    factor      go to state 37
+    power       go to state 38
+    unary       go to state 39
+    abs         go to state 40
     literal     go to state 41
 
 
 State 69
 
    49 equality: equality EQUALS • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1365,36 +1355,36 @@ State 69
     "false"  shift, and go to state 31
 
     relational  go to state 92
-    abs         go to state 36
-    term        go to state 37
-    factor      go to state 38
-    power       go to state 39
-    unary       go to state 40
+    term        go to state 36
+    factor      go to state 37
+    power       go to state 38
+    unary       go to state 39
+    abs         go to state 40
     literal     go to state 41
 
 
 State 70
 
    50 equality: equality NOTEQUALS • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1413,31 +1403,31 @@ State 70
     "false"  shift, and go to state 31
 
     relational  go to state 93
-    abs         go to state 36
-    term        go to state 37
-    factor      go to state 38
-    power       go to state 39
-    unary       go to state 40
+    term        go to state 36
+    factor      go to state 37
+    power       go to state 38
+    unary       go to state 39
+    abs         go to state 40
     literal     go to state 41
 
 
 State 71
 
-   52 relational: relational GREATER • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: relational GREATER • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1455,31 +1445,31 @@ State 71
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
-    abs      go to state 94
-    term     go to state 37
-    factor   go to state 38
-    power    go to state 39
-    unary    go to state 40
+    term     go to state 94
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 72
 
-   53 relational: relational GREATEREQUAL • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   53 relational: relational GREATEREQUAL • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1497,31 +1487,31 @@ State 72
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
-    abs      go to state 95
-    term     go to state 37
-    factor   go to state 38
-    power    go to state 39
-    unary    go to state 40
+    term     go to state 95
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 73
 
-   54 relational: relational LESS • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   54 relational: relational LESS • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1539,31 +1529,31 @@ State 73
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
-    abs      go to state 96
-    term     go to state 37
-    factor   go to state 38
-    power    go to state 39
-    unary    go to state 40
+    term     go to state 96
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 74
 
-   55 relational: relational LESSEQUAL • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   55 relational: relational LESSEQUAL • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1581,26 +1571,28 @@ State 74
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
-    abs      go to state 97
-    term     go to state 37
-    factor   go to state 38
-    power    go to state 39
-    unary    go to state 40
+    term     go to state 97
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 75
 
-   59 term: term PLUS • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   57 term: term PLUS • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1613,28 +1605,32 @@ State 75
     DBL      shift, and go to state 25
     MINUS    shift, and go to state 26
     NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
     "("      shift, and go to state 29
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
     factor   go to state 98
-    power    go to state 39
-    unary    go to state 40
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 76
 
-   60 term: term MINUS • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   58 term: term MINUS • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1647,24 +1643,28 @@ State 76
     DBL      shift, and go to state 25
     MINUS    shift, and go to state 26
     NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
     "("      shift, and go to state 29
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
     factor   go to state 99
-    power    go to state 39
-    unary    go to state 40
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 77
 
-   62 factor: factor TIMES • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   60 factor: factor TIMES • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1677,23 +1677,27 @@ State 77
     DBL      shift, and go to state 25
     MINUS    shift, and go to state 26
     NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
     "("      shift, and go to state 29
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
     power    go to state 100
-    unary    go to state 40
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 78
 
-   63 factor: factor DIVIDE • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   61 factor: factor DIVIDE • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1706,23 +1710,27 @@ State 78
     DBL      shift, and go to state 25
     MINUS    shift, and go to state 26
     NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
     "("      shift, and go to state 29
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
     power    go to state 101
-    unary    go to state 40
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 79
 
-   64 factor: factor MODULO • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   62 factor: factor MODULO • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1735,21 +1743,25 @@ State 79
     DBL      shift, and go to state 25
     MINUS    shift, and go to state 26
     NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
     "("      shift, and go to state 29
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
     power    go to state 102
-    unary    go to state 40
+    unary    go to state 39
+    abs      go to state 40
     literal  go to state 41
 
 
 State 80
 
-   66 power: power POW • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   64 power: power POW • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1762,11 +1774,13 @@ State 80
     DBL      shift, and go to state 25
     MINUS    shift, and go to state 26
     NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
     "("      shift, and go to state 29
     "true"   shift, and go to state 30
     "false"  shift, and go to state 31
 
     unary    go to state 103
+    abs      go to state 40
     literal  go to state 41
 
 
@@ -1842,25 +1856,25 @@ State 85
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -1885,11 +1899,11 @@ State 85
     conjunction   go to state 33
     equality      go to state 34
     relational    go to state 35
-    abs           go to state 36
-    term          go to state 37
-    factor        go to state 38
-    power         go to state 39
-    unary         go to state 40
+    term          go to state 36
+    factor        go to state 37
+    power         go to state 38
+    unary         go to state 39
+    abs           go to state 40
     literal       go to state 41
 
 
@@ -1902,9 +1916,9 @@ State 86
 
 State 87
 
-   57 abs: ABS abs ABS •
+   69 abs: ABS abs ABS •
 
-    $default  reduce using rule 57 (abs)
+    $default  reduce using rule 69 (abs)
 
 
 State 88
@@ -1983,10 +1997,10 @@ State 91
 State 92
 
    49 equality: equality EQUALS relational •
-   52 relational: relational • GREATER abs
-   53           | relational • GREATEREQUAL abs
-   54           | relational • LESS abs
-   55           | relational • LESSEQUAL abs
+   52 relational: relational • GREATER term
+   53           | relational • GREATEREQUAL term
+   54           | relational • LESS term
+   55           | relational • LESSEQUAL term
 
     GREATER       shift, and go to state 71
     GREATEREQUAL  shift, and go to state 72
@@ -1999,10 +2013,10 @@ State 92
 State 93
 
    50 equality: equality NOTEQUALS relational •
-   52 relational: relational • GREATER abs
-   53           | relational • GREATEREQUAL abs
-   54           | relational • LESS abs
-   55           | relational • LESSEQUAL abs
+   52 relational: relational • GREATER term
+   53           | relational • GREATEREQUAL term
+   54           | relational • LESS term
+   55           | relational • LESSEQUAL term
 
     GREATER       shift, and go to state 71
     GREATEREQUAL  shift, and go to state 72
@@ -2014,95 +2028,115 @@ State 93
 
 State 94
 
-   52 relational: relational GREATER abs •
+   52 relational: relational GREATER term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
 
     $default  reduce using rule 52 (relational)
 
 
 State 95
 
-   53 relational: relational GREATEREQUAL abs •
+   53 relational: relational GREATEREQUAL term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
 
     $default  reduce using rule 53 (relational)
 
 
 State 96
 
-   54 relational: relational LESS abs •
+   54 relational: relational LESS term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
 
     $default  reduce using rule 54 (relational)
 
 
 State 97
 
-   55 relational: relational LESSEQUAL abs •
+   55 relational: relational LESSEQUAL term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
 
     $default  reduce using rule 55 (relational)
 
 
 State 98
 
-   59 term: term PLUS factor •
-   62 factor: factor • TIMES power
-   63       | factor • DIVIDE power
-   64       | factor • MODULO power
+   57 term: term PLUS factor •
+   60 factor: factor • TIMES power
+   61       | factor • DIVIDE power
+   62       | factor • MODULO power
 
     TIMES   shift, and go to state 77
     DIVIDE  shift, and go to state 78
     MODULO  shift, and go to state 79
 
-    $default  reduce using rule 59 (term)
+    $default  reduce using rule 57 (term)
 
 
 State 99
 
-   60 term: term MINUS factor •
-   62 factor: factor • TIMES power
-   63       | factor • DIVIDE power
-   64       | factor • MODULO power
+   58 term: term MINUS factor •
+   60 factor: factor • TIMES power
+   61       | factor • DIVIDE power
+   62       | factor • MODULO power
 
     TIMES   shift, and go to state 77
     DIVIDE  shift, and go to state 78
     MODULO  shift, and go to state 79
 
-    $default  reduce using rule 60 (term)
+    $default  reduce using rule 58 (term)
 
 
 State 100
 
-   62 factor: factor TIMES power •
-   66 power: power • POW unary
+   60 factor: factor TIMES power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 60 (factor)
+
+
+State 101
+
+   61 factor: factor DIVIDE power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 61 (factor)
+
+
+State 102
+
+   62 factor: factor MODULO power •
+   64 power: power • POW unary
 
     POW  shift, and go to state 80
 
     $default  reduce using rule 62 (factor)
 
 
-State 101
-
-   63 factor: factor DIVIDE power •
-   66 power: power • POW unary
-
-    POW  shift, and go to state 80
-
-    $default  reduce using rule 63 (factor)
-
-
-State 102
-
-   64 factor: factor MODULO power •
-   66 power: power • POW unary
-
-    POW  shift, and go to state 80
-
-    $default  reduce using rule 64 (factor)
-
-
 State 103
 
-   66 power: power POW unary •
+   64 power: power POW unary •
 
-    $default  reduce using rule 66 (power)
+    $default  reduce using rule 64 (power)
 
 
 State 104
@@ -2117,25 +2151,25 @@ State 104
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -2157,11 +2191,11 @@ State 104
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -2235,25 +2269,25 @@ State 112
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -2282,11 +2316,11 @@ State 112
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -2341,25 +2375,25 @@ State 117
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -2388,11 +2422,11 @@ State 117
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -2435,25 +2469,25 @@ State 121
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -2475,11 +2509,11 @@ State 121
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -2534,25 +2568,25 @@ State 127
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -2574,11 +2608,11 @@ State 127
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
@@ -2650,25 +2684,25 @@ State 131
    49 equality: • equality EQUALS relational
    50         | • equality NOTEQUALS relational
    51         | • relational
-   52 relational: • relational GREATER abs
-   53           | • relational GREATEREQUAL abs
-   54           | • relational LESS abs
-   55           | • relational LESSEQUAL abs
-   56           | • abs
-   57 abs: • ABS abs ABS
-   58    | • term
-   59 term: • term PLUS factor
-   60     | • term MINUS factor
-   61     | • factor
-   62 factor: • factor TIMES power
-   63       | • factor DIVIDE power
-   64       | • factor MODULO power
-   65       | • power
-   66 power: • power POW unary
-   67      | • unary
-   68 unary: • NOT unary
-   69      | • MINUS unary
-   70      | • literal
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
    71 literal: • "(" expression ")"
    72        | • INT
    73        | • DBL
@@ -2690,11 +2724,11 @@ State 131
     conjunction  go to state 33
     equality     go to state 34
     relational   go to state 35
-    abs          go to state 36
-    term         go to state 37
-    factor       go to state 38
-    power        go to state 39
-    unary        go to state 40
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
     literal      go to state 41
 
 
