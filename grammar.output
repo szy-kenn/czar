@@ -1,0 +1,3010 @@
+Grammar
+
+    0 $accept: program $end
+
+    1 program: stmts
+
+    2 stmts: stmts stmt
+    3      | stmt
+
+    4 stmt: decl_stmt
+    5     | assign_stmt
+    6     | input_stmt
+    7     | output_stmt
+    8     | when_stmt
+    9     | loop_stmt
+
+   10 decl_stmt: GLOBAL mut_type IDENT COLON data_type
+   11          | GLOBAL mut_type IDENT COLON EQUAL value
+   12          | mut_type IDENT COLON data_type
+   13          | mut_type IDENT COLON data_type EQUAL value
+
+   14 mut_type: FIXED
+   15         | FLEX
+
+   16 assign_stmt: IDENT EQUAL value
+
+   17 value: input_stmt
+   18      | expression
+   19      | STR
+   20      | CHR
+   21      | BOOL
+   22      | NIL
+
+   23 input_stmt: INPUT "(" string_consts ")"
+   24           | INPUT "(" ")"
+
+   25 output_stmt: OUTPUT "(" string_consts ")"
+   26            | OUTPUT "(" ")"
+
+   27 string_consts: string_consts "&" string_const
+   28              | string_const
+
+   29 string_const: expression
+   30             | STR
+   31             | CHR
+
+   32 when_stmt: WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+
+   33 else_stmt: ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   34          | ELSE COLON T_INDENT stmt
+   35          | ε
+
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+   39 data_type: "int"
+   40          | "dbl"
+   41          | "str"
+   42          | "chr"
+   43          | "bool"
+   44          | "nil"
+
+   45 expression: expression OR conjunction
+   46           | conjunction
+
+   47 conjunction: conjunction AND equality
+   48            | equality
+
+   49 equality: equality EQUALS relational
+   50         | equality NOTEQUALS relational
+   51         | relational
+
+   52 relational: relational GREATER term
+   53           | relational GREATEREQUAL term
+   54           | relational LESS term
+   55           | relational LESSEQUAL term
+   56           | term
+
+   57 term: term PLUS factor
+   58     | term MINUS factor
+   59     | factor
+
+   60 factor: factor TIMES power
+   61       | factor DIVIDE power
+   62       | factor MODULO power
+   63       | power
+
+   64 power: power POW unary
+   65      | unary
+
+   66 unary: NOT unary
+   67      | MINUS unary
+   68      | abs
+
+   69 abs: ABS abs ABS
+   70    | literal
+
+   71 literal: "(" expression ")"
+   72        | INT
+   73        | DBL
+   74        | "true"
+   75        | "false"
+   76        | IDENT
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    IDENT <str> (258) 10 11 12 13 16 36 37 38 76
+    STR <str> (259) 19 30
+    CHR <str> (260) 20 31
+    BOOL <str> (261) 21
+    NIL <str> (262) 22
+    INT <str> (263) 72
+    DBL <str> (264) 73
+    T_INDENT <str> (265) 32 33 34 36 37 38
+    T_DEDENT <str> (266) 32 33
+    GLOBAL (267) 10 11
+    FIXED (268) 14
+    FLEX (269) 15
+    INPUT (270) 23 24
+    OUTPUT (271) 25 26
+    WHEN (272) 32 33
+    ELSE (273) 33 34
+    LOOP (274) 36 37 38
+    AND (275) 47
+    OR (276) 45
+    EQUALS (277) 49
+    NOTEQUALS (278) 50
+    GREATER (279) 52
+    GREATEREQUAL (280) 53
+    LESS (281) 54
+    LESSEQUAL (282) 55
+    PLUS (283) 57
+    MINUS (284) 58 67
+    TIMES (285) 60
+    DIVIDE (286) 61
+    MODULO (287) 62
+    POW (288) 64
+    NOT (289) 66
+    ABS (290) 69
+    COLON (291) 10 11 12 13 32 33 34 36 37 38
+    EQUAL (292) 11 13 16
+    "(" (293) 23 24 25 26 36 37 38 71
+    ")" (294) 23 24 25 26 36 37 38 71
+    "&" (295) 27
+    "in" (296) 36 37 38
+    "to" (297) 37 38
+    "by" (298) 38
+    "int" (299) 39
+    "dbl" (300) 40
+    "str" (301) 41
+    "chr" (302) 42
+    "bool" (303) 43
+    "nil" (304) 44
+    "true" (305) 74
+    "false" (306) 75
+
+
+Nonterminals, with rules where they appear
+
+    $accept (52)
+        on left: 0
+    program <str> (53)
+        on left: 1
+        on right: 0
+    stmts <str> (54)
+        on left: 2 3
+        on right: 1 2
+    stmt <str> (55)
+        on left: 4 5 6 7 8 9
+        on right: 2 3 32 33 34 36 37 38
+    decl_stmt <str> (56)
+        on left: 10 11 12 13
+        on right: 4
+    mut_type <str> (57)
+        on left: 14 15
+        on right: 10 11 12 13
+    assign_stmt <str> (58)
+        on left: 16
+        on right: 5
+    value <str> (59)
+        on left: 17 18 19 20 21 22
+        on right: 11 13 16
+    input_stmt <str> (60)
+        on left: 23 24
+        on right: 6 17
+    output_stmt <str> (61)
+        on left: 25 26
+        on right: 7
+    string_consts <str> (62)
+        on left: 27 28
+        on right: 23 25 27
+    string_const <str> (63)
+        on left: 29 30 31
+        on right: 27 28
+    when_stmt <str> (64)
+        on left: 32
+        on right: 8
+    else_stmt <str> (65)
+        on left: 33 34 35
+        on right: 32 33
+    loop_stmt <str> (66)
+        on left: 36 37 38
+        on right: 9
+    data_type <str> (67)
+        on left: 39 40 41 42 43 44
+        on right: 10 12 13
+    expression <str> (68)
+        on left: 45 46
+        on right: 18 29 32 33 36 37 38 45 71
+    conjunction <str> (69)
+        on left: 47 48
+        on right: 45 46 47
+    equality <str> (70)
+        on left: 49 50 51
+        on right: 47 48 49 50
+    relational <str> (71)
+        on left: 52 53 54 55 56
+        on right: 49 50 51 52 53 54 55
+    term <str> (72)
+        on left: 57 58 59
+        on right: 52 53 54 55 56 57 58
+    factor <str> (73)
+        on left: 60 61 62 63
+        on right: 57 58 59 60 61 62
+    power <str> (74)
+        on left: 64 65
+        on right: 60 61 62 63 64
+    unary <str> (75)
+        on left: 66 67 68
+        on right: 64 65 66 67
+    abs <str> (76)
+        on left: 69 70
+        on right: 68 69
+    literal <str> (77)
+        on left: 71 72 73 74 75 76
+        on right: 70
+
+
+State 0
+
+    0 $accept: • program $end
+    1 program: • stmts
+    2 stmts: • stmts stmt
+    3      | • stmt
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    program      go to state 9
+    stmts        go to state 10
+    stmt         go to state 11
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 1
+
+   16 assign_stmt: IDENT • EQUAL value
+
+    EQUAL  shift, and go to state 19
+
+
+State 2
+
+   10 decl_stmt: GLOBAL • mut_type IDENT COLON data_type
+   11          | GLOBAL • mut_type IDENT COLON EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+
+    FIXED  shift, and go to state 3
+    FLEX   shift, and go to state 4
+
+    mut_type  go to state 20
+
+
+State 3
+
+   14 mut_type: FIXED •
+
+    $default  reduce using rule 14 (mut_type)
+
+
+State 4
+
+   15 mut_type: FLEX •
+
+    $default  reduce using rule 15 (mut_type)
+
+
+State 5
+
+   23 input_stmt: INPUT • "(" string_consts ")"
+   24           | INPUT • "(" ")"
+
+    "("  shift, and go to state 21
+
+
+State 6
+
+   25 output_stmt: OUTPUT • "(" string_consts ")"
+   26            | OUTPUT • "(" ")"
+
+    "("  shift, and go to state 22
+
+
+State 7
+
+   32 when_stmt: WHEN • expression COLON T_INDENT stmt T_DEDENT else_stmt
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    expression   go to state 32
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 8
+
+   36 loop_stmt: LOOP • IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | LOOP • IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | LOOP • IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT  shift, and go to state 42
+
+
+State 9
+
+    0 $accept: program • $end
+
+    $end  shift, and go to state 43
+
+
+State 10
+
+    1 program: stmts •
+    2 stmts: stmts • stmt
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    $default  reduce using rule 1 (program)
+
+    stmt         go to state 44
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 11
+
+    3 stmts: stmt •
+
+    $default  reduce using rule 3 (stmts)
+
+
+State 12
+
+    4 stmt: decl_stmt •
+
+    $default  reduce using rule 4 (stmt)
+
+
+State 13
+
+   12 decl_stmt: mut_type • IDENT COLON data_type
+   13          | mut_type • IDENT COLON data_type EQUAL value
+
+    IDENT  shift, and go to state 45
+
+
+State 14
+
+    5 stmt: assign_stmt •
+
+    $default  reduce using rule 5 (stmt)
+
+
+State 15
+
+    6 stmt: input_stmt •
+
+    $default  reduce using rule 6 (stmt)
+
+
+State 16
+
+    7 stmt: output_stmt •
+
+    $default  reduce using rule 7 (stmt)
+
+
+State 17
+
+    8 stmt: when_stmt •
+
+    $default  reduce using rule 8 (stmt)
+
+
+State 18
+
+    9 stmt: loop_stmt •
+
+    $default  reduce using rule 9 (stmt)
+
+
+State 19
+
+   16 assign_stmt: IDENT EQUAL • value
+   17 value: • input_stmt
+   18      | • expression
+   19      | • STR
+   20      | • CHR
+   21      | • BOOL
+   22      | • NIL
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    STR      shift, and go to state 46
+    CHR      shift, and go to state 47
+    BOOL     shift, and go to state 48
+    NIL      shift, and go to state 49
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    INPUT    shift, and go to state 5
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    value        go to state 50
+    input_stmt   go to state 51
+    expression   go to state 52
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 20
+
+   10 decl_stmt: GLOBAL mut_type • IDENT COLON data_type
+   11          | GLOBAL mut_type • IDENT COLON EQUAL value
+
+    IDENT  shift, and go to state 53
+
+
+State 21
+
+   23 input_stmt: INPUT "(" • string_consts ")"
+   24           | INPUT "(" • ")"
+   27 string_consts: • string_consts "&" string_const
+   28              | • string_const
+   29 string_const: • expression
+   30             | • STR
+   31             | • CHR
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    STR      shift, and go to state 54
+    CHR      shift, and go to state 55
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    ")"      shift, and go to state 56
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    string_consts  go to state 57
+    string_const   go to state 58
+    expression     go to state 59
+    conjunction    go to state 33
+    equality       go to state 34
+    relational     go to state 35
+    term           go to state 36
+    factor         go to state 37
+    power          go to state 38
+    unary          go to state 39
+    abs            go to state 40
+    literal        go to state 41
+
+
+State 22
+
+   25 output_stmt: OUTPUT "(" • string_consts ")"
+   26            | OUTPUT "(" • ")"
+   27 string_consts: • string_consts "&" string_const
+   28              | • string_const
+   29 string_const: • expression
+   30             | • STR
+   31             | • CHR
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    STR      shift, and go to state 54
+    CHR      shift, and go to state 55
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    ")"      shift, and go to state 60
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    string_consts  go to state 61
+    string_const   go to state 58
+    expression     go to state 59
+    conjunction    go to state 33
+    equality       go to state 34
+    relational     go to state 35
+    term           go to state 36
+    factor         go to state 37
+    power          go to state 38
+    unary          go to state 39
+    abs            go to state 40
+    literal        go to state 41
+
+
+State 23
+
+   76 literal: IDENT •
+
+    $default  reduce using rule 76 (literal)
+
+
+State 24
+
+   72 literal: INT •
+
+    $default  reduce using rule 72 (literal)
+
+
+State 25
+
+   73 literal: DBL •
+
+    $default  reduce using rule 73 (literal)
+
+
+State 26
+
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   67      | MINUS • unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    unary    go to state 62
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 27
+
+   66 unary: • NOT unary
+   66      | NOT • unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    unary    go to state 63
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 28
+
+   69 abs: • ABS abs ABS
+   69    | ABS • abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    abs      go to state 64
+    literal  go to state 41
+
+
+State 29
+
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   71        | "(" • expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    expression   go to state 65
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 30
+
+   74 literal: "true" •
+
+    $default  reduce using rule 74 (literal)
+
+
+State 31
+
+   75 literal: "false" •
+
+    $default  reduce using rule 75 (literal)
+
+
+State 32
+
+   32 when_stmt: WHEN expression • COLON T_INDENT stmt T_DEDENT else_stmt
+   45 expression: expression • OR conjunction
+
+    OR     shift, and go to state 66
+    COLON  shift, and go to state 67
+
+
+State 33
+
+   46 expression: conjunction •
+   47 conjunction: conjunction • AND equality
+
+    AND  shift, and go to state 68
+
+    $default  reduce using rule 46 (expression)
+
+
+State 34
+
+   48 conjunction: equality •
+   49 equality: equality • EQUALS relational
+   50         | equality • NOTEQUALS relational
+
+    EQUALS     shift, and go to state 69
+    NOTEQUALS  shift, and go to state 70
+
+    $default  reduce using rule 48 (conjunction)
+
+
+State 35
+
+   51 equality: relational •
+   52 relational: relational • GREATER term
+   53           | relational • GREATEREQUAL term
+   54           | relational • LESS term
+   55           | relational • LESSEQUAL term
+
+    GREATER       shift, and go to state 71
+    GREATEREQUAL  shift, and go to state 72
+    LESS          shift, and go to state 73
+    LESSEQUAL     shift, and go to state 74
+
+    $default  reduce using rule 51 (equality)
+
+
+State 36
+
+   56 relational: term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
+
+    $default  reduce using rule 56 (relational)
+
+
+State 37
+
+   59 term: factor •
+   60 factor: factor • TIMES power
+   61       | factor • DIVIDE power
+   62       | factor • MODULO power
+
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+    MODULO  shift, and go to state 79
+
+    $default  reduce using rule 59 (term)
+
+
+State 38
+
+   63 factor: power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 63 (factor)
+
+
+State 39
+
+   65 power: unary •
+
+    $default  reduce using rule 65 (power)
+
+
+State 40
+
+   68 unary: abs •
+
+    $default  reduce using rule 68 (unary)
+
+
+State 41
+
+   70 abs: literal •
+
+    $default  reduce using rule 70 (abs)
+
+
+State 42
+
+   36 loop_stmt: LOOP IDENT • "in" "(" expression ")" COLON T_INDENT stmt
+   37          | LOOP IDENT • "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT • "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    "in"  shift, and go to state 81
+
+
+State 43
+
+    0 $accept: program $end •
+
+    $default  accept
+
+
+State 44
+
+    2 stmts: stmts stmt •
+
+    $default  reduce using rule 2 (stmts)
+
+
+State 45
+
+   12 decl_stmt: mut_type IDENT • COLON data_type
+   13          | mut_type IDENT • COLON data_type EQUAL value
+
+    COLON  shift, and go to state 82
+
+
+State 46
+
+   19 value: STR •
+
+    $default  reduce using rule 19 (value)
+
+
+State 47
+
+   20 value: CHR •
+
+    $default  reduce using rule 20 (value)
+
+
+State 48
+
+   21 value: BOOL •
+
+    $default  reduce using rule 21 (value)
+
+
+State 49
+
+   22 value: NIL •
+
+    $default  reduce using rule 22 (value)
+
+
+State 50
+
+   16 assign_stmt: IDENT EQUAL value •
+
+    $default  reduce using rule 16 (assign_stmt)
+
+
+State 51
+
+   17 value: input_stmt •
+
+    $default  reduce using rule 17 (value)
+
+
+State 52
+
+   18 value: expression •
+   45 expression: expression • OR conjunction
+
+    OR  shift, and go to state 66
+
+    $default  reduce using rule 18 (value)
+
+
+State 53
+
+   10 decl_stmt: GLOBAL mut_type IDENT • COLON data_type
+   11          | GLOBAL mut_type IDENT • COLON EQUAL value
+
+    COLON  shift, and go to state 83
+
+
+State 54
+
+   30 string_const: STR •
+
+    $default  reduce using rule 30 (string_const)
+
+
+State 55
+
+   31 string_const: CHR •
+
+    $default  reduce using rule 31 (string_const)
+
+
+State 56
+
+   24 input_stmt: INPUT "(" ")" •
+
+    $default  reduce using rule 24 (input_stmt)
+
+
+State 57
+
+   23 input_stmt: INPUT "(" string_consts • ")"
+   27 string_consts: string_consts • "&" string_const
+
+    ")"  shift, and go to state 84
+    "&"  shift, and go to state 85
+
+
+State 58
+
+   28 string_consts: string_const •
+
+    $default  reduce using rule 28 (string_consts)
+
+
+State 59
+
+   29 string_const: expression •
+   45 expression: expression • OR conjunction
+
+    OR  shift, and go to state 66
+
+    $default  reduce using rule 29 (string_const)
+
+
+State 60
+
+   26 output_stmt: OUTPUT "(" ")" •
+
+    $default  reduce using rule 26 (output_stmt)
+
+
+State 61
+
+   25 output_stmt: OUTPUT "(" string_consts • ")"
+   27 string_consts: string_consts • "&" string_const
+
+    ")"  shift, and go to state 86
+    "&"  shift, and go to state 85
+
+
+State 62
+
+   67 unary: MINUS unary •
+
+    $default  reduce using rule 67 (unary)
+
+
+State 63
+
+   66 unary: NOT unary •
+
+    $default  reduce using rule 66 (unary)
+
+
+State 64
+
+   69 abs: ABS abs • ABS
+
+    ABS  shift, and go to state 87
+
+
+State 65
+
+   45 expression: expression • OR conjunction
+   71 literal: "(" expression • ")"
+
+    OR   shift, and go to state 66
+    ")"  shift, and go to state 88
+
+
+State 66
+
+   45 expression: expression OR • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    conjunction  go to state 89
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 67
+
+   32 when_stmt: WHEN expression COLON • T_INDENT stmt T_DEDENT else_stmt
+
+    T_INDENT  shift, and go to state 90
+
+
+State 68
+
+   47 conjunction: conjunction AND • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    equality    go to state 91
+    relational  go to state 35
+    term        go to state 36
+    factor      go to state 37
+    power       go to state 38
+    unary       go to state 39
+    abs         go to state 40
+    literal     go to state 41
+
+
+State 69
+
+   49 equality: equality EQUALS • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    relational  go to state 92
+    term        go to state 36
+    factor      go to state 37
+    power       go to state 38
+    unary       go to state 39
+    abs         go to state 40
+    literal     go to state 41
+
+
+State 70
+
+   50 equality: equality NOTEQUALS • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    relational  go to state 93
+    term        go to state 36
+    factor      go to state 37
+    power       go to state 38
+    unary       go to state 39
+    abs         go to state 40
+    literal     go to state 41
+
+
+State 71
+
+   52 relational: relational GREATER • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    term     go to state 94
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 72
+
+   53 relational: relational GREATEREQUAL • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    term     go to state 95
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 73
+
+   54 relational: relational LESS • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    term     go to state 96
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 74
+
+   55 relational: relational LESSEQUAL • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    term     go to state 97
+    factor   go to state 37
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 75
+
+   57 term: term PLUS • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    factor   go to state 98
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 76
+
+   58 term: term MINUS • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    factor   go to state 99
+    power    go to state 38
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 77
+
+   60 factor: factor TIMES • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    power    go to state 100
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 78
+
+   61 factor: factor DIVIDE • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    power    go to state 101
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 79
+
+   62 factor: factor MODULO • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    power    go to state 102
+    unary    go to state 39
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 80
+
+   64 power: power POW • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    unary    go to state 103
+    abs      go to state 40
+    literal  go to state 41
+
+
+State 81
+
+   36 loop_stmt: LOOP IDENT "in" • "(" expression ")" COLON T_INDENT stmt
+   37          | LOOP IDENT "in" • "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" • "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    "("  shift, and go to state 104
+
+
+State 82
+
+   12 decl_stmt: mut_type IDENT COLON • data_type
+   13          | mut_type IDENT COLON • data_type EQUAL value
+   39 data_type: • "int"
+   40          | • "dbl"
+   41          | • "str"
+   42          | • "chr"
+   43          | • "bool"
+   44          | • "nil"
+
+    "int"   shift, and go to state 105
+    "dbl"   shift, and go to state 106
+    "str"   shift, and go to state 107
+    "chr"   shift, and go to state 108
+    "bool"  shift, and go to state 109
+    "nil"   shift, and go to state 110
+
+    data_type  go to state 111
+
+
+State 83
+
+   10 decl_stmt: GLOBAL mut_type IDENT COLON • data_type
+   11          | GLOBAL mut_type IDENT COLON • EQUAL value
+   39 data_type: • "int"
+   40          | • "dbl"
+   41          | • "str"
+   42          | • "chr"
+   43          | • "bool"
+   44          | • "nil"
+
+    EQUAL   shift, and go to state 112
+    "int"   shift, and go to state 105
+    "dbl"   shift, and go to state 106
+    "str"   shift, and go to state 107
+    "chr"   shift, and go to state 108
+    "bool"  shift, and go to state 109
+    "nil"   shift, and go to state 110
+
+    data_type  go to state 113
+
+
+State 84
+
+   23 input_stmt: INPUT "(" string_consts ")" •
+
+    $default  reduce using rule 23 (input_stmt)
+
+
+State 85
+
+   27 string_consts: string_consts "&" • string_const
+   29 string_const: • expression
+   30             | • STR
+   31             | • CHR
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    STR      shift, and go to state 54
+    CHR      shift, and go to state 55
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    string_const  go to state 114
+    expression    go to state 59
+    conjunction   go to state 33
+    equality      go to state 34
+    relational    go to state 35
+    term          go to state 36
+    factor        go to state 37
+    power         go to state 38
+    unary         go to state 39
+    abs           go to state 40
+    literal       go to state 41
+
+
+State 86
+
+   25 output_stmt: OUTPUT "(" string_consts ")" •
+
+    $default  reduce using rule 25 (output_stmt)
+
+
+State 87
+
+   69 abs: ABS abs ABS •
+
+    $default  reduce using rule 69 (abs)
+
+
+State 88
+
+   71 literal: "(" expression ")" •
+
+    $default  reduce using rule 71 (literal)
+
+
+State 89
+
+   45 expression: expression OR conjunction •
+   47 conjunction: conjunction • AND equality
+
+    AND  shift, and go to state 68
+
+    $default  reduce using rule 45 (expression)
+
+
+State 90
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   32          | WHEN expression COLON T_INDENT • stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 115
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 91
+
+   47 conjunction: conjunction AND equality •
+   49 equality: equality • EQUALS relational
+   50         | equality • NOTEQUALS relational
+
+    EQUALS     shift, and go to state 69
+    NOTEQUALS  shift, and go to state 70
+
+    $default  reduce using rule 47 (conjunction)
+
+
+State 92
+
+   49 equality: equality EQUALS relational •
+   52 relational: relational • GREATER term
+   53           | relational • GREATEREQUAL term
+   54           | relational • LESS term
+   55           | relational • LESSEQUAL term
+
+    GREATER       shift, and go to state 71
+    GREATEREQUAL  shift, and go to state 72
+    LESS          shift, and go to state 73
+    LESSEQUAL     shift, and go to state 74
+
+    $default  reduce using rule 49 (equality)
+
+
+State 93
+
+   50 equality: equality NOTEQUALS relational •
+   52 relational: relational • GREATER term
+   53           | relational • GREATEREQUAL term
+   54           | relational • LESS term
+   55           | relational • LESSEQUAL term
+
+    GREATER       shift, and go to state 71
+    GREATEREQUAL  shift, and go to state 72
+    LESS          shift, and go to state 73
+    LESSEQUAL     shift, and go to state 74
+
+    $default  reduce using rule 50 (equality)
+
+
+State 94
+
+   52 relational: relational GREATER term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
+
+    $default  reduce using rule 52 (relational)
+
+
+State 95
+
+   53 relational: relational GREATEREQUAL term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
+
+    $default  reduce using rule 53 (relational)
+
+
+State 96
+
+   54 relational: relational LESS term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
+
+    $default  reduce using rule 54 (relational)
+
+
+State 97
+
+   55 relational: relational LESSEQUAL term •
+   57 term: term • PLUS factor
+   58     | term • MINUS factor
+
+    PLUS   shift, and go to state 75
+    MINUS  shift, and go to state 76
+
+    $default  reduce using rule 55 (relational)
+
+
+State 98
+
+   57 term: term PLUS factor •
+   60 factor: factor • TIMES power
+   61       | factor • DIVIDE power
+   62       | factor • MODULO power
+
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+    MODULO  shift, and go to state 79
+
+    $default  reduce using rule 57 (term)
+
+
+State 99
+
+   58 term: term MINUS factor •
+   60 factor: factor • TIMES power
+   61       | factor • DIVIDE power
+   62       | factor • MODULO power
+
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+    MODULO  shift, and go to state 79
+
+    $default  reduce using rule 58 (term)
+
+
+State 100
+
+   60 factor: factor TIMES power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 60 (factor)
+
+
+State 101
+
+   61 factor: factor DIVIDE power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 61 (factor)
+
+
+State 102
+
+   62 factor: factor MODULO power •
+   64 power: power • POW unary
+
+    POW  shift, and go to state 80
+
+    $default  reduce using rule 62 (factor)
+
+
+State 103
+
+   64 power: power POW unary •
+
+    $default  reduce using rule 64 (power)
+
+
+State 104
+
+   36 loop_stmt: LOOP IDENT "in" "(" • expression ")" COLON T_INDENT stmt
+   37          | LOOP IDENT "in" "(" • expression "to" expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" "(" • expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    expression   go to state 116
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 105
+
+   39 data_type: "int" •
+
+    $default  reduce using rule 39 (data_type)
+
+
+State 106
+
+   40 data_type: "dbl" •
+
+    $default  reduce using rule 40 (data_type)
+
+
+State 107
+
+   41 data_type: "str" •
+
+    $default  reduce using rule 41 (data_type)
+
+
+State 108
+
+   42 data_type: "chr" •
+
+    $default  reduce using rule 42 (data_type)
+
+
+State 109
+
+   43 data_type: "bool" •
+
+    $default  reduce using rule 43 (data_type)
+
+
+State 110
+
+   44 data_type: "nil" •
+
+    $default  reduce using rule 44 (data_type)
+
+
+State 111
+
+   12 decl_stmt: mut_type IDENT COLON data_type •
+   13          | mut_type IDENT COLON data_type • EQUAL value
+
+    EQUAL  shift, and go to state 117
+
+    $default  reduce using rule 12 (decl_stmt)
+
+
+State 112
+
+   11 decl_stmt: GLOBAL mut_type IDENT COLON EQUAL • value
+   17 value: • input_stmt
+   18      | • expression
+   19      | • STR
+   20      | • CHR
+   21      | • BOOL
+   22      | • NIL
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    STR      shift, and go to state 46
+    CHR      shift, and go to state 47
+    BOOL     shift, and go to state 48
+    NIL      shift, and go to state 49
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    INPUT    shift, and go to state 5
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    value        go to state 118
+    input_stmt   go to state 51
+    expression   go to state 52
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 113
+
+   10 decl_stmt: GLOBAL mut_type IDENT COLON data_type •
+
+    $default  reduce using rule 10 (decl_stmt)
+
+
+State 114
+
+   27 string_consts: string_consts "&" string_const •
+
+    $default  reduce using rule 27 (string_consts)
+
+
+State 115
+
+   32 when_stmt: WHEN expression COLON T_INDENT stmt • T_DEDENT else_stmt
+
+    T_DEDENT  shift, and go to state 119
+
+
+State 116
+
+   36 loop_stmt: LOOP IDENT "in" "(" expression • ")" COLON T_INDENT stmt
+   37          | LOOP IDENT "in" "(" expression • "to" expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" "(" expression • "to" expression "by" expression ")" COLON T_INDENT stmt
+   45 expression: expression • OR conjunction
+
+    OR    shift, and go to state 66
+    ")"   shift, and go to state 120
+    "to"  shift, and go to state 121
+
+
+State 117
+
+   13 decl_stmt: mut_type IDENT COLON data_type EQUAL • value
+   17 value: • input_stmt
+   18      | • expression
+   19      | • STR
+   20      | • CHR
+   21      | • BOOL
+   22      | • NIL
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    STR      shift, and go to state 46
+    CHR      shift, and go to state 47
+    BOOL     shift, and go to state 48
+    NIL      shift, and go to state 49
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    INPUT    shift, and go to state 5
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    value        go to state 122
+    input_stmt   go to state 51
+    expression   go to state 52
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 118
+
+   11 decl_stmt: GLOBAL mut_type IDENT COLON EQUAL value •
+
+    $default  reduce using rule 11 (decl_stmt)
+
+
+State 119
+
+   32 when_stmt: WHEN expression COLON T_INDENT stmt T_DEDENT • else_stmt
+   33 else_stmt: • ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   34          | • ELSE COLON T_INDENT stmt
+   35          | ε •
+
+    ELSE  shift, and go to state 123
+
+    $default  reduce using rule 35 (else_stmt)
+
+    else_stmt  go to state 124
+
+
+State 120
+
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" • COLON T_INDENT stmt
+
+    COLON  shift, and go to state 125
+
+
+State 121
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" • expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" "(" expression "to" • expression "by" expression ")" COLON T_INDENT stmt
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    expression   go to state 126
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 122
+
+   13 decl_stmt: mut_type IDENT COLON data_type EQUAL value •
+
+    $default  reduce using rule 13 (decl_stmt)
+
+
+State 123
+
+   33 else_stmt: ELSE • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   34          | ELSE • COLON T_INDENT stmt
+
+    WHEN   shift, and go to state 127
+    COLON  shift, and go to state 128
+
+
+State 124
+
+   32 when_stmt: WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt •
+
+    $default  reduce using rule 32 (when_stmt)
+
+
+State 125
+
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON • T_INDENT stmt
+
+    T_INDENT  shift, and go to state 129
+
+
+State 126
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression • ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" "(" expression "to" expression • "by" expression ")" COLON T_INDENT stmt
+   45 expression: expression • OR conjunction
+
+    OR    shift, and go to state 66
+    ")"   shift, and go to state 130
+    "by"  shift, and go to state 131
+
+
+State 127
+
+   33 else_stmt: ELSE WHEN • expression COLON T_INDENT stmt T_DEDENT else_stmt
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    expression   go to state 132
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 128
+
+   34 else_stmt: ELSE COLON • T_INDENT stmt
+
+    T_INDENT  shift, and go to state 133
+
+
+State 129
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   36          | LOOP IDENT "in" "(" expression ")" COLON T_INDENT • stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 134
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 130
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" • COLON T_INDENT stmt
+
+    COLON  shift, and go to state 135
+
+
+State 131
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" • expression ")" COLON T_INDENT stmt
+   45 expression: • expression OR conjunction
+   46           | • conjunction
+   47 conjunction: • conjunction AND equality
+   48            | • equality
+   49 equality: • equality EQUALS relational
+   50         | • equality NOTEQUALS relational
+   51         | • relational
+   52 relational: • relational GREATER term
+   53           | • relational GREATEREQUAL term
+   54           | • relational LESS term
+   55           | • relational LESSEQUAL term
+   56           | • term
+   57 term: • term PLUS factor
+   58     | • term MINUS factor
+   59     | • factor
+   60 factor: • factor TIMES power
+   61       | • factor DIVIDE power
+   62       | • factor MODULO power
+   63       | • power
+   64 power: • power POW unary
+   65      | • unary
+   66 unary: • NOT unary
+   67      | • MINUS unary
+   68      | • abs
+   69 abs: • ABS abs ABS
+   70    | • literal
+   71 literal: • "(" expression ")"
+   72        | • INT
+   73        | • DBL
+   74        | • "true"
+   75        | • "false"
+   76        | • IDENT
+
+    IDENT    shift, and go to state 23
+    INT      shift, and go to state 24
+    DBL      shift, and go to state 25
+    MINUS    shift, and go to state 26
+    NOT      shift, and go to state 27
+    ABS      shift, and go to state 28
+    "("      shift, and go to state 29
+    "true"   shift, and go to state 30
+    "false"  shift, and go to state 31
+
+    expression   go to state 136
+    conjunction  go to state 33
+    equality     go to state 34
+    relational   go to state 35
+    term         go to state 36
+    factor       go to state 37
+    power        go to state 38
+    unary        go to state 39
+    abs          go to state 40
+    literal      go to state 41
+
+
+State 132
+
+   33 else_stmt: ELSE WHEN expression • COLON T_INDENT stmt T_DEDENT else_stmt
+   45 expression: expression • OR conjunction
+
+    OR     shift, and go to state 66
+    COLON  shift, and go to state 137
+
+
+State 133
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   34 else_stmt: ELSE COLON T_INDENT • stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 138
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 134
+
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt •
+
+    $default  reduce using rule 36 (loop_stmt)
+
+
+State 135
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON • T_INDENT stmt
+
+    T_INDENT  shift, and go to state 139
+
+
+State 136
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression • ")" COLON T_INDENT stmt
+   45 expression: expression • OR conjunction
+
+    OR   shift, and go to state 66
+    ")"  shift, and go to state 140
+
+
+State 137
+
+   33 else_stmt: ELSE WHEN expression COLON • T_INDENT stmt T_DEDENT else_stmt
+
+    T_INDENT  shift, and go to state 141
+
+
+State 138
+
+   34 else_stmt: ELSE COLON T_INDENT stmt •
+
+    $default  reduce using rule 34 (else_stmt)
+
+
+State 139
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   37          | LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT • stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 142
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 140
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" • COLON T_INDENT stmt
+
+    COLON  shift, and go to state 143
+
+
+State 141
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   33 else_stmt: ELSE WHEN expression COLON T_INDENT • stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 144
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 142
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt •
+
+    $default  reduce using rule 37 (loop_stmt)
+
+
+State 143
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON • T_INDENT stmt
+
+    T_INDENT  shift, and go to state 145
+
+
+State 144
+
+   33 else_stmt: ELSE WHEN expression COLON T_INDENT stmt • T_DEDENT else_stmt
+
+    T_DEDENT  shift, and go to state 146
+
+
+State 145
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   38          | LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT • stmt
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 147
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 146
+
+   33 else_stmt: • ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   33          | ELSE WHEN expression COLON T_INDENT stmt T_DEDENT • else_stmt
+   34          | • ELSE COLON T_INDENT stmt
+   35          | ε •
+
+    ELSE  shift, and go to state 123
+
+    $default  reduce using rule 35 (else_stmt)
+
+    else_stmt  go to state 148
+
+
+State 147
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt •
+
+    $default  reduce using rule 38 (loop_stmt)
+
+
+State 148
+
+   33 else_stmt: ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt •
+
+    $default  reduce using rule 33 (else_stmt)

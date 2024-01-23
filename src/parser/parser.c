@@ -399,9 +399,7 @@ void parser_start(bool debug) {
                 break;
          }
 
-        // printf("---------------------------------\n");
     }
-
     stack_free(state_stack);
     stack_free(token_stack);
 };
