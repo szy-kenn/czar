@@ -21,12 +21,12 @@ Production rules[100] = {
     {P_mut_type, 1, {P_FIXED}},
     {P_mut_type, 1, {P_FLEX}},
     {P_assign_stmt, 3, {P_IDENT, P_EQUAL, P_value}},
-    {P_assign_stmt, 1, {P_input_stmt}},
-    {P_assign_stmt, 1, {P_expression}},
-    {P_assign_stmt, 1, {P_STR}},
-    {P_assign_stmt, 1, {P_CHR}},
-    {P_assign_stmt, 1, {P_BOOL}},
-    {P_assign_stmt, 1, {P_NIL}},
+    {P_value, 1, {P_input_stmt}},
+    {P_value, 1, {P_expression}},
+    {P_value, 1, {P_STR}},
+    {P_value, 1, {P_CHR}},
+    {P_value, 1, {P_BOOL}},
+    {P_value, 1, {P_NIL}},
     {P_input_stmt, 4, {P_INPUT, P_LPAREN, P_string_consts, P_RPAREN}},
     {P_input_stmt, 3, {P_INPUT, P_LPAREN, P_RPAREN}},
     {P_output_stmt, 4, {P_OUTPUT, P_LPAREN, P_string_consts, P_RPAREN}},
@@ -56,11 +56,13 @@ Production rules[100] = {
     {P_equality, 3, {P_equality, P_EQUALS, P_relational}},
     {P_equality, 3, {P_equality, P_NOTEQUALS, P_relational}},
     {P_equality, 1, {P_relational}},
-    {P_relational, 3, {P_relational, P_GREATER, P_term}},
-    {P_relational, 3, {P_relational, P_GREATEREQUAL, P_term}},
-    {P_relational, 3, {P_relational, P_LESS, P_term}},
-    {P_relational, 3, {P_relational, P_LESSEQUAL, P_term}},
-    {P_relational, 1, {P_term}},
+    {P_relational, 3, {P_relational, P_GREATER, P_abs}},
+    {P_relational, 3, {P_relational, P_GREATEREQUAL, P_abs}},
+    {P_relational, 3, {P_relational, P_LESS, P_abs}},
+    {P_relational, 3, {P_relational, P_LESSEQUAL, P_abs}},
+    {P_relational, 1, {P_abs}},
+    {P_abs, 3, {P_ABS, P_abs, P_ABS}},
+    {P_abs, 1, {P_term}},
     {P_term, 3, {P_term, P_PLUS, P_factor}},
     {P_term, 3, {P_term, P_MINUS, P_factor}},
     {P_term, 1, {P_factor}},
@@ -72,9 +74,7 @@ Production rules[100] = {
     {P_power, 1, {P_unary}},
     {P_unary, 2, {P_NOT, P_unary}},
     {P_unary, 2, {P_MINUS, P_unary}},
-    {P_unary, 1, {P_abs}},
-    {P_abs, 3, {P_ABS, P_abs, P_ABS}},
-    {P_abs, 1, {P_literal}},
+    {P_unary, 1, {P_literal}},
     {P_literal, 3, {P_LPAREN, P_expression, P_RPAREN}},
     {P_literal, 1, {P_INT}},
     {P_literal, 1, {P_DBL}},
@@ -450,38 +450,27 @@ int index_get(token_t token) {
 
 void input_string_print(InputString input_string) {
     switch (input_string) {
+
     case (P_END):
         printf("P_END");
         return;
-    case (P_MODULO):
-        printf("P_MOD");
-        return;
-    case (P_LPAREN):
-        printf("P_LPAREN");
-        return;
-    case (P_RPAREN):
-        printf("P_RPAREN");
-        return;
-    case (P_TIMES):
-        printf("P_MUL");
-        return;
-    case (P_PLUS):
-        printf("P_PLUS");
-        return;
-    case (P_MINUS):
-        printf("P_MINUS");
-        return;
-    case (P_DIVIDE):
-        printf("P_DIV");
-        return;
-    case (P_POW):
-        printf("P_EXP");
-        return;
-    case (P_ABS):
-        printf("P_ABS");
-        return;
     case (P_ERROR):
-        printf("P_ERR");
+        printf("P_ERROR");
+        return;
+    case (P_IDENT):
+        printf("P_IDENT");
+        return;
+    case (P_STR):
+        printf("P_STR");
+        return;
+    case (P_CHR):
+        printf("P_CHR");
+        return;
+    case (P_BOOL):
+        printf("P_BOOL");
+        return;
+    case (P_NIL):
+        printf("P_NIL");
         return;
     case (P_INT):
         printf("P_INT");
@@ -489,75 +478,210 @@ void input_string_print(InputString input_string) {
     case (P_DBL):
         printf("P_DBL");
         return;
-    case (P_true):
-        printf("P_TRUE");
+    case (P_T_INDENT):
+        printf("P_T_INDENT");
         return;
-    case (P_false):
-        printf("P_FALSE");
+    case (P_T_DEDENT):
+        printf("P_T_DEDENT");
         return;
-    case (P_IDENT):
-        printf("P_ID");
+    case (P_GLOBAL):
+        printf("P_GLOBAL");
         return;
-    case (P_OR):
-        printf("P_OR");
+    case (P_FIXED):
+        printf("P_FIXED");
+        return;
+    case (P_FLEX):
+        printf("P_FLEX");
+        return;
+    case (P_INPUT):
+        printf("P_INPUT");
+        return;
+    case (P_OUTPUT):
+        printf("P_OUTPUT");
+        return;
+    case (P_WHEN):
+        printf("P_WHEN");
+        return;
+    case (P_ELSE):
+        printf("P_ELSE");
+        return;
+    case (P_LOOP):
+        printf("P_LOOP");
         return;
     case (P_AND):
         printf("P_AND");
         return;
-    case (P_NOT):
-        printf("P_NOT");
+    case (P_OR):
+        printf("P_OR");
         return;
     case (P_EQUALS):
-        printf("P_EQL_EQL");
+        printf("P_EQUALS");
         return;
     case (P_NOTEQUALS):
-        printf("P_NOT_EQL");
+        printf("P_NOTEQUALS");
         return;
     case (P_GREATER):
         printf("P_GREATER");
         return;
     case (P_GREATEREQUAL):
-        printf("P_GREATER_EQL");
+        printf("P_GREATEREQUAL");
         return;
     case (P_LESS):
         printf("P_LESS");
         return;
     case (P_LESSEQUAL):
-        printf("P_LESS_EQL");
+        printf("P_LESSEQUAL");
+        return;
+    case (P_PLUS):
+        printf("P_PLUS");
+        return;
+    case (P_MINUS):
+        printf("P_MINUS");
+        return;
+    case (P_TIMES):
+        printf("P_TIMES");
+        return;
+    case (P_DIVIDE):
+        printf("P_DIVIDE");
+        return;
+    case (P_MODULO):
+        printf("P_MODULO");
+        return;
+    case (P_POW):
+        printf("P_POW");
+        return;
+    case (P_NOT):
+        printf("P_NOT");
+        return;
+    case (P_ABS):
+        printf("P_ABS");
+        return;
+    case (P_COLON):
+        printf("P_COLON");
+        return;
+    case (P_EQUAL):
+        printf("P_EQUAL");
+        return;
+    case (P_LPAREN):
+        printf("P_LPAREN");
+        return;
+    case (P_RPAREN):
+        printf("P_RPAREN");
+        return;
+    case (P_AMPERSAND):
+        printf("P_AMPERSAND");
+        return;
+    case (P_in):
+        printf("P_in");
+        return;
+    case (P_to):
+        printf("P_to");
+        return;
+    case (P_by):
+        printf("P_by");
+        return;
+    case (P_int):
+        printf("P_int");
+        return;
+    case (P_dbl):
+        printf("P_dbl");
+        return;
+    case (P_str):
+        printf("P_str");
+        return;
+    case (P_chr):
+        printf("P_chr");
+        return;
+    case (P_bool):
+        printf("P_bool");
+        return;
+    case (P_nil):
+        printf("P_nil");
+        return;
+    case (P_true):
+        printf("P_true");
+        return;
+    case (P_false):
+        printf("P_false");
         return;
     case (P_ACCEPT):
         printf("P_ACCEPT");
         return;
+    case (P_program):
+        printf("P_program");
+        return;
+    case (P_stmts):
+        printf("P_stmts");
+        return;
+    case (P_stmt):
+        printf("P_stmt");
+        return;
+    case (P_decl_stmt):
+        printf("P_decl_stmt");
+        return;
+    case (P_mut_type):
+        printf("P_mut_type");
+        return;
+    case (P_assign_stmt):
+        printf("P_assign_stmt");
+        return;
+    case (P_value):
+        printf("P_value");
+        return;
+    case (P_input_stmt):
+        printf("P_input_stmt");
+        return;
+    case (P_output_stmt):
+        printf("P_output_stmt");
+        return;
+    case (P_string_consts):
+        printf("P_string_consts");
+        return;
+    case (P_string_const):
+        printf("P_string_const");
+        return;
+    case (P_when_stmt):
+        printf("P_when_stmt");
+        return;
+    case (P_else_stmt):
+        printf("P_else_stmt");
+        return;
+    case (P_loop_stmt):
+        printf("P_loop_stmt");
+        return;
+    case (P_data_type):
+        printf("P_data_type");
+        return;
     case (P_expression):
-        printf("P_EXPR");
+        printf("P_expression");
         return;
     case (P_conjunction):
-        printf("P_CONJ");
+        printf("P_conjunction");
         return;
     case (P_equality):
-        printf("P_EQL");
+        printf("P_equality");
         return;
     case (P_relational):
-        printf("P_REL");
-        return;
-    case (P_term):
-        printf("P_TERM");
-        return;
-    case (P_factor):
-        printf("P_FACTOR");
-        return;
-    case (P_power):
-        printf("P_POWER");
-        return;
-    case (P_unary):
-        printf("P_UNARY");
+        printf("P_relational");
         return;
     case (P_abs):
-        printf("P_ABSVAL");
+        printf("P_abs");
+        return;
+    case (P_term):
+        printf("P_term");
+        return;
+    case (P_factor):
+        printf("P_factor");
+        return;
+    case (P_power):
+        printf("P_power");
+        return;
+    case (P_unary):
+        printf("P_unary");
         return;
     case (P_literal):
-        printf("P_LITERAL");
-        return;    
+        printf("P_literal");
+        return;
     }
 }
 
@@ -606,6 +730,7 @@ void parser_start(bool debug) {
     Stack *token_stack = stack_create();
 
     while(is_parsing) {
+        
         current_state = parsing_table[current_state_idx][current_token];     // current state from parsing table (start_state - input_string -> current_state)
 
         // check what action to perform
@@ -667,7 +792,8 @@ void parser_start(bool debug) {
             case ERROR:
                 if (debug)
                     printf("Syntax Error!\n");
-                    continue;
+                is_parsing = false;
+                break;
 
             default:
                 break;

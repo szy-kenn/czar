@@ -30,6 +30,7 @@ void tokens_free(Token *token_array) {
 }
 
 void token_add(token_t token_type, char *lexeme) {
+
     if (lexer.token_memory < lexer.token_count + 1) {
         int old_memory = lexer.token_memory;
         lexer.token_memory = capacity_expand(old_memory);
