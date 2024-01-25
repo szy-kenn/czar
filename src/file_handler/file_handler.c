@@ -14,6 +14,7 @@ bool file_ext_cmp(const char *path, const char *ext) {
 
     /* compare each characters of file name and ext, starting at the end */
     for (; path_idx >= 0 && ext_idx >= 0; path_idx--, ext_idx--) {
+        printf("%c %c\n", path[path_idx], ext[ext_idx]);
         if (tolower(path[path_idx]) != tolower(ext[ext_idx])) {
             return false;
         }

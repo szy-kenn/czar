@@ -393,7 +393,8 @@ void parser_start(bool debug) {
             case ERROR:
                 if (debug)
                     printf("Syntax Error!\n");
-                    continue;
+                is_parsing = false;
+                break;
 
             default:
                 break;
