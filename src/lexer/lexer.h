@@ -50,7 +50,12 @@ typedef enum {
     T_ENUM,
 
     // DATA TYPES (RESERVED WORD) / IDENTIFIER
-    T_DTYPE,
+    T_DT_INT,
+    T_DT_STR,
+    T_DT_CHR,
+    T_DT_BOOL,
+    T_DT_NIL,
+    T_DT_DBL,
 
     // literals
     T_IDENT,
@@ -112,7 +117,9 @@ typedef enum {
 
     // INVALID
     T_INVALID,
-    T_ERROR
+    T_ERROR,
+
+    T_AMPERSAND
 } token_t;
 
 typedef struct {

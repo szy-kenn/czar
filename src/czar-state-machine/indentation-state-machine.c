@@ -8,7 +8,7 @@ StateMachine *indentation_state_machine_init() {
     int start_idx = fsmachine_state_add(state_machine, false, 0);
     int indentation_idx = fsmachine_state_add(state_machine, false, 1);
     int add_token_idx = fsmachine_state_add(state_machine, true, T_INDENT);
-    int inside_idx = fsmachine_state_add(state_machine, false, 0);
+    int inside_idx = fsmachine_state_add(state_machine, false, 2);
 
     /* q0 - \n -> q0 */
     fsmachine_transition_add(state_machine, start_idx, charset_create("\n"),
