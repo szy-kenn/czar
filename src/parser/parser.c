@@ -392,7 +392,8 @@ int index_get(token_t token) {
         return P_LOOP;
     case T_COLON:
         return P_COLON;
-    // case T_AMPERSAND
+    case T_AMPERSAND
+        return P_AMPERSAND;
     case T_MOD:
         return P_MODULO;
     case T_LPAREN:
@@ -445,6 +446,18 @@ int index_get(token_t token) {
         return P_to;
     case T_BY:
         return P_by;
+    case T_DT_BOOL:
+        return P_bool;
+    case T_DT_CHR:
+        return P_chr;
+    case T_DT_DBL:
+        return P_dbl;
+    case T_DT_INT:
+        return P_int;
+    case T_DT_NIL:
+        return P_nil;
+    case T_DT_STR:
+        return P_str;
     }
 }
 
