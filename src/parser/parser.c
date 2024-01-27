@@ -392,7 +392,7 @@ int index_get(token_t token) {
         return P_LOOP;
     case T_COLON:
         return P_COLON;
-    case T_AMPERSAND
+    case T_AMPERSAND:
         return P_AMPERSAND;
     case T_MOD:
         return P_MODULO;
