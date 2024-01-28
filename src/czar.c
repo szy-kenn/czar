@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     StateMachine *indentation_state_machine = indentation_state_machine_init();
     Lexer *lexer = lexer_initialize(source_code, czar_state_machine,
                                     indentation_state_machine);
-    int token_count = lexer_start(true);
+    int token_count = lexer_start(false);
 
     if (token_count > 0) {
         int tokens_save_res = tokens_save(output_file);
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     }
 
     parser_initialize(lexer->token_array, token_count);
-    parser_start(true);
+    parser_start(false);
 
     lexer_free();
 

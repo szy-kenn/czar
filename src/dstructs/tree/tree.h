@@ -23,7 +23,7 @@ typedef struct tree_t {
 Tree *tree_create(void *root_value);
 void tree_free(Tree *tree);
 void tree_print(Tree *tree);
-TreeNode *tree_insert(TreeNode *parent, void *value);
+TreeNode *tree_insert(TreeNode *parent, TreeNode *tree_node);
 void tree_delete(Tree *tree, void *value);
 TreeNode *tree_search(Tree *tree, void *value);
 

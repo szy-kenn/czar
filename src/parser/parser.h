@@ -3,6 +3,7 @@
 
 #include "parser-input-string.h"
 #include "../lexer/lexer.h"
+#include "../dstructs/tree/tree.h"
 #include "../dstructs/stack/token_stack/token_stack.h"
 // typedef struct ParseTreeNode;
 

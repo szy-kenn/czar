@@ -54,18 +54,13 @@ void tree_free(Tree *tree) {
     free(tree);
 }
 
-TreeNode *tree_insert(TreeNode *parent, void *value) {
+TreeNode *tree_insert(TreeNode *parent, TreeNode *tree_node) {
 
     if (parent == NULL) {
         printf("Parent Node cannot be null!\n");
         exit(-5);
     }
 
-    TreeNode *tree_node = malloc(sizeof(TreeNode));
-    tree_node->value = value;
-    tree_node->children = NULL;
-    tree_node->children_count = 0;
-    tree_node->children_memory = 0;
     tree_node->parent = parent;
 
     if (parent->children_memory < parent->children_count + 1) {

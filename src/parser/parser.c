@@ -698,8 +698,255 @@ void input_string_print(InputString input_string) {
     }
 }
 
-InputString token_get(int idx) {
-    return index_get(parser.token_array[idx].token_type);
+char *input_string_get(InputString value) {
+
+    char *val = malloc(100);
+
+    switch (value){
+    case (P_END):
+        strcpy(val,"P_END");
+        return val;
+    case (P_ERROR):
+        strcpy(val,"P_ERROR");
+        return val;
+    case (P_IDENT):
+        strcpy(val,"P_IDENT");
+        return val;
+    case (P_STR):
+        strcpy(val,"P_STR");
+        return val;
+    case (P_CHR):
+        strcpy(val,"P_CHR");
+        return val;
+    case (P_BOOL):
+        strcpy(val,"P_BOOL");
+        return val;
+    case (P_NIL):
+        strcpy(val,"P_NIL");
+        return val;
+    case (P_INT):
+        strcpy(val,"P_INT");
+        return val;
+    case (P_DBL):
+        strcpy(val,"P_DBL");
+        return val;
+    case (P_T_INDENT):
+        strcpy(val,"P_T_INDENT");
+        return val;
+    case (P_T_DEDENT):
+        strcpy(val,"P_T_DEDENT");
+        return val;
+    case (P_GLOBAL):
+        strcpy(val,"P_GLOBAL");
+        return val;
+    case (P_FIXED):
+        strcpy(val,"P_FIXED");
+        return val;
+    case (P_FLEX):
+        strcpy(val,"P_FLEX");
+        return val;
+    case (P_INPUT):
+        strcpy(val,"P_INPUT");
+        return val;
+    case (P_OUTPUT):
+        strcpy(val,"P_OUTPUT");
+        return val;
+    case (P_WHEN):
+        strcpy(val,"P_WHEN");
+        return val;
+    case (P_ELSE):
+        strcpy(val,"P_ELSE");
+        return val;
+    case (P_LOOP):
+        strcpy(val,"P_LOOP");
+        return val;
+    case (P_AND):
+        strcpy(val,"P_AND");
+        return val;
+    case (P_OR):
+        strcpy(val,"P_OR");
+        return val;
+    case (P_EQUALS):
+        strcpy(val,"P_EQUALS");
+        return val;
+    case (P_NOTEQUALS):
+        strcpy(val,"P_NOTEQUALS");
+        return val;
+    case (P_GREATER):
+        strcpy(val,"P_GREATER");
+        return val;
+    case (P_GREATEREQUAL):
+        strcpy(val,"P_GREATEREQUAL");
+        return val;
+    case (P_LESS):
+        strcpy(val,"P_LESS");
+        return val;
+    case (P_LESSEQUAL):
+        strcpy(val,"P_LESSEQUAL");
+        return val;
+    case (P_PLUS):
+        strcpy(val,"P_PLUS");
+        return val;
+    case (P_MINUS):
+        strcpy(val,"P_MINUS");
+        return val;
+    case (P_TIMES):
+        strcpy(val,"P_TIMES");
+        return val;
+    case (P_DIVIDE):
+        strcpy(val,"P_DIVIDE");
+        return val;
+    case (P_MODULO):
+        strcpy(val,"P_MODULO");
+        return val;
+    case (P_POW):
+        strcpy(val,"P_POW");
+        return val;
+    case (P_NOT):
+        strcpy(val,"P_NOT");
+        return val;
+    case (P_ABS):
+        strcpy(val,"P_ABS");
+        return val;
+    case (P_COLON):
+        strcpy(val,"P_COLON");
+        return val;
+    case (P_EQUAL):
+        strcpy(val,"P_EQUAL");
+        return val;
+    case (P_LPAREN):
+        strcpy(val,"P_LPAREN");
+        return val;
+    case (P_RPAREN):
+        strcpy(val,"P_RPAREN");
+        return val;
+    case (P_AMPERSAND):
+        strcpy(val,"P_AMPERSAND");
+        return val;
+    case (P_in):
+        strcpy(val,"P_in");
+        return val;
+    case (P_to):
+        strcpy(val,"P_to");
+        return val;
+    case (P_by):
+        strcpy(val,"P_by");
+        return val;
+    case (P_int):
+        strcpy(val,"P_int");
+        return val;
+    case (P_dbl):
+        strcpy(val,"P_dbl");
+        return val;
+    case (P_str):
+        strcpy(val,"P_str");
+        return val;
+    case (P_chr):
+        strcpy(val,"P_chr");
+        return val;
+    case (P_bool):
+        strcpy(val,"P_bool");
+        return val;
+    case (P_nil):
+        strcpy(val,"P_nil");
+        return val;
+    case (P_true):
+        strcpy(val,"P_true");
+        return val;
+    case (P_false):
+        strcpy(val,"P_false");
+        return val;
+    case (P_ACCEPT):
+        strcpy(val,"P_ACCEPT");
+        return val;
+    case (P_program):
+        strcpy(val,"P_program");
+        return val;
+    case (P_stmts):
+        strcpy(val,"P_stmts");
+        return val;
+    case (P_stmt):
+        strcpy(val,"P_stmt");
+        return val;
+    case (P_decl_stmt):
+        strcpy(val,"P_decl_stmt");
+        return val;
+    case (P_mut_type):
+        strcpy(val,"P_mut_type");
+        return val;
+    case (P_assign_stmt):
+        strcpy(val,"P_assign_stmt");
+        return val;
+    case (P_value):
+        strcpy(val,"P_value");
+        return val;
+    case (P_input_stmt):
+        strcpy(val,"P_input_stmt");
+        return val;
+    case (P_output_stmt):
+        strcpy(val,"P_output_stmt");
+        return val;
+    case (P_string_consts):
+        strcpy(val,"P_string_consts");
+        return val;
+    case (P_string_const):
+        strcpy(val,"P_string_const");
+        return val;
+    case (P_when_stmt):
+        strcpy(val,"P_when_stmt");
+        return val;
+    case (P_else_stmt):
+        strcpy(val,"P_else_stmt");
+        return val;
+    case (P_loop_stmt):
+        strcpy(val,"P_loop_stmt");
+        return val;
+    case (P_data_type):
+        strcpy(val,"P_data_type");
+        return val;
+    case (P_expression):
+        strcpy(val,"P_expression");
+        return val;
+    case (P_conjunction):
+        strcpy(val,"P_conjunction");
+        return val;
+    case (P_equality):
+        strcpy(val,"P_equality");
+        return val;
+    case (P_relational):
+        strcpy(val,"P_relational");
+        return val;
+    case (P_abs):
+        strcpy(val,"P_abs");
+        return val;
+    case (P_term):
+        strcpy(val,"P_term");
+        return val;
+    case (P_factor):
+        strcpy(val,"P_factor");
+        return val;
+    case (P_power):
+        strcpy(val,"P_power");
+        return val;
+    case (P_unary):
+        strcpy(val,"P_unary");
+        return val;
+    case (P_literal):
+        strcpy(val,"P_literal");
+        return val;
+    }
+}
+
+token_node_t *token_get(int idx) {
+    token_node_t *token_node = malloc(sizeof(token_node_t));
+    token_node->parse_tree_node = malloc(sizeof(TreeNode));
+    token_node->parse_tree_node->children = NULL;
+    token_node->parse_tree_node->children_count = 0;
+    token_node->parse_tree_node->children_memory = 0;
+    token_node->parse_tree_node->parent = NULL;
+    token_node->parse_tree_node->value = parser.token_array[idx].lexeme;
+    token_node->type = index_get(parser.token_array[idx].token_type);
+    return token_node;
 }
 
 void _stack_print(Stack *stack) {
@@ -720,6 +967,199 @@ void _stack_print(Stack *stack) {
     }
 }
 
+void space_print(int reps) {
+    for (int i = 0; i < reps; i++) {
+        printf("    ");
+    }
+}
+
+void _to_ast_rcv(TreeNode *tree_node, int depth) {
+    if (tree_node == NULL) {
+        printf("---\n");
+        return;
+    }
+
+    // depth++;
+
+    if (strcmp(tree_node->value, "P_program") == 0) {
+
+        space_print(depth);
+        printf("%s:\n", tree_node->value);
+
+        depth++;
+    }
+
+    if (strcmp(tree_node->value, "P_decl_stmt") == 0) {
+
+        space_print(depth);
+        printf("%s:\n", tree_node->value);
+
+        depth++;
+
+        space_print(depth);
+        printf("Mutability Type: %s\n", tree_node->children[tree_node->children_count - 1]->children[0]->value);
+
+        space_print(depth);
+        printf("Identifier Name: %s\n", tree_node->children[tree_node->children_count - 2]->value);
+        
+        space_print(depth);       
+        printf("Data type: %s\n", tree_node->children[tree_node->children_count - 4]->children[0]->value);
+        
+    } else if (strcmp(tree_node->value, "P_assign_stmt") == 0) {
+
+        space_print(depth);
+        printf("%s:\n", tree_node->value);
+
+        depth++;
+
+        space_print(depth);
+        printf("Identifier Name: %s\n", tree_node->children[tree_node->children_count - 1]->value);
+
+        space_print(depth);
+        printf("Value:\n");
+        _to_ast_rcv(tree_node->children[tree_node->children_count - 3], depth+1);
+    } else if (strcmp(tree_node->value, "P_input_stmt") == 0 ||
+               strcmp(tree_node->value, "P_output_stmt") == 0) {
+        space_print(depth);
+        printf("%s:\n", tree_node->value);
+
+        depth++;
+
+        space_print(depth);
+        printf("Contents:\n");
+        depth++;
+        _to_ast_rcv(tree_node->children[1], depth);
+
+    } else if (strcmp(tree_node->value, "P_loop_stmt") == 0) {
+
+        space_print(depth);
+        printf("%s:\n", tree_node->value);
+        
+        depth++;
+
+        space_print(depth);
+        printf("Loop variable: %s\n", tree_node->children[tree_node->children_count - 2]->value);
+        
+        if (tree_node->children_count == 9) {
+            space_print(depth);
+            printf("Start: 0\n");
+            space_print(depth);
+            printf("End: \n");
+
+            space_print(depth+1);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[4], depth+2);
+        }
+        if (tree_node->children_count == 11) {
+            space_print(depth);
+            printf("Start: 0\n");
+            space_print(depth+1);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[6], depth+2);
+            
+            space_print(depth);
+            printf("End: \n");
+            space_print(depth+1);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[4], depth+2);
+        }
+        if (tree_node->children_count == 13) {
+            space_print(depth);
+            printf("Start: 0\n");
+            space_print(depth+1);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[8], depth+2);
+            
+            space_print(depth);
+            printf("End: \n");
+            space_print(depth+1);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[6], depth+2);
+
+            space_print(depth);
+            printf("Step: \n");
+            space_print(depth+1);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[4], depth+2);
+        }
+
+    } else if (strcmp(tree_node->value, "P_when_stmt") == 0) {
+        
+    } else if (strcmp(tree_node->value, "P_string_consts") == 0) {
+        for (int i = 0; i < tree_node->children_count; i+=2) {
+            _to_ast_rcv(tree_node->children[i], depth);
+        }       
+    } 
+    else if (strcmp(tree_node->value, "P_string_const") == 0) {
+        if (tree_node->children[0]->children_count == 0) {
+            space_print(depth);
+            printf("%s\n", tree_node->children[0]->value);
+        } else if (strcmp(tree_node->children[0]->value, "P_expression") == 0){
+            space_print(depth);
+            printf("Expression:\n");
+            _to_ast_rcv(tree_node->children[0], depth+1);
+        } 
+    } else if (strcmp(tree_node->value, "P_expression") == 0 ||
+             strcmp(tree_node->value, "P_conjunction") == 0 ||
+             strcmp(tree_node->value, "P_equality") == 0 ||
+             strcmp(tree_node->value, "P_relational") == 0 ||
+             strcmp(tree_node->value, "P_term") == 0 ||
+             strcmp(tree_node->value, "P_factor") == 0 ||
+             strcmp(tree_node->value, "P_power") == 0 ||
+             strcmp(tree_node->value, "P_unary") == 0) {
+
+        if (tree_node->children_count == 3) {
+        space_print(depth);
+        printf("Operator: %s\n", tree_node->children[1]->value);
+
+        space_print(depth);
+        
+        printf("Right:\n");
+        _to_ast_rcv(tree_node->children[0], depth+1);
+
+        space_print(depth);
+        printf("Left:\n");
+        _to_ast_rcv(tree_node->children[2], depth+1);
+
+        depth++;
+
+        } else {
+            _to_ast_rcv(tree_node->children[0], depth);
+        }
+
+
+    } else if (strcmp(tree_node->value, "P_literal") == 0) {
+        if (tree_node->children_count == 1) {
+            space_print(depth);
+            printf("Value: %s\n", tree_node->children[0]->value);
+        } else {
+            _to_ast_rcv(tree_node->children[1], depth);
+        }
+    } else if (strcmp(tree_node->value, "P_abs") == 0) {
+        if (tree_node->children_count == 1) {
+            if (tree_node->children[0]->children_count == 0) {
+                space_print(depth);
+                printf("Value: %s\n", tree_node->children[0]->value);
+            } else {
+                _to_ast_rcv(tree_node->children[0], depth);
+            }
+        } else {
+            _to_ast_rcv(tree_node->children[1], depth);
+        }
+    }
+    
+    else {
+        for (int i = 0; i < tree_node->children_count; i++) {
+            _to_ast_rcv(tree_node->children[i], depth);
+        }
+    }
+}
+
+
+void to_ast(Tree *parse_tree) {
+    _to_ast_rcv(parse_tree->root, 0);
+}
+
 void parser_initialize(Token *token_array, int token_count) {
     parser.current = 0;
     parser.token_array = token_array;
@@ -732,29 +1172,33 @@ void parser_start(bool debug) {
     bool is_parsing = true;
     int current_state_idx = 0;
     int current_idx = 0;
-    InputString current_token = token_get(current_idx);
+    token_node_t *current_token = token_get(current_idx);
     parsing_state current_state;
+
+    FILE *ast = fopen("ast.txt", "w");
+
+    Tree *parse_tree = tree_create("P_PROGRAM");
 
     // for state indices
     Stack *state_stack = stack_create();
     stack_push(state_stack, current_state_idx);
 
     // for tokens
-    Stack *token_stack = stack_create();
+    TokenStack *token_stack = token_stack_create();
 
     while(is_parsing) {
-        
-        current_state = parsing_table[current_state_idx][current_token];     // current state from parsing table (start_state - input_string -> current_state)
+        current_state = parsing_table[current_state_idx][current_token->type];     // current state from parsing table (start_state - input_string -> current_state)
 
         // check what action to perform
         switch (current_state.action_type) {
 
             case SHIFT:
                 if (debug) {
-                    printf("q%d\t-- T%03d\t SHIFT(%d)\t--> q%d\n", current_state_idx, current_token, current_state.value, current_state.value);
+                    printf("q%d\t-- T%03d\t SHIFT(%d)\t--> q%d\n", current_state_idx, current_token->type, current_state.value, current_state.value);
                 }
                 stack_push(state_stack, current_state.value);
-                stack_push(token_stack, current_token);
+
+                token_stack_push(token_stack, current_token->type, current_token->parse_tree_node);
                 current_state_idx = current_state.value;
 
                 if (current_idx  < parser.token_count - 1) {
@@ -762,33 +1206,51 @@ void parser_start(bool debug) {
                 }
 
                 current_token = token_get(current_idx);
-                _stack_print(token_stack);
+                // _stack_print(token_stack);
                 break;
             
             case REDUCE:
                 if (debug) {
-                    printf("q%d\t-- T%03d\t REDUCE(%d)\t--> q%d\n", current_state_idx, current_token, current_state.value, current_state.value);
+                    printf("q%d\t-- T%03d\t REDUCE(%d)\t--> q%d\n", current_state_idx, current_token->type, current_state.value, current_state.value);
                 }
 
                 Production rule = rules[current_state.value];
+
+                /** token_node_t *parent_node = malloc(sizeof(token_node_t));
+                parent_node->next = NULL;
+                parent_node->type = rule.lhs;
+                parent_node->parse_tree_node = malloc(sizeof(sizeof(TreeNode)));
+                parent_node->parse_tree_node->children = NULL;
+                parent_node->parse_tree_node->children_count = 0;
+                parent_node->parse_tree_node->children_memory = 0;
+                parent_node->parse_tree_node->parent = NULL;
+                **/
+
+                current_token->type = rule.lhs;
+                current_token->parse_tree_node->value = input_string_get(rule.lhs); // change to the string value of the type
+                if (current_token->parse_tree_node->parent == NULL) {
+                    tree_insert(parse_tree->root, current_token->parse_tree_node);
+                }
+
                 for (int i = 0; i < rule.rhs_count; i++) {
-                    if (rule.rhs[rule.rhs_count-1-i] == token_stack->top->value) {
+                    if (rule.rhs[rule.rhs_count-1-i] == token_stack->top->type) {
                         stack_pop(state_stack);
                         // printf("Transition: q%d -> ", stack_pop(state_stack)->value);
                         // printf("q%d\n", state_stack->top->value);
-                        stack_pop(token_stack);
+                        token_node_t *popped_token = token_stack_pop(token_stack);
+
+                        tree_insert(current_token->parse_tree_node, popped_token->parse_tree_node);
                     }
                 }
 
                 current_state_idx = state_stack->top->value;
-                current_token = rule.lhs;
-                stack_push(token_stack, current_token);
-                _stack_print(token_stack);
+                token_stack_push(token_stack, current_token->type, current_token->parse_tree_node);
+
                 break;
 
             case GOTO:
                 if (debug) {
-                    printf("q%d\t-- T%03d\t GOTO(%d)\t--> q%d\n", current_state_idx, current_token, current_state.value, current_state.value);
+                    printf("q%d\t-- T%03d\t GOTO(%d)\t--> q%d\n", current_state_idx, current_token->type, current_state.value, current_state.value);
                 } 
                 current_token = token_get(current_idx);
                 current_state_idx = current_state.value;
@@ -813,6 +1275,14 @@ void parser_start(bool debug) {
          }
 
     }
+ 
+    Tree *final_tree = malloc(sizeof(Tree));
+    final_tree->root = parse_tree->root->children[parse_tree->root->children_count - 1];
+    tree_print(final_tree);
+    to_ast(final_tree);
     stack_free(state_stack);
-    stack_free(token_stack);
+    token_stack_free(token_stack);
+    // tree_free(parse_tree);
+    fclose(ast);
+    free(current_token);
 };
