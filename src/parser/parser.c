@@ -1052,7 +1052,7 @@ void _to_ast_rcv(TreeNode *tree_node, int depth) {
         }
         if (tree_node->children_count == 11) {
             space_print(depth);
-            printf("Start: 0\n");
+            printf("Start:\n");
             space_print(depth+1);
             printf("Expression:\n");
             _to_ast_rcv(tree_node->children[6], depth+2);
@@ -1065,7 +1065,7 @@ void _to_ast_rcv(TreeNode *tree_node, int depth) {
         }
         if (tree_node->children_count == 13) {
             space_print(depth);
-            printf("Start: 0\n");
+            printf("Start:\n");
             space_print(depth+1);
             printf("Expression:\n");
             _to_ast_rcv(tree_node->children[8], depth+2);
@@ -1083,9 +1083,50 @@ void _to_ast_rcv(TreeNode *tree_node, int depth) {
             _to_ast_rcv(tree_node->children[4], depth+2);
         }
 
+        space_print(depth);
+        printf("Body:\n");
+        _to_ast_rcv(tree_node->children[0], depth+1);
+
     } else if (strcmp(tree_node->value, "P_when_stmt") == 0) {
+
+        space_print(depth);
+        printf("%s:\n", tree_node->value);
         
-    } else if (strcmp(tree_node->value, "P_string_consts") == 0) {
+        depth++;
+
+        space_print(depth);
+        printf("Condition: \n");
+        _to_ast_rcv(tree_node->children[5], depth+1);
+        
+        space_print(depth);
+        printf("Body: \n");
+        _to_ast_rcv(tree_node->children[2], depth+1);
+
+        space_print(depth);
+        printf("Else Statement: \n");
+        _to_ast_rcv(tree_node->children[0], depth+1);
+
+    } else if (strcmp(tree_node->value, "P_else_stmt") == 0) {
+
+        if (tree_node->children_count == 0) {
+            space_print(depth);
+            printf("// do nothing\n");
+            return;
+        }
+        space_print(depth);
+        printf("Condition: \n");
+        _to_ast_rcv(tree_node->children[5], depth+1);
+
+        space_print(depth);
+        printf("Body: \n");
+        _to_ast_rcv(tree_node->children[2], depth+1);
+
+        space_print(depth);
+        printf("Else Statement: \n");
+        _to_ast_rcv(tree_node->children[0], depth+1);
+    } 
+    
+    else if (strcmp(tree_node->value, "P_string_consts") == 0) {
         for (int i = 0; i < tree_node->children_count; i+=2) {
             _to_ast_rcv(tree_node->children[i], depth);
         }       
@@ -1093,6 +1134,8 @@ void _to_ast_rcv(TreeNode *tree_node, int depth) {
     else if (strcmp(tree_node->value, "P_string_const") == 0) {
         if (tree_node->children[0]->children_count == 0) {
             space_print(depth);
+            printf("String literal:\n");
+            space_print(depth+1);
             printf("%s\n", tree_node->children[0]->value);
         } else if (strcmp(tree_node->children[0]->value, "P_expression") == 0){
             space_print(depth);
