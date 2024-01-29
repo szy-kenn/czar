@@ -33,7 +33,8 @@ In Linux:
 Write a czar code in a `.cz` file, for example:
 
 ```czar
-fixed my_str: str = "Hello, World!"
+fixed name: str
+name = "Czar"
 ```
 
 Run the program:
@@ -45,13 +46,14 @@ Run the program:
 The output file for the symbol table should look like this:
 
 ```output.txt
-==========================================
-000 | T_FIXED        fixed
-001 | T_IDENT        my_str
-002 | T_COLON        :
-003 | T_DTYPE        str
-004 | T_EQL          =
-005 | T_STR          "Hello, World!"
+T_FIXED        fixed
+T_IDENT        name
+T_COLON        :
+T_DT_STR       str
+T_IDENT        name
+T_EQL          =
+T_STR          "Czar"
+T_EOF          EOF
 ```
 
 The Abstract Syntax Tree should look like this:
