@@ -1,6 +1,6 @@
 import re
 symbols = ["$end", "error", "IDENT", "STR", "CHR", "BOOL", "NIL",
-             "INT", "DBL", "T_INDENT", "T_DEDENT", "GLOBAL", "FIXED",
+             "INT", "DBL", "INDENT", "DEDENT", "GLOBAL", "FIXED",
              "FLEX", "INPUT", "OUTPUT", "WHEN", "ELSE", "LOOP",
              "AND", "OR", "EQUALS", "NOTEQUALS", "GREATER",
              "GREATEREQUAL", "LESS", "LESSEQUAL", "PLUS",
@@ -19,12 +19,12 @@ symbols = ["$end", "error", "IDENT", "STR", "CHR", "BOOL", "NIL",
 states = []
 
 
-for i in range(149):
+for i in range(153):
     states.append([])
     for j in range(77):
         states[i].append("X")
 
-with open("states.txt", "r") as f:
+with open("STATES-2.txt", "r") as f:
     txt = f.read()
     txt_len = len(txt)
     current_pos = 0

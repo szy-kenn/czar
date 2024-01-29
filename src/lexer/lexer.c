@@ -310,35 +310,12 @@ void indentation_check(char current_char) {
                         free(digit_str);
                     }
                 }
-                token_print(&lexer.token_array[lexer.token_count - 1]);
+                if (lexer.token_count - 1 >= 0) {
+                    token_print(&lexer.token_array[lexer.token_count - 1]);
+                }
                 lexer.indent_val = 0;
                 break;
-            /** case 2:
-                if (lexer.indent_stack->top->value > 0 &&
-                    lexer.current_state->idx == 0) {
-                    printf("HERE!!!");
-                    int top_indent_val = stack_pop(lexer.indent_stack)->value;
-                    int length = snprintf(NULL, 0, "%d", top_indent_val);
-                    char *digit_str = malloc(length + 1);
-                    snprintf(digit_str, length + 1, "%d", top_indent_val);
-                    token_add(T_DEDENT, digit_str);
-                    free(digit_str);
-                    token_print(&lexer.token_array[lexer.token_count - 1]);
-                    lexer.indent_val = 0;
-                }
-                **/
             case 0:
-                if (lexer.indent_stack->top->value > 0) {
-                    printf("HERE!!!");
-                    int top_indent_val = stack_pop(lexer.indent_stack)->value;
-                    int length = snprintf(NULL, 0, "%d", top_indent_val);
-                    char *digit_str = malloc(length + 1);
-                    snprintf(digit_str, length + 1, "%d", top_indent_val);
-                    token_add(T_DEDENT, digit_str);
-                    free(digit_str);
-                    token_print(&lexer.token_array[lexer.token_count - 1]);
-                    lexer.indent_val = 0;
-                }
                 lexer.indent_val = 0;
                 break;
         }

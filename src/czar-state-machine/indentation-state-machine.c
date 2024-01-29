@@ -14,10 +14,10 @@ StateMachine *indentation_state_machine_init() {
     fsmachine_transition_add(state_machine, start_idx, charset_create("\n"),
                              start_idx);
 
-    /* q0 - not \n and space -> inside */
+    /* q0 - not \n and not space -> inside */
     fsmachine_transition_add(state_machine, start_idx,
                              charset_excludes(CHARACTER_SET, "\n "),
-                             inside_idx);
+                             add_token_idx);
 
     /* q0 - space -> q1 */
     fsmachine_transition_add(state_machine, start_idx, charset_create(" "),

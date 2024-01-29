@@ -44,15 +44,15 @@ Grammar
    30             | STR
    31             | CHR
 
-   32 when_stmt: WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
+   32 when_stmt: WHEN expression COLON INDENT stmt DEDENT else_stmt
 
-   33 else_stmt: ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   34          | ELSE COLON T_INDENT stmt
+   33 else_stmt: ELSE WHEN expression COLON INDENT stmt DEDENT else_stmt
+   34          | ELSE COLON INDENT stmt DEDENT
    35          | ε
 
-   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
    39 data_type: "int"
    40          | "dbl"
@@ -115,8 +115,8 @@ Terminals, with rules where they appear
     NIL <str> (262) 22
     INT <str> (263) 72
     DBL <str> (264) 73
-    T_INDENT <str> (265) 32 33 34 36 37 38
-    T_DEDENT <str> (266) 32 33
+    INDENT <str> (265) 32 33 34 36 37 38
+    DEDENT <str> (266) 32 33 34 36 37 38
     GLOBAL (267) 10 11
     FIXED (268) 14
     FLEX (269) 15
@@ -263,10 +263,10 @@ State 0
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -341,7 +341,7 @@ State 6
 
 State 7
 
-   32 when_stmt: WHEN • expression COLON T_INDENT stmt T_DEDENT else_stmt
+   32 when_stmt: WHEN • expression COLON INDENT stmt DEDENT else_stmt
    45 expression: • expression OR conjunction
    46           | • conjunction
    47 conjunction: • conjunction AND equality
@@ -399,9 +399,9 @@ State 7
 
 State 8
 
-   36 loop_stmt: LOOP • IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | LOOP • IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | LOOP • IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP • IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | LOOP • IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP • IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT  shift, and go to state 42
 
@@ -434,10 +434,10 @@ State 10
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -925,7 +925,7 @@ State 31
 
 State 32
 
-   32 when_stmt: WHEN expression • COLON T_INDENT stmt T_DEDENT else_stmt
+   32 when_stmt: WHEN expression • COLON INDENT stmt DEDENT else_stmt
    45 expression: expression • OR conjunction
 
     OR     shift, and go to state 66
@@ -1029,9 +1029,9 @@ State 41
 
 State 42
 
-   36 loop_stmt: LOOP IDENT • "in" "(" expression ")" COLON T_INDENT stmt
-   37          | LOOP IDENT • "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT • "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT • "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | LOOP IDENT • "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT • "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     "in"  shift, and go to state 81
 
@@ -1268,9 +1268,9 @@ State 66
 
 State 67
 
-   32 when_stmt: WHEN expression COLON • T_INDENT stmt T_DEDENT else_stmt
+   32 when_stmt: WHEN expression COLON • INDENT stmt DEDENT else_stmt
 
-    T_INDENT  shift, and go to state 90
+    INDENT  shift, and go to state 90
 
 
 State 68
@@ -1772,9 +1772,9 @@ State 80
 
 State 81
 
-   36 loop_stmt: LOOP IDENT "in" • "(" expression ")" COLON T_INDENT stmt
-   37          | LOOP IDENT "in" • "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" • "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" • "(" expression ")" COLON INDENT stmt DEDENT
+   37          | LOOP IDENT "in" • "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" • "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     "("  shift, and go to state 104
 
@@ -1943,11 +1943,11 @@ State 90
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   32          | WHEN expression COLON T_INDENT • stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   32          | WHEN expression COLON INDENT • stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -2107,9 +2107,9 @@ State 103
 
 State 104
 
-   36 loop_stmt: LOOP IDENT "in" "(" • expression ")" COLON T_INDENT stmt
-   37          | LOOP IDENT "in" "(" • expression "to" expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" "(" • expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" "(" • expression ")" COLON INDENT stmt DEDENT
+   37          | LOOP IDENT "in" "(" • expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" "(" • expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
    45 expression: • expression OR conjunction
    46           | • conjunction
    47 conjunction: • conjunction AND equality
@@ -2306,16 +2306,16 @@ State 114
 
 State 115
 
-   32 when_stmt: WHEN expression COLON T_INDENT stmt • T_DEDENT else_stmt
+   32 when_stmt: WHEN expression COLON INDENT stmt • DEDENT else_stmt
 
-    T_DEDENT  shift, and go to state 119
+    DEDENT  shift, and go to state 119
 
 
 State 116
 
-   36 loop_stmt: LOOP IDENT "in" "(" expression • ")" COLON T_INDENT stmt
-   37          | LOOP IDENT "in" "(" expression • "to" expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" "(" expression • "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" "(" expression • ")" COLON INDENT stmt DEDENT
+   37          | LOOP IDENT "in" "(" expression • "to" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" "(" expression • "to" expression "by" expression ")" COLON INDENT stmt DEDENT
    45 expression: expression • OR conjunction
 
     OR    shift, and go to state 66
@@ -2405,9 +2405,9 @@ State 118
 
 State 119
 
-   32 when_stmt: WHEN expression COLON T_INDENT stmt T_DEDENT • else_stmt
-   33 else_stmt: • ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   34          | • ELSE COLON T_INDENT stmt
+   32 when_stmt: WHEN expression COLON INDENT stmt DEDENT • else_stmt
+   33 else_stmt: • ELSE WHEN expression COLON INDENT stmt DEDENT else_stmt
+   34          | • ELSE COLON INDENT stmt DEDENT
    35          | ε •
 
     ELSE  shift, and go to state 123
@@ -2419,15 +2419,15 @@ State 119
 
 State 120
 
-   36 loop_stmt: LOOP IDENT "in" "(" expression ")" • COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" • COLON INDENT stmt DEDENT
 
     COLON  shift, and go to state 125
 
 
 State 121
 
-   37 loop_stmt: LOOP IDENT "in" "(" expression "to" • expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" "(" expression "to" • expression "by" expression ")" COLON T_INDENT stmt
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" • expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" "(" expression "to" • expression "by" expression ")" COLON INDENT stmt DEDENT
    45 expression: • expression OR conjunction
    46           | • conjunction
    47 conjunction: • conjunction AND equality
@@ -2492,8 +2492,8 @@ State 122
 
 State 123
 
-   33 else_stmt: ELSE • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   34          | ELSE • COLON T_INDENT stmt
+   33 else_stmt: ELSE • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   34          | ELSE • COLON INDENT stmt DEDENT
 
     WHEN   shift, and go to state 127
     COLON  shift, and go to state 128
@@ -2501,22 +2501,22 @@ State 123
 
 State 124
 
-   32 when_stmt: WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt •
+   32 when_stmt: WHEN expression COLON INDENT stmt DEDENT else_stmt •
 
     $default  reduce using rule 32 (when_stmt)
 
 
 State 125
 
-   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON • T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON • INDENT stmt DEDENT
 
-    T_INDENT  shift, and go to state 129
+    INDENT  shift, and go to state 129
 
 
 State 126
 
-   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression • ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" "(" expression "to" expression • "by" expression ")" COLON T_INDENT stmt
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression • ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" "(" expression "to" expression • "by" expression ")" COLON INDENT stmt DEDENT
    45 expression: expression • OR conjunction
 
     OR    shift, and go to state 66
@@ -2526,7 +2526,7 @@ State 126
 
 State 127
 
-   33 else_stmt: ELSE WHEN • expression COLON T_INDENT stmt T_DEDENT else_stmt
+   33 else_stmt: ELSE WHEN • expression COLON INDENT stmt DEDENT else_stmt
    45 expression: • expression OR conjunction
    46           | • conjunction
    47 conjunction: • conjunction AND equality
@@ -2584,9 +2584,9 @@ State 127
 
 State 128
 
-   34 else_stmt: ELSE COLON • T_INDENT stmt
+   34 else_stmt: ELSE COLON • INDENT stmt DEDENT
 
-    T_INDENT  shift, and go to state 133
+    INDENT  shift, and go to state 133
 
 
 State 129
@@ -2608,11 +2608,11 @@ State 129
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   36          | LOOP IDENT "in" "(" expression ")" COLON T_INDENT • stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   36          | LOOP IDENT "in" "(" expression ")" COLON INDENT • stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -2635,14 +2635,14 @@ State 129
 
 State 130
 
-   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" • COLON T_INDENT stmt
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" • COLON INDENT stmt DEDENT
 
     COLON  shift, and go to state 135
 
 
 State 131
 
-   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" • expression ")" COLON T_INDENT stmt
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" • expression ")" COLON INDENT stmt DEDENT
    45 expression: • expression OR conjunction
    46           | • conjunction
    47 conjunction: • conjunction AND equality
@@ -2700,7 +2700,7 @@ State 131
 
 State 132
 
-   33 else_stmt: ELSE WHEN expression • COLON T_INDENT stmt T_DEDENT else_stmt
+   33 else_stmt: ELSE WHEN expression • COLON INDENT stmt DEDENT else_stmt
    45 expression: expression • OR conjunction
 
     OR     shift, and go to state 66
@@ -2726,11 +2726,11 @@ State 133
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   34 else_stmt: ELSE COLON T_INDENT • stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   34 else_stmt: ELSE COLON INDENT • stmt DEDENT
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -2753,94 +2753,50 @@ State 133
 
 State 134
 
-   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt •
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON INDENT stmt • DEDENT
 
-    $default  reduce using rule 36 (loop_stmt)
+    DEDENT  shift, and go to state 139
 
 
 State 135
 
-   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON • T_INDENT stmt
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON • INDENT stmt DEDENT
 
-    T_INDENT  shift, and go to state 139
+    INDENT  shift, and go to state 140
 
 
 State 136
 
-   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression • ")" COLON T_INDENT stmt
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression • ")" COLON INDENT stmt DEDENT
    45 expression: expression • OR conjunction
 
     OR   shift, and go to state 66
-    ")"  shift, and go to state 140
+    ")"  shift, and go to state 141
 
 
 State 137
 
-   33 else_stmt: ELSE WHEN expression COLON • T_INDENT stmt T_DEDENT else_stmt
+   33 else_stmt: ELSE WHEN expression COLON • INDENT stmt DEDENT else_stmt
 
-    T_INDENT  shift, and go to state 141
+    INDENT  shift, and go to state 142
 
 
 State 138
 
-   34 else_stmt: ELSE COLON T_INDENT stmt •
+   34 else_stmt: ELSE COLON INDENT stmt • DEDENT
 
-    $default  reduce using rule 34 (else_stmt)
+    DEDENT  shift, and go to state 143
 
 
 State 139
 
-    4 stmt: • decl_stmt
-    5     | • assign_stmt
-    6     | • input_stmt
-    7     | • output_stmt
-    8     | • when_stmt
-    9     | • loop_stmt
-   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
-   11          | • GLOBAL mut_type IDENT COLON EQUAL value
-   12          | • mut_type IDENT COLON data_type
-   13          | • mut_type IDENT COLON data_type EQUAL value
-   14 mut_type: • FIXED
-   15         | • FLEX
-   16 assign_stmt: • IDENT EQUAL value
-   23 input_stmt: • INPUT "(" string_consts ")"
-   24           | • INPUT "(" ")"
-   25 output_stmt: • OUTPUT "(" string_consts ")"
-   26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   37          | LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT • stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   36 loop_stmt: LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT •
 
-    IDENT   shift, and go to state 1
-    GLOBAL  shift, and go to state 2
-    FIXED   shift, and go to state 3
-    FLEX    shift, and go to state 4
-    INPUT   shift, and go to state 5
-    OUTPUT  shift, and go to state 6
-    WHEN    shift, and go to state 7
-    LOOP    shift, and go to state 8
-
-    stmt         go to state 142
-    decl_stmt    go to state 12
-    mut_type     go to state 13
-    assign_stmt  go to state 14
-    input_stmt   go to state 15
-    output_stmt  go to state 16
-    when_stmt    go to state 17
-    loop_stmt    go to state 18
+    $default  reduce using rule 36 (loop_stmt)
 
 
 State 140
 
-   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" • COLON T_INDENT stmt
-
-    COLON  shift, and go to state 143
-
-
-State 141
-
     4 stmt: • decl_stmt
     5     | • assign_stmt
     6     | • input_stmt
@@ -2858,11 +2814,11 @@ State 141
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   33 else_stmt: ELSE WHEN expression COLON T_INDENT • stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   37          | LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT • stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -2883,28 +2839,14 @@ State 141
     loop_stmt    go to state 18
 
 
+State 141
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" • COLON INDENT stmt DEDENT
+
+    COLON  shift, and go to state 145
+
+
 State 142
-
-   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt •
-
-    $default  reduce using rule 37 (loop_stmt)
-
-
-State 143
-
-   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON • T_INDENT stmt
-
-    T_INDENT  shift, and go to state 145
-
-
-State 144
-
-   33 else_stmt: ELSE WHEN expression COLON T_INDENT stmt • T_DEDENT else_stmt
-
-    T_DEDENT  shift, and go to state 146
-
-
-State 145
 
     4 stmt: • decl_stmt
     5     | • assign_stmt
@@ -2923,11 +2865,11 @@ State 145
    24           | • INPUT "(" ")"
    25 output_stmt: • OUTPUT "(" string_consts ")"
    26            | • OUTPUT "(" ")"
-   32 when_stmt: • WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON T_INDENT stmt
-   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON T_INDENT stmt
-   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt
-   38          | LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT • stmt
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   33 else_stmt: ELSE WHEN expression COLON INDENT • stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
 
     IDENT   shift, and go to state 1
     GLOBAL  shift, and go to state 2
@@ -2938,7 +2880,7 @@ State 145
     WHEN    shift, and go to state 7
     LOOP    shift, and go to state 8
 
-    stmt         go to state 147
+    stmt         go to state 146
     decl_stmt    go to state 12
     mut_type     go to state 13
     assign_stmt  go to state 14
@@ -2948,29 +2890,115 @@ State 145
     loop_stmt    go to state 18
 
 
+State 143
+
+   34 else_stmt: ELSE COLON INDENT stmt DEDENT •
+
+    $default  reduce using rule 34 (else_stmt)
+
+
+State 144
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt • DEDENT
+
+    DEDENT  shift, and go to state 147
+
+
+State 145
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON • INDENT stmt DEDENT
+
+    INDENT  shift, and go to state 148
+
+
 State 146
 
-   33 else_stmt: • ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt
-   33          | ELSE WHEN expression COLON T_INDENT stmt T_DEDENT • else_stmt
-   34          | • ELSE COLON T_INDENT stmt
+   33 else_stmt: ELSE WHEN expression COLON INDENT stmt • DEDENT else_stmt
+
+    DEDENT  shift, and go to state 149
+
+
+State 147
+
+   37 loop_stmt: LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT •
+
+    $default  reduce using rule 37 (loop_stmt)
+
+
+State 148
+
+    4 stmt: • decl_stmt
+    5     | • assign_stmt
+    6     | • input_stmt
+    7     | • output_stmt
+    8     | • when_stmt
+    9     | • loop_stmt
+   10 decl_stmt: • GLOBAL mut_type IDENT COLON data_type
+   11          | • GLOBAL mut_type IDENT COLON EQUAL value
+   12          | • mut_type IDENT COLON data_type
+   13          | • mut_type IDENT COLON data_type EQUAL value
+   14 mut_type: • FIXED
+   15         | • FLEX
+   16 assign_stmt: • IDENT EQUAL value
+   23 input_stmt: • INPUT "(" string_consts ")"
+   24           | • INPUT "(" ")"
+   25 output_stmt: • OUTPUT "(" string_consts ")"
+   26            | • OUTPUT "(" ")"
+   32 when_stmt: • WHEN expression COLON INDENT stmt DEDENT else_stmt
+   36 loop_stmt: • LOOP IDENT "in" "(" expression ")" COLON INDENT stmt DEDENT
+   37          | • LOOP IDENT "in" "(" expression "to" expression ")" COLON INDENT stmt DEDENT
+   38          | • LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT
+   38          | LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT • stmt DEDENT
+
+    IDENT   shift, and go to state 1
+    GLOBAL  shift, and go to state 2
+    FIXED   shift, and go to state 3
+    FLEX    shift, and go to state 4
+    INPUT   shift, and go to state 5
+    OUTPUT  shift, and go to state 6
+    WHEN    shift, and go to state 7
+    LOOP    shift, and go to state 8
+
+    stmt         go to state 150
+    decl_stmt    go to state 12
+    mut_type     go to state 13
+    assign_stmt  go to state 14
+    input_stmt   go to state 15
+    output_stmt  go to state 16
+    when_stmt    go to state 17
+    loop_stmt    go to state 18
+
+
+State 149
+
+   33 else_stmt: • ELSE WHEN expression COLON INDENT stmt DEDENT else_stmt
+   33          | ELSE WHEN expression COLON INDENT stmt DEDENT • else_stmt
+   34          | • ELSE COLON INDENT stmt DEDENT
    35          | ε •
 
     ELSE  shift, and go to state 123
 
     $default  reduce using rule 35 (else_stmt)
 
-    else_stmt  go to state 148
+    else_stmt  go to state 151
 
 
-State 147
+State 150
 
-   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON T_INDENT stmt •
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt • DEDENT
 
-    $default  reduce using rule 38 (loop_stmt)
+    DEDENT  shift, and go to state 152
 
 
-State 148
+State 151
 
-   33 else_stmt: ELSE WHEN expression COLON T_INDENT stmt T_DEDENT else_stmt •
+   33 else_stmt: ELSE WHEN expression COLON INDENT stmt DEDENT else_stmt •
 
     $default  reduce using rule 33 (else_stmt)
+
+
+State 152
+
+   38 loop_stmt: LOOP IDENT "in" "(" expression "to" expression "by" expression ")" COLON INDENT stmt DEDENT •
+
+    $default  reduce using rule 38 (loop_stmt)

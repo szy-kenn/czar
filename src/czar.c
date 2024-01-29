@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     }
 
     parser_initialize(lexer->token_array, token_count);
-    parser_start(false);
+    parser_start(true);
 
     lexer_free();
 
