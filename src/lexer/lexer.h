@@ -50,7 +50,12 @@ typedef enum {
     T_ENUM,
 
     // DATA TYPES (RESERVED WORD) / IDENTIFIER
-    T_DTYPE,
+    T_DT_INT,
+    T_DT_STR,
+    T_DT_CHR,
+    T_DT_BOOL,
+    T_DT_NIL,
+    T_DT_DBL,
 
     // literals
     T_IDENT,
@@ -112,7 +117,9 @@ typedef enum {
 
     // INVALID
     T_INVALID,
-    T_ERROR
+    T_ERROR,
+
+    T_AMPERSAND
 } token_t;
 
 typedef struct {
@@ -142,8 +149,8 @@ typedef struct {
 
 void tokens_print(Token *token_array, int tokenCount);
 void tokens_free(Token *token_array);
-void lexer_initialize(char *src, StateMachine *state_machine,
-                      StateMachine *indent_state_machine);
+Lexer *lexer_initialize(char *src, StateMachine *state_machine,
+                        StateMachine *indent_state_machine);
 int lexer_start(bool print_transition);
 int tokens_save(char *file_name);
 void lexer_free();

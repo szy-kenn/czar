@@ -30,6 +30,11 @@ void tokens_free(Token *token_array) {
 }
 
 void token_add(token_t token_type, char *lexeme) {
+
+    if (token_type == T_NEWLINE) {
+        return;
+    }
+
     if (lexer.token_memory < lexer.token_count + 1) {
         int old_memory = lexer.token_memory;
         lexer.token_memory = capacity_expand(old_memory);
@@ -108,8 +113,6 @@ char *token_name_get(token_t token_type) {
             return "T_NIL";
         case T_ENUM:
             return "T_ENUM";
-        case T_DTYPE:
-            return "T_DTYPE";
         case T_IDENT:
             return "T_IDENT";
         case T_NUMBER:
@@ -194,6 +197,20 @@ char *token_name_get(token_t token_type) {
             return "T_INVALID";
         case T_ERROR:
             return "T_ERROR";
+        case T_AMPERSAND:
+            return "T_AMPERSAND";
+        case T_DT_BOOL:
+            return "T_DT_BOOL";
+        case T_DT_CHR:
+            return "T_DT_CHR";
+        case T_DT_DBL:
+            return "T_DT_DBL";
+        case T_DT_INT:
+            return "T_DT_INT";
+        case T_DT_NIL:
+            return "T_DT_NIL";
+        case T_DT_STR:
+            return "T_DT_STR";
     }
 }
 
@@ -279,7 +296,6 @@ void indentation_check(char current_char) {
                     free(digit_str);
                 } else {
                     while (lexer.indent_stack->top->value > lexer.indent_val) {
-
                         int top_indent_val =
                             stack_pop(lexer.indent_stack)->value;
                         int length = snprintf(NULL, 0, "%d", top_indent_val);
@@ -291,24 +307,23 @@ void indentation_check(char current_char) {
                         } else {
                             token_add(T_DEDENT, digit_str);
                         }
-
                         free(digit_str);
                     }
                 }
-
-                token_print(&lexer.token_array[lexer.token_count - 1]);
-
+                if (lexer.token_count - 1 >= 0) {
+                    token_print(&lexer.token_array[lexer.token_count - 1]);
+                }
                 lexer.indent_val = 0;
                 break;
-            default:
+            case 0:
                 lexer.indent_val = 0;
                 break;
         }
     }
 }
 
-void lexer_initialize(char *src, StateMachine *state_machine,
-                      StateMachine *indent_state_machine) {
+Lexer *lexer_initialize(char *src, StateMachine *state_machine,
+                        StateMachine *indent_state_machine) {
     lexer.source = src;
     lexer.state_machine = state_machine;
     lexer.indent_state_machine = indent_state_machine;
@@ -323,9 +338,11 @@ void lexer_initialize(char *src, StateMachine *state_machine,
     lexer.indent_current_state = NULL;
     lexer.indent_stack = NULL;
     lexer.indent_val = 0;
+
+    return &lexer;
 }
 
-int lexer_start(bool print_transition) {
+int lexer_start(bool debug) {
     lexer.current_state = lexer.state_machine->init_state;
     lexer.indent_current_state = lexer.indent_state_machine->init_state;
     lexer.indent_stack = stack_create();
@@ -355,7 +372,7 @@ int lexer_start(bool print_transition) {
 
                 /* check indentation */
                 indentation_check(current_char);
-                if (print_transition)
+                if (debug)
                     transition_print(lexer.current_state, current_char,
                                      next_state);
                 current_char = char_get();
@@ -369,13 +386,14 @@ int lexer_start(bool print_transition) {
                  * the state where we finished
                  */
 
-                if (print_transition)
+                if (debug)
                     transition_print(lexer.current_state, current_char,
                                      next_state);
 
                 char *lexeme = lexeme_get();
                 token_add(lexer.current_state->output, lexeme);
-                token_print(&lexer.token_array[lexer.token_count - 1]);
+                if (debug)
+                    token_print(&lexer.token_array[lexer.token_count - 1]);
 
                 if (lexer.current_state->output == T_NEWLINE) {
                     lexer.line++;
@@ -389,6 +407,15 @@ int lexer_start(bool print_transition) {
         lexer.current_state = lexer.state_machine->init_state;
     }
 
+    char *lexeme = malloc(4);
+
+    if (lexer.indent_stack->top->value > 0) {
+        strcpy(lexeme, itoa(lexer.indent_stack->top->value, lexeme, 10));
+        token_add(T_DEDENT, lexeme);
+    }
+
+    strcpy(lexeme, "EOF");
+    token_add(T_EOF, lexeme);
     return lexer.token_count;
 }
 
@@ -397,8 +424,6 @@ int tokens_save(char *file_name) {
 
     if (fp == NULL) return -1;
 
-    fprintf(fp, "==========================================\n");
-
     for (int i = 0; i < lexer.token_count; i++) {
         int spaces_count =
             15 - strlen(token_name_get(lexer.token_array[i].token_type));
@@ -406,8 +431,8 @@ int tokens_save(char *file_name) {
 
         memset(spaces, ' ', spaces_count);
         spaces[spaces_count] = '\0';
-        fprintf(fp, "%03d | %s%s", lexer.token_array[i].key,
-                token_name_get(lexer.token_array[i].token_type), spaces);
+        fprintf(fp, "%s%s", token_name_get(lexer.token_array[i].token_type),
+                spaces);
         free(spaces);
         for (int j = 0; j < strlen(lexer.token_array[i].lexeme); j++) {
             char c = lexer.token_array[i].lexeme[j];

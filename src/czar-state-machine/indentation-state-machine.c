@@ -8,16 +8,16 @@ StateMachine *indentation_state_machine_init() {
     int start_idx = fsmachine_state_add(state_machine, false, 0);
     int indentation_idx = fsmachine_state_add(state_machine, false, 1);
     int add_token_idx = fsmachine_state_add(state_machine, true, T_INDENT);
-    int inside_idx = fsmachine_state_add(state_machine, false, 0);
+    int inside_idx = fsmachine_state_add(state_machine, false, 2);
 
     /* q0 - \n -> q0 */
     fsmachine_transition_add(state_machine, start_idx, charset_create("\n"),
                              start_idx);
 
-    /* q0 - not \n and space -> inside */
+    /* q0 - not \n and not space -> inside */
     fsmachine_transition_add(state_machine, start_idx,
                              charset_excludes(CHARACTER_SET, "\n "),
-                             inside_idx);
+                             add_token_idx);
 
     /* q0 - space -> q1 */
     fsmachine_transition_add(state_machine, start_idx, charset_create(" "),

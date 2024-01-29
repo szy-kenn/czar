@@ -1,3 +1,6 @@
+#ifndef _STACK_H_
+#define _STACK_H_
+
 typedef struct node node_t;
 
 typedef struct node {
@@ -15,3 +18,5 @@ node_t *stack_push(Stack *stack, int new_val);
 void stack_free(Stack *stack);
 void stack_print(Stack *stack);
 Stack *stack_create();
+
+#endif

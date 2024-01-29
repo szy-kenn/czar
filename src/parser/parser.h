@@ -1,8 +1,57 @@
 #ifndef _CZAR_PARSER_H_
 #define _CZAR_PARSER_H_
 
+#include "parser-input-string.h"
 #include "../lexer/lexer.h"
-typedef struct ParseTreeNode;
+#include "../dstructs/tree/tree.h"
+#include "../dstructs/stack/token_stack/token_stack.h"
+// typedef struct ParseTreeNode;
+
+typedef enum action_type_t {
+    SHIFT,
+    REDUCE,
+    GOTO,
+    ACCEPTED,
+    ERROR,
+} ActionType;
+
+
+/**
+ * 
+ * "$end", "error", "IDENT", "STR", "CHR", "BOOL", "NIL",
+             "INT", "DBL", "T_INDENT", "T_DEDENT", "GLOBAL", "FIXED",
+             "FLEX", "INPUT", "OUTPUT", "WHEN", "ELSE", "LOOP",
+             "AND", "OR", "EQUALS", "NOTEQUALS", "GREATER",
+             "GREATEREQUAL", "LESS", "LESSEQUAL", "PLUS",
+             "MINUS", "TIMES", "DIVIDE", "MODULO", "POW",
+             "NOT", "ABS", "COLON", "EQUAL", "(", ")", "&", "in",
+             "to", "by", "int", "dbl", "str", "chr", "bool", "nil",
+             "true", "false","accept", "program", "stmts", "stmt", "decl_stmt",
+                "mut_type", "assign_stmt", "value", "input_stmt", 
+                "output_stmt", "string_consts", "string_const", 
+                "when_stmt", "else_stmt", "loop_stmt", "data_type",
+                "expression", "conjunction", "equality",
+                "relational", "abs", "term", "factor",
+                "power", "unary", "literal"
+ * 
+*/
+
+typedef struct state {
+    ActionType action_type;
+    int value;
+} parsing_state;
+
+#define S(value) {SHIFT, value}
+#define R(value) {REDUCE, value}
+#define GT(value) {GOTO, value}
+#define ACCEPT {ACCEPTED, 0}
+#define X {ERROR, 0}
+
+typedef struct production_t {
+    InputString lhs;
+    int rhs_count;
+    InputString rhs[20];
+} Production;
 
 typedef struct {
     int current;
@@ -10,103 +59,20 @@ typedef struct {
     int token_count;
 } Parser;
 
+/*
 typedef struct {
-    ParseTreeNode *root;
+    struct ParseTreeNode *root;
 } ParseTree;
 
 typedef struct {
     void *type;
     void *value;
-    ParseTreeNode *parent;
-    ParseTreeNode *children;
+    struct ParseTreeNode *parent;
+    struct ParseTreeNode *children;
 } ParseTreeNode;
-
-// node types (expressions)
-
-typedef struct Expression;
-typedef struct Disjunction;
-typedef struct Conjunction;
-typedef struct Equality;
-typedef struct Relational;
-typedef struct Term;
-typedef struct Factor;
-typedef struct Power;
-typedef struct Unary;
-typedef struct Abs;
-typedef struct Literal;
-
-// ENUMS
-
-typedef enum { UNARY_NOT, UNARY_MINUS } UnaryOperator;
-typedef enum { FACTOR_MUL, FACTOR_DIV, FACTOR_MOD } FactorOperator;
-typedef enum { TERM_ADD, TERM_SUB } TermOperator;
-typedef enum {
-    REL_GREATER_THAN,
-    REL_GREATER_EQL,
-    REL_LESS_THAN,
-    REL_LESS_EQL
-} RelationalOperator;
-typedef enum { EQL_EQL, NOT_EQL } EqualityOperator;
-
-// STRUCTS
-
-typedef struct {
-    void *value;
-} Literal;
-
-typedef struct {
-    Literal *literal;
-} Abs;
-
-typedef struct {
-    UnaryOperator unary_operator;
-    Abs *abs;
-} Unary;
-
-typedef struct {
-    Unary *left;
-    Unary *right;
-} Power;
-
-typedef struct {
-    Power *left;
-    FactorOperator factor_operator;
-    Power *right;
-} Factor;
-
-typedef struct {
-    Factor *left;
-    TermOperator term_operator;
-    Factor *right;
-} Term;
-
-typedef struct {
-    Term *left;
-    RelationalOperator relational_operator;
-    Term *right;
-} Relational;
-
-typedef struct {
-    Relational *left;
-    EqualityOperator equality_operator;
-    Relational *right;
-} Equality;
-
-typedef struct {
-    Equality *left;
-    Equality *right;
-} Conjunction;
-
-typedef struct {
-    Conjunction *left;
-    Conjunction *right;
-} Disjunction;
-
-typedef struct {
-    Disjunction *expr;
-} Expression;
+*/
 
 void parser_initialize(Token *token_array, int token_count);
-void parser_start();
+void parser_start(bool debug);
 
 #endif
