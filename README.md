@@ -63,6 +63,7 @@ P_program:
     P_assign_stmt:
         Identifier Name: name
         Value:
+            String literal: "Czar"
     P_decl_stmt:
         Mutability Type: fixed
         Identifier Name: name

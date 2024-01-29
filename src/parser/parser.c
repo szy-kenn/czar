@@ -1019,7 +1019,7 @@ void _to_ast_rcv(TreeNode *tree_node, int depth, FILE *fp) {
 
         space_print(depth, fp);
         fprintf(fp, "Value:\n");
-        _to_ast_rcv(tree_node->children[tree_node->children_count - 3], depth+1, fp);
+        _to_ast_rcv(tree_node->children[0], depth+1, fp);
     } else if (strcmp(tree_node->value, "P_input_stmt") == 0 ||
                strcmp(tree_node->value, "P_output_stmt") == 0) {
         space_print(depth, fp);
@@ -1147,6 +1147,13 @@ void _to_ast_rcv(TreeNode *tree_node, int depth, FILE *fp) {
             fprintf(fp, "Expression:\n");
             _to_ast_rcv(tree_node->children[0], depth+1, fp);
         } 
+    } else if (strcmp(tree_node->value, "P_value") == 0) {
+        if (tree_node->children[0]->children_count == 0) {
+            space_print(depth, fp);
+            fprintf(fp, "String literal: %s\n", tree_node->children[0]->value);
+        } else {
+            _to_ast_rcv(tree_node->children[0], depth, fp);
+        }
     } else if (strcmp(tree_node->value, "P_expression") == 0 ||
              strcmp(tree_node->value, "P_conjunction") == 0 ||
              strcmp(tree_node->value, "P_equality") == 0 ||
