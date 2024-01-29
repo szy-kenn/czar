@@ -42,7 +42,7 @@ Run the program:
 ./run test.cz output.txt
 ```
 
-And the output file *(output.txt)* should look like this:
+The output file for the symbol table should look like this:
 
 ```output.txt
 ==========================================
@@ -52,5 +52,17 @@ And the output file *(output.txt)* should look like this:
 003 | T_DTYPE        str
 004 | T_EQL          =
 005 | T_STR          "Hello, World!"
+```
 
+The Abstract Syntax Tree should look like this:
+
+```ast.txt
+P_program:
+    P_assign_stmt:
+        Identifier Name: name
+        Value:
+    P_decl_stmt:
+        Mutability Type: fixed
+        Identifier Name: name
+        Data type: str
 ```
