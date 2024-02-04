@@ -3,7 +3,7 @@
 
 Parser parser;
 
-Production rules[100] = {
+Production rules[77] = {
     {P_ACCEPT, 2, {P_program, P_END}},
     {P_program, 1, {P_stmts}},
     {P_stmts, 2, {P_stmts, P_stmt}},
@@ -83,67 +83,7 @@ Production rules[100] = {
     {P_literal, 1, {P_IDENT}}
 };
 
-/**
-Production rules[40] = {
-    
-    // 0
-    {P_ACCEPT, 1, {P_EXPR}},
-
-    // 1 - 2
-    {P_EXPR, 1, {P_CONJ}},
-    {P_EXP, 3, {P_EXPR, P_OR, P_CONJ}},
-
-    // 3 - 4
-    {P_CONJ, 3, {P_CONJ, P_AND, P_EQL}},
-    {P_CONJ, 1, {P_EQL}},
-
-    // 5 - 7
-    {P_EQL, 3, {P_EQL, P_EQL_EQL, P_REL}},
-    {P_EQL, 3, {P_EQL, P_NOT_EQL, P_REL}},
-    {P_EQL, 1, {P_REL}},
-
-    // 8 - 12
-    {P_REL, 3, {P_REL, P_GREATER, P_TERM}},
-    {P_REL, 3, {P_REL, P_GREATER_EQL, P_TERM}},
-    {P_REL, 3, {P_REL, P_LESS, P_TERM}},
-    {P_REL, 3, {P_REL, P_LESS_EQL, P_TERM}},
-    {P_REL, 1, {P_TERM}},
-
-    // 13 - 15
-    {P_TERM, 3, {P_TERM, P_PLUS, P_FACTOR}},
-    {P_TERM, 3, {P_TERM, P_MINUS, P_FACTOR}},
-    {P_TERM, 1, {P_FACTOR}},
-
-    // 16 - 19 
-    {P_FACTOR, 3, {P_FACTOR, P_MUL, P_POWER}},
-    {P_FACTOR, 3, {P_FACTOR, P_DIV, P_POWER}},
-    {P_FACTOR, 3, {P_FACTOR, P_MOD, P_POWER}},
-    {P_FACTOR, 1, {P_POWER}},
-
-    // 20-21
-    {P_POWER, 3, {P_POWER, P_EXP, P_UNARY}},
-    {P_POWER, 1, {P_UNARY}},
-
-    // 22-24 
-    {P_UNARY, 2, {P_NOT, P_UNARY}},
-    {P_UNARY, 2, {P_MINUS, P_UNARY}},
-    {P_UNARY, 1, {P_ABSVAL}},
-
-    // 25-26
-    {P_ABSVAL, 3, {P_ABS, P_ABSVAL, P_ABS}},
-    {P_ABSVAL, 1, {P_LITERAL}},
-
-    // 27 - 32
-    {P_LITERAL, 3, {P_LPAREN, P_EXPR, P_RPAREN}},
-    {P_LITERAL, 1, {P_INT}},
-    {P_LITERAL, 1, {P_DBL}},
-    {P_LITERAL, 1, {P_TRUE}},
-    {P_LITERAL, 1, {P_FALSE}},
-    {P_LITERAL, 1, {P_ID}},
-};
-**/
-
-parsing_state parsing_table[200][200] = 
+parsing_state parsing_table[154][77] = 
 {{X, X, S(1), X, X, X, X, X, X, X, X, S(2), S(3), S(4), S(5), S(6), S(7), X, S(8), X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, GT(9), GT(10), GT(11), GT(12), GT(13), GT(14), X, GT(15), GT(16), X, X, GT(17), X, GT(18), X, X, X, X, X, X, X, X, X, X, X},
 {X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, S(19), X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X},
 {X, X, X, X, X, X, X, X, X, X, X, X, S(3), S(4), X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, GT(20), X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X},
@@ -298,66 +238,6 @@ parsing_state parsing_table[200][200] =
 {R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), R(33), X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X},    
 {R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), R(38), X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X}    
 };
-/** parsing_state parsing_table[100][100] = {
-//   $      %	    (	    )	    *	    +	    -	    /	    ^	    |	    error	INT	    DBL	    TRUE	FALSE	ID	    OR	    AND	    NOT 	==	    !=	    >	    >=	    <	    <=	    acc	    expr	conj	eql	    rel	    trm	    fac	    pow	    una	    abs	    lit
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      GT(10), GT(11), GT(12), GT(13), GT(14), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {R(28), R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  R(28),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(29), R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  R(29),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(30), R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  R(30),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(31), R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  R(31),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(32), R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  R(32),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(20), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(21), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      X,      X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(22), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      GT(23), GT(11), GT(12), GT(13), GT(14), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {S(24), X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      S(25),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(1),  R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   S(26),  R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   R(1),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(4),  R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   R(4),   S(27),  S(28),  R(4),   R(4),   R(4),   R(4),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(7),  R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   R(7),   S(29),  S(30),  S(31),  S(32),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(12), R(12),  R(12),  R(12),  R(12),  S(33),  S(34),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  R(12),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(15), S(37),  R(15),  R(15),  S(35),  R(15),  R(15),  S(36),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  R(15),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(19), R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  S(38),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  R(19),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(21), R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  R(21),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(24), R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  R(24),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(26), R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  R(26),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(22), R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  R(22),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(23), R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  R(23),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {X,     X,      X,      X,      X,      X,      X,      X,      X,      S(39),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {X,     X,      X,      S(40),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      S(25),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {ACCEPT, X,     X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      GT(41), GT(12), GT(13), GT(14), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(42), GT(13), GT(14), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(43), GT(14), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(44), GT(14), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(45), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(46), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(47), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(48), GT(15), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(49), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(50), GT(16), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(51), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(52), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(53), GT(17), GT(18), GT(19)  },
-    {X,     X,      S(9),   X,      X,      X,      S(7),   X,      X,      S(8),   X,      S(1),   S(2),   S(3),   S(4),   S(5),   X,      X,      S(6),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      GT(54), GT(18), GT(19)  },
-    {R(25), R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  R(25),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(27), R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  R(27),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(2),  R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   S(26),  R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   R(2),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(3),  R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   R(3),   S(27),  S(28),  R(3),   R(3),   R(3),   R(3),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(5),  R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   R(5),   S(29),  S(30),  S(31),  S(32),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(6),  R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   R(6),   S(29),  S(30),  S(31),  S(32),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(8),  R(8),   R(8),   R(8),   R(8),   S(33),  S(34),  R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   R(8),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(9),  R(9),   R(9),   R(9),   R(9),   S(33),  S(34),  R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   R(9),   X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(10), R(10),  R(10),  R(10),  R(10),  S(33),  S(34),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  R(10),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(11), R(11),  R(11),  R(11),  R(11),  S(33),  S(34),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  R(11),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(13), S(37),  R(13),  R(13),  S(35),  R(13),  R(13),  S(36),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  R(13),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(14), S(37),  R(14),  R(14),  S(35),  R(14),  R(14),  S(36),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  R(14),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(16), R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  S(38),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  R(16),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(17), R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  S(38),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  R(17),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(18), R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  S(38),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  R(18),  X,      X,      X,      X,      X,      X,      X,      X,      X,      X,      X       },
-    {R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	R(20),	X,      X,  	X,  	X,  	X,  	X,  	X,  	X,  	X,  	X,  	X       }
-};
-
-**/
 
 int index_get(token_t token) {
     switch (token)
@@ -953,16 +833,16 @@ token_node_t *token_get(int idx) {
     return token_node;
 }
 
-void _stack_print(Stack *stack) {
-    node_t *cur = stack->top;
+void _stack_print(TokenStack *stack) {
+    token_node_t *cur = stack->top;
 
     while (cur != NULL) {
         if (cur == stack->top) {
             printf("[");
-            input_string_print(cur->value);
+            input_string_print(cur->type);
         } else {
             printf(", ");
-            input_string_print(cur->value);
+            input_string_print(cur->type);
         }
         cur = cur->next;
         if (cur == NULL) {
@@ -997,15 +877,22 @@ void _to_ast_rcv(TreeNode *tree_node, int depth, FILE *fp) {
         fprintf(fp, "%s:\n", tree_node->value);
 
         depth++;
+        space_print(depth, fp);
+
+        if (tree_node->children_count == 5) {
+            fprintf(fp, "Scope: %s\n", tree_node->children[4]->value);
+        } else {
+            fprintf(fp, "Scope: local\n");
+        }
 
         space_print(depth, fp);
-        fprintf(fp, "Mutability Type: %s\n", tree_node->children[tree_node->children_count - 1]->children[0]->value);
+        fprintf(fp, "Mutability Type: %s\n", tree_node->children[3]->children[0]->value);
 
         space_print(depth, fp);
-        fprintf(fp, "Identifier Name: %s\n", tree_node->children[tree_node->children_count - 2]->value);
+        fprintf(fp, "Identifier Name: %s\n", tree_node->children[2]->value);
         
         space_print(depth, fp);       
-        fprintf(fp, "Data type: %s\n", tree_node->children[tree_node->children_count - 4]->children[0]->value);
+        fprintf(fp, "Data type: %s\n", tree_node->children[0]->children[0]->value);
         
     } else if (strcmp(tree_node->value, "P_assign_stmt") == 0) {
 
@@ -1261,7 +1148,7 @@ void parser_start(bool debug) {
                 }
 
                 current_token = token_get(current_idx);
-                // _stack_print(token_stack);
+                _stack_print(token_stack);
                 break;
             
             case REDUCE:
@@ -1270,16 +1157,6 @@ void parser_start(bool debug) {
                 }
 
                 Production rule = rules[current_state.value];
-
-                /** token_node_t *parent_node = malloc(sizeof(token_node_t));
-                parent_node->next = NULL;
-                parent_node->type = rule.lhs;
-                parent_node->parse_tree_node = malloc(sizeof(sizeof(TreeNode)));
-                parent_node->parse_tree_node->children = NULL;
-                parent_node->parse_tree_node->children_count = 0;
-                parent_node->parse_tree_node->children_memory = 0;
-                parent_node->parse_tree_node->parent = NULL;
-                **/
 
                 current_token->type = rule.lhs;
                 current_token->parse_tree_node->value = input_string_get(rule.lhs); // change to the string value of the type
@@ -1290,17 +1167,14 @@ void parser_start(bool debug) {
                 for (int i = 0; i < rule.rhs_count; i++) {
                     if (rule.rhs[rule.rhs_count-1-i] == token_stack->top->type) {
                         stack_pop(state_stack);
-                        // printf("Transition: q%d -> ", stack_pop(state_stack)->value);
-                        // printf("q%d\n", state_stack->top->value);
                         token_node_t *popped_token = token_stack_pop(token_stack);
-
                         tree_insert(current_token->parse_tree_node, popped_token->parse_tree_node);
                     }
                 }
 
                 current_state_idx = state_stack->top->value;
                 token_stack_push(token_stack, current_token->type, current_token->parse_tree_node);
-
+                _stack_print(token_stack);
                 break;
 
             case GOTO:
@@ -1332,11 +1206,13 @@ void parser_start(bool debug) {
  
     Tree *final_tree = malloc(sizeof(Tree));
     final_tree->root = parse_tree->root->children[parse_tree->root->children_count - 1];
+    printf("GENERATING PARSE TREE:\n");
     tree_print(final_tree);
+
     to_ast(final_tree, ast);
+    printf("GENERATING AST: Saved in \033[0;33m`ast.txt`\033[0;37m\n");
     stack_free(state_stack);
     token_stack_free(token_stack);
-    // tree_free(parse_tree);
     fclose(ast);
     free(current_token);
 };
