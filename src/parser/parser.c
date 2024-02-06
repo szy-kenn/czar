@@ -1091,7 +1091,7 @@ void _to_ast_rcv(TreeNode *tree_node, int depth, FILE *fp) {
     }
     
     else {
-        for (int i = 0; i < tree_node->children_count; i++) {
+        for (int i = tree_node->children_count - 1; i >= 0; i--) {
             _to_ast_rcv(tree_node->children[i], depth, fp);
         }
     }
