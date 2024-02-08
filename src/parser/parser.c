@@ -342,6 +342,9 @@ int index_get(token_t token) {
         return P_nil;
     case T_DT_STR:
         return P_str;
+    case T_ERROR:
+    case T_INVALID:
+        return P_ERROR;
     }
 }
 
@@ -1128,6 +1131,14 @@ void parser_start(bool debug) {
     // for tokens
     TokenStack *token_stack = token_stack_create();
 
+
+    token_node_t *token_node = malloc(sizeof(token_node_t));
+    token_node->parse_tree_node = malloc(sizeof(TreeNode));
+    token_node->parse_tree_node->children = NULL;
+    token_node->parse_tree_node->children_count = 0;
+    token_node->parse_tree_node->children_memory = 0;
+    token_node->parse_tree_node->parent = NULL;
+
     while(is_parsing) {
         current_state = parsing_table[current_state_idx][current_token->type];     // current state from parsing table (start_state - input_string -> current_state)
 
@@ -1145,13 +1156,16 @@ void parser_start(bool debug) {
 
                 if (current_idx  < parser.token_count - 1) {
                     current_idx++;
-                }
+                } 
 
                 current_token = token_get(current_idx);
-                _stack_print(token_stack);
+                if (debug) {
+                    _stack_print(token_stack);
+                }
                 break;
             
             case REDUCE:
+
                 if (debug) {
                     printf("q%d\t-- T%03d\t REDUCE(%d)\t--> q%d\n", current_state_idx, current_token->type, current_state.value, current_state.value);
                 }
@@ -1174,7 +1188,9 @@ void parser_start(bool debug) {
 
                 current_state_idx = state_stack->top->value;
                 token_stack_push(token_stack, current_token->type, current_token->parse_tree_node);
-                _stack_print(token_stack);
+                if (debug) {
+                    _stack_print(token_stack);
+                }
                 break;
 
             case GOTO:
@@ -1190,24 +1206,345 @@ void parser_start(bool debug) {
                 if (debug) {
                     printf("Accepted!\n");
                 }
+                rule = rules[current_state.value];
+
+                current_token->type = rule.lhs;
+                current_token->parse_tree_node->value = input_string_get(rule.lhs); // change to the string value of the type
+                if (current_token->parse_tree_node->parent == NULL) {
+                    tree_insert(parse_tree->root, current_token->parse_tree_node);
+                }
+
+                for (int i = 0; i < rule.rhs_count; i++) {
+                    if (rule.rhs[rule.rhs_count-1-i] == token_stack->top->type) {
+                        stack_pop(state_stack);
+                        token_node_t *popped_token = token_stack_pop(token_stack);
+                        tree_insert(current_token->parse_tree_node, popped_token->parse_tree_node);
+                    }
+                }
+
+                current_state_idx = state_stack->top->value;
+                token_stack_push(token_stack, current_token->type, current_token->parse_tree_node);
+                if (debug) {
+                    _stack_print(token_stack);
+                }
                 is_parsing = false;
+                printf("Syntax Accepted.\n");
                 break;
 
             case ERROR:
+                switch (state_stack->top->value)
+                {
+                case 0:
+                case 10:
+                case 90:
+                case 148:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'flex', 'fixed', 'global', 'input', 'output', 'when', 'loop', or identifier.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "flex";
+                    token_node->type = P_FLEX;
+                    break;
+                case 1:
+                case 111:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '='\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "=";
+                    token_node->type = P_EQUAL;
+                    break;
+
+                case 2:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'flex' or 'fixed'\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "flex";
+                    token_node->type = P_FLEX;                    
+                    break;
+         
+                case 5:
+                case 6:
+                    printf("\033[0mUnexpected token: \033[0;31m'%9s'\033[0m on line %d col %d. Expecting '('\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "(";
+                    token_node->type = P_LPAREN;                    
+                    break;
+
+                case 7:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting an expression after 'when'\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "i";
+                    token_node->type = P_IDENT;                    
+                    break;      
+
+                case 8:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting a loop variable after 'loop'\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    if (parser.token_array[current_idx].token_type == T_IN) {
+                        current_idx--;
+                    }
+                    token_node->parse_tree_node->value = "i";
+                    token_node->type = P_IDENT;                    
+                    break;               
+
+                case 9:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'EOF'\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "EOF";
+                    token_node->type = P_END;                    
+                    break;               
+
+                case 13:
+                case 20:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting an identifier after declaring mutability type\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "i";
+                    token_node->type = P_IDENT;                    
+                    break;          
+
+                case 19:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting a value / expression after '='\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "i";
+                    token_node->type = P_IDENT;                    
+                    break;     
+
+                case 21:
+                case 22:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting a string constant or ')' after '('\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ")";
+                    token_node->type = P_RPAREN;                    
+                    break; 
+
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 66:
+                case 68:
+                case 69:
+                case 70:
+                case 71:
+                case 72:
+                case 73:
+                case 74:
+                case 75:
+                case 76:
+                case 77:
+                case 78:
+                case 79:
+                case 80:
+                case 85:
+                case 104:
+                case 112:
+                case 117:
+                case 121:
+                case 127:
+                case 129:
+                case 131:
+                case 133:
+                case 140:
+                case 142:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting an expression.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "i";
+                    token_node->type = P_IDENT;                    
+                    break;        
+
+                case 32:
+                case 132:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting a ':' or 'or' after a when condition.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ":";
+                    token_node->type = P_COLON;                    
+                    break;      
+
+                case 33:
+                case 89:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'and' after a conjunction.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "and";
+                    token_node->type = P_AND;                    
+                    break;     
+
+                case 34:
+                case 91:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '==' or '!=' after an equality.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "==";
+                    token_node->type = P_EQUALS;                    
+                    break;
+
+                case 35:
+                case 92:
+                case 93:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '>', '>=', '<', or '<=' after a relational.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ">";
+                    token_node->type = P_GREATER;                    
+                    break;
+
+                case 37:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '+' or '-' after a term.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "+";
+                    token_node->type = P_PLUS;                    
+                    break;    
+
+                case 38:
+                case 98:
+                case 99:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '*', '/' or '%' after a factor.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "*";
+                    token_node->type = P_TIMES;                    
+                    break;            
+
+                case 39:
+                case 100:
+                case 101:
+                case 102:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '^' after a power.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "^";
+                    token_node->type = P_POW;                    
+                    break;            
+
+                case 42:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'in' after a loop variable.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                        token_node->parse_tree_node->value = "in";
+                        token_node->type = P_in;                    
+                    break;
+
+                case 45:
+                case 53:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting ':' after a declaration of identifier.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ":";
+                    token_node->type = P_COLON;                    
+                    break;            
+
+                case 52:
+                case 59:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'or' after an expression.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "or";
+                    token_node->type = P_OR;                    
+                    break; 
+
+                case 57:           
+                case 61:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting ')' or '&' after a string const.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ")";
+                    token_node->type = P_RPAREN;                    
+                    break; 
+
+                case 65:
+                case 136:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting ')' or 'or' after an expression.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ")";
+                    token_node->type = P_RPAREN;                    
+                    break; 
+
+                case 67:
+                case 125:
+                case 128:
+                case 135:
+                case 137:
+                case 145:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting an indent in a code block.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "4";
+                    token_node->type = P_T_INDENT;                    
+                    break; 
+
+                case 81:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting '(' after 'in'.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "(";
+                    token_node->type = P_LPAREN;                    
+                    break; 
+
+                case 82:
+                case 83:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'int', 'chr', 'dbl', 'bool', or 'nil'\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "chr";
+                    token_node->type = P_chr;                  
+                    break;
+
+                case 115:
+                case 134:
+                case 138:
+                case 144:
+                case 146:
+                case 150:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting a dedent after a code block\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "4";
+                    token_node->type = P_T_DEDENT;                    
+                    break;  
+
+                case 116:              
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'or', ')', or 'to' after the first expression in loop statement.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ")";
+                    token_node->type = P_RPAREN;                    
+                    break; 
+
+                case 119:              
+                case 149:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'else'.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "else";
+                    token_node->type = P_ELSE;                    
+                    break; 
+                
+                case 120:
+                case 130:
+                case 141:              
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting ':' after enclosing the range in a loop statement.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ":";
+                    token_node->type = P_COLON;                    
+                    break; 
+
+                case 123:              
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'when' or ':' after 'else'.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = "when";
+                    token_node->type = P_WHEN;                   
+                    break; 
+
+                case 126:              
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d. Expecting 'or', ')', or 'by' after the second expression in loop statement.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    token_node->parse_tree_node->value = ")";
+                    token_node->type = P_RPAREN;                    
+                    break; 
+
+                default:
+                    printf("\033[0mUnexpected token: \033[0;31m'%s'\033[0m on line %d col %d.\n", parser.token_array[current_idx].lexeme, parser.token_array[current_idx].line, parser.token_array[current_idx].col);
+                    break;
+                }
+
                 if (debug)
                     printf("Syntax Error!\n");
-                is_parsing = false;
+                // is_parsing = false;
+
+                printf("\t%d\t|\t", parser.token_array[current_idx].line);
+
+                int _chr_start;
+                int _printed_chr = 0;
+
+                for (int i = 0; i < parser.token_count; i++) {
+                    if (parser.token_array[i].line == parser.token_array[current_idx].line) {
+                        if (i == current_idx) {
+                            _chr_start = _printed_chr;
+                            if (parser.token_array[i].token_type != T_EOF && 
+                                parser.token_array[i].token_type != T_NEWLINE && 
+                                parser.token_array[i].token_type != T_INDENT && 
+                                parser.token_array[i].token_type != T_DEDENT)
+                            printf("\033[0;31m%s\033[0m ", parser.token_array[i].lexeme);
+                        } else {
+                            if (parser.token_array[i].token_type != T_EOF && 
+                                parser.token_array[i].token_type != T_NEWLINE && 
+                                parser.token_array[i].token_type != T_INDENT && 
+                                parser.token_array[i].token_type != T_DEDENT) {
+                                    printf("%s ", parser.token_array[i].lexeme);
+                                }
+                        }
+                        _printed_chr += strlen(parser.token_array[i].lexeme) + 1;
+                    }
+                }
+
+                printf("\n");
+                printf("\t\t|\t");
+                for (int i = 0; i < _chr_start; i++) {
+                    printf(" ");
+                }
+                printf("\033[0;31m^\033[0m\n");
+
+
+                current_token = token_node;
                 break;
 
             default:
                 break;
          }
     }
- 
     Tree *final_tree = malloc(sizeof(Tree));
     final_tree->root = parse_tree->root->children[parse_tree->root->children_count - 1];
-    printf("GENERATING PARSE TREE:\n");
-    tree_print(final_tree);
+    // printf("GENERATING PARSE TREE:\n");
+    // tree_print(final_tree);
 
     to_ast(final_tree, ast);
     printf("GENERATING AST: Saved in \033[0;33m`ast.txt`\033[0;37m\n");
