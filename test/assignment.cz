@@ -1,0 +1,3 @@
+flex age: int = 18
+fixed first_name: str = "Juan"
+flex is_student: bool = false

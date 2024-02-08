@@ -1,0 +1,36 @@
+flex age_yr: int
+flex age_month: int
+fixed valid_age: int
+
+valid_age = 18
+age_yr = valid_age
+age_month = age_yr * 12
+
+input()
+input("Your name: ")
+
+output("Literal string")
+output(age_yr)
+output("Your age is: " & age_yr)
+
+loop i in (0 to 10):
+    output(i)
+
+loop i in (0 to 100):
+    loop j in (0 to 200):
+        output(i * j)
+
+when age_yr > valid_age:
+    output("Adult.")
+
+when age_yr > valid_age:
+    output("Adult.")
+else when age_yr < valid_age:
+    output("Minor.")
+
+when age_yr > valid_age:
+    output("Adult.")
+else when age_yr < valid_age:
+    output("Minor.")
+else:
+    output("Invalid.")

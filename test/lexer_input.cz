@@ -1,0 +1,21 @@
+abc abc_ abc_123 _abc123
++-*/%^|
++= -= *= /=
+< > <= >= == != and not or
+and as by else false fixed flex global in input loop not or output to when while
+bool chr dbl enum int nil str
+is then
+-- this is a comment
+
+    -- + indent
+-- - dedent
+
+'c'
+"string"
+999
+999.
+999.99
+.99
+99.99.99
+= ( ) : ?
+

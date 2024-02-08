@@ -1,0 +1,4 @@
+input("Enter name: ")
+input()
+output(name)
+output("Your name: " + name)

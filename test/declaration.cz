@@ -1,0 +1,3 @@
+flex age: int
+fixed first_name: str
+flex is_student: bool

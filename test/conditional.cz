@@ -1,0 +1,7 @@
+when (gwa >= 3.25):
+    output("Failing Grade!")
+
+when (gwa >= 1.00) and (gwa <= 3.00):
+    output("Passing Grade!")
+else:
+    output("Failing  Grade!")

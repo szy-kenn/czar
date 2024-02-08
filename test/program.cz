@@ -1,0 +1,22 @@
+flex age: int
+
+x = 42
+x = y
+x = x * y
+
+input("Age: ")
+
+output("Hello, World.")
+output(a)
+output("Hello, World, " & a)
+
+when a > 5:
+    output(a)
+else when a > 3:
+    output("3")
+else:
+    output("Invalid.")
+
+loop i in (0 to 100):
+    loop j in (0 to 100):
+        output(i * j)

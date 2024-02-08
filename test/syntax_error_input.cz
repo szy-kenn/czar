@@ -1,0 +1,13 @@
+fixed a: intt
+
+a == b
+
+input('")
+
+output("addasdasdas" & ))
+
+loop x inn (5 to 100):
+    output(x)
+
+when a > 5:
+    output("a)
